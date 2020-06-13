@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="LabelIconRow">
+        <attr name="labelIcon" format="reference"/>
+        <attr name="labelScaleIcon" format="reference"/>
+        <attr name="labelText" format="string"/>
+        <attr name="labelValue" format="string"/>
+        <attr name="labelTopDivider" format="boolean"/>
+        <attr name="labelBottomDivider" format="boolean"/>
+        <attr name="labelArrows" format="boolean"/>
+        <attr name="labelValueRight" format="boolean"/>
+        <attr name="labelHint" format="string"/>
+        <attr name="labelValueColor" format="color"/>
+        <attr name="labelTextColor" format="color"/>
+        <attr name="labelHintColor" format="color"/>
+        <attr name="labelExactlyWidth" format="dimension"/>
+        <attr name="labelTextSize" format="dimension"/>
+        <attr name="labelValueSize" format="dimension" />
+        <attr name="labelDividerIndent" format="dimension" />
+        <attr name="labelUnit" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="RatingBar">
+        <attr name="starDistance" format="dimension"/>
+        <attr name="starSize" format="dimension"/>
+        <attr name="starCount" format="integer"/>
+        <attr name="starEmpty" format="reference"/>
+        <attr name="starFill" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="DropDownMenu">
+        <attr name="ddunderlineColor" format="color"/>
+        <attr name="dddividerColor" format="color"/>
+        <attr name="ddtextSelectedColor" format="color"/>
+        <attr name="ddtextUnselectedColor" format="color"/>
+        <attr name="ddmenuBackgroundColor" format="color"/>
+        <attr name="ddmaskColor" format="color"/>
+        <attr name="ddmenuTextSize" format="dimension"/>
+        <attr name="ddmenuSelectedIcon" format="reference"/>
+        <attr name="ddmenuUnselectedIcon" format="reference"/>
+        <attr name="ddmenuMenuHeightPercent" format="float"/>
+    </declare-styleable>
+
+    <!-- Declare custom theme attributes that allow changing which styles are
+         used for button bars depending on the API level.
+         ?android:attr/buttonBarStyle is new as of API 11 so this is
+         necessary to support previous API levels. -->
+    <declare-styleable name="ButtonBarContainerTheme">
+        <attr name="metaButtonBarStyle" format="reference"/>
+        <attr name="metaButtonBarButtonStyle" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="CircleImageView">
+        <attr name="civ_border_width" format="dimension"/>
+        <attr name="civ_border_color" format="color"/>
+        <attr name="civ_border_overlay" format="boolean"/>
+        <attr name="civ_fill_color" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="SelectableRoundedImageView">
+        <attr name="sriv_left_top_corner_radius" format="dimension" />
+        <attr name="sriv_right_top_corner_radius" format="dimension" />
+        <attr name="sriv_left_bottom_corner_radius" format="dimension" />
+        <attr name="sriv_right_bottom_corner_radius" format="dimension" />
+        <attr name="sriv_border_width" format="dimension" />
+        <attr name="sriv_border_color" format="color" />
+        <attr name="sriv_oval" format="boolean" />
+        <attr name="android:scaleType" />
+    </declare-styleable>
+
+</resources>

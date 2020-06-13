@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">site-master</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+
+    <string name="company_cn">深圳市一指通智能科技有限公司</string>
+    <string name="kind_intelligence">工地宝</string>
+    <string name="company_en">SHENZHEN FINGERPASS INTELLIGENT TECHOLOGY CO.LTD..</string>
+    <string name="home_gradle">2019年龙岗区深圳\n\n河流域消除黑臭及</string>
+    <string name="app_empty">***</string>
+
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">首页</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">我的</string>
+
+    <!-- 我的页面显示文本 -->
+    <string name="mani_customer">我的客服</string>
+    <string name="mani_password">修改密码</string>
+    <string name="mani_callback">用户反馈</string>
+    <string name="mani_ours">关于我们</string>
+    <string name="mani_setting">系统设置</string>
+
+    <string name="switch_project">切换项目</string>
+
+</resources>

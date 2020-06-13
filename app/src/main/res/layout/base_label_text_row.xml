@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/row_label"
+        android:textSize="15sp"
+        android:textColor="@color/jx_label_text_minor"
+        android:layout_width="0dp"
+        android:padding="8dp"
+        android:singleLine="true"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_weight="1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:textSize="14sp"
+        android:textColor="@color/jx_label_text_minor"
+        android:drawablePadding="15dp"
+        android:id="@+id/row_value"
+        android:gravity="right" />
+
+</merge>

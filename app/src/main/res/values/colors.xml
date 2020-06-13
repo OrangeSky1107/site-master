@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+
+    <color name="color_cursor">#cccccc</color>
+
+    <!-- 文本红色 -->
+    <color name="text_red">#F4564D</color>
+    <color name="red">#FF0000</color>
+    <color name="tab_text_color_selected">#E80C20</color>
+
+    <color name="page_bg_color">#F2F2F2</color>
+
+    <color name="white">#FFFFFF</color>
+
+    <color name="black25PercentColor">#333333</color>
+
+    <!-- 名称文本次色 -->
+    <color name="jx_label_text_minor">#8a8a8a</color>
+
+    <!-- item按下的颜色 -->
+    <color name="jx_item_pressed">#eeeeee</color>
+
+    <!-- item主前景色 -->
+    <color name="jx_main_fore">#fffffe</color>
+
+    <!-- 值文本主色 -->
+    <color name="jx_value_text">#8a8a8a</color>
+
+    <!-- 文本深灰色 -->
+    <color name="text_dark_gray">#333333</color>
+
+    <color name="black">#000</color>
+
+    <!-- 文本绿色 -->
+    <color name="text_green">#02C868</color>
+
+    <color name="home_num_color">#479BFF</color>
+
+</resources>

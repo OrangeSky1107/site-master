@@ -30,7 +30,7 @@
                 android:background="?android:attr/selectableItemBackground">
 
                 <TextView
-                    android:layout_width="80dp"
+                    android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:text="签发机关"
@@ -46,7 +46,7 @@
                     android:gravity="end"/>
             </LinearLayout>
 
-            <view
+            <View
                 android:background="@color/jx_label_text_minor"
                 android:layout_width="match_parent"
                 android:layout_height="0.1dp"/>
@@ -62,7 +62,7 @@
                 android:background="?android:attr/selectableItemBackground">
 
                 <TextView
-                    android:layout_width="80dp"
+                    android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:text="有效期限"
@@ -79,35 +79,51 @@
 
             </LinearLayout>
 
-            <view
+            <View
                 android:background="@color/jx_label_text_minor"
                 android:layout_width="match_parent"
                 android:layout_height="0.1dp"/>
 
-            <ImageView
-                android:id="@+id/idFrontImageView"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="190dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="37dp"
-                android:layout_marginRight="37dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="centerInside" />
+                android:layout_height="240dp">
+
+                <ImageView
+                    android:id="@+id/idFrontImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="37dp"
+                    android:layout_marginRight="37dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:scaleType="centerInside" />
+
+                <TextView
+                    android:id="@+id/openCamera"
+                    android:text="点击我打开相机录入身份证反面"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </FrameLayout>
 
         </LinearLayout>
 
     </ScrollView>
 
     <Button
+        android:id="@+id/nextOperation"
         android:text="下一步"
         android:textSize="18sp"
         android:textColor="@color/white"
         android:layout_gravity="center"
         android:background="@color/home_num_color"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         />
 
 </LinearLayout>

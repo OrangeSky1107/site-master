@@ -1,2 +1,2 @@
-include ':app', ':arcfacelibrary'
+include ':app', ':arcfacelibrary', ':bankinfolibrary'
 rootProject.name='site-master'

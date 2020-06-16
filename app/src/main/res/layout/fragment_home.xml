@@ -6,7 +6,7 @@
     android:id="@+id/smart_refresh"
     android:background="@color/page_bg_color">
 
-    <com.yizhitong.site.widget.SilkyScrollView
+    <com.wintone.site.widget.SilkyScrollView
         android:fillViewport="true"
         android:scrollbars="none"
         android:layout_width="match_parent"
@@ -444,5 +444,5 @@
             </LinearLayout>
 
         </LinearLayout>
-    </com.yizhitong.site.widget.SilkyScrollView>
+    </com.wintone.site.widget.SilkyScrollView>
 </com.scwang.smartrefresh.layout.SmartRefreshLayout>

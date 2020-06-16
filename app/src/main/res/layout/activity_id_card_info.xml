@@ -248,7 +248,7 @@
         android:layout_gravity="center"
         android:background="@color/home_num_color"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         />
 
 </LinearLayout>

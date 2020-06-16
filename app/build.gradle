@@ -101,8 +101,13 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.4.0'
     implementation(name: 'library-multi-image-selector-1.0.5-SNAPSHOT', ext: 'aar')
     implementation(name: 'library-ocr-1.0.5-SNAPSHOT', ext: 'aar')
+    //    implementation files('libs/arcsoft_face.jar')
+    //    implementation files('libs/arcsoft_image_util.jar')
+    //
     implementation project(':arcfacelibrary')
+    implementation project(':bankinfolibrary')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    implementation files('libs/sun.misc.BASE64Decoder.jar')
 }

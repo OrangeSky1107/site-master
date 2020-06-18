@@ -51,4 +51,24 @@
         <item name="android:windowFullscreen">false</item>
     </style>
 
+    <!-- switch button -->
+    <declare-styleable name="SwitchButton"><attr format="reference" name="kswThumbDrawable"/>
+        <attr format="color|reference" name="kswThumbColor"/><attr format="dimension|reference" name="kswThumbMargin"/>
+        <attr format="dimension|reference" name="kswThumbMarginTop"/><attr format="dimension|reference" name="kswThumbMarginBottom"/>
+        <attr format="dimension|reference" name="kswThumbMarginLeft"/><attr format="dimension|reference" name="kswThumbMarginRight"/>
+        <attr format="dimension|reference" name="kswThumbWidth"/><attr format="dimension|reference" name="kswThumbHeight"/>
+        <attr format="dimension|reference" name="kswThumbRadius"/><attr format="dimension|reference" name="kswBackRadius"/>
+        <attr format="reference" name="kswBackDrawable"/><attr format="color|reference" name="kswBackColor"/>
+        <attr format="boolean" name="kswFadeBack"/><attr format="float" name="kswThumbRangeRatio"/>
+        <attr format="integer" name="kswAnimationDuration"/><attr format="color|reference" name="kswTintColor"/>
+        <attr format="string" name="kswTextOn"/><attr format="string" name="kswTextOff"/><attr format="dimension" name="kswTextThumbInset"/>
+        <attr format="dimension" name="kswTextExtra"/><attr format="dimension" name="kswTextAdjust"/>
+    </declare-styleable>
+
+    <!-- person tab layout-->
+    <style name="TabStyle" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
 </resources>

@@ -11,6 +11,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         manifestPlaceholders = [
                 "OCR_API_KEY": "26f1f6a0d4d7cb0dd0e9b28f4cedef83"
@@ -77,6 +78,8 @@ dependencies {
     implementation 'androidx.vectordrawable:vectordrawable:1.0.1'
     implementation 'androidx.navigation:navigation-fragment:2.0.0'
     implementation 'androidx.navigation:navigation-ui:2.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.gms:play-services-plus:16.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
     //glide 图片加载
     implementation 'com.github.bumptech.glide:glide:4.11.0'
@@ -103,9 +106,19 @@ dependencies {
     implementation(name: 'library-ocr-1.0.5-SNAPSHOT', ext: 'aar')
     //    implementation files('libs/arcsoft_face.jar')
     //    implementation files('libs/arcsoft_image_util.jar')
-    //
+
+    // switch button
+    implementation 'com.kyleduo.switchbutton:library:2.0.0'
+
+    //loader progress
+    implementation 'com.kaopiz:kprogresshud:1.0.2'
+
+    //增加pick view
+    implementation 'com.github.gzu-liyujiang.AndroidPicker:WheelPicker:1.5.6.20181018'
+
     implementation project(':arcfacelibrary')
     implementation project(':bankinfolibrary')
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'

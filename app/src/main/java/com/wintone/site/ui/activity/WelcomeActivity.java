@@ -10,6 +10,8 @@ import android.widget.Toast;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.wintone.site.R;
 import com.wintone.site.permissions.EasyPermission;
+import com.wintone.site.utils.Constant;
+import com.wintone.site.utils.SPUtils;
 import com.wintone.site.utils.UiUtils;
 
 import java.util.List;
@@ -61,7 +63,7 @@ public class WelcomeActivity extends AppCompatActivity implements EasyPermission
 
                     @Override
                     public void onNext(Long value) {
-                        if(checkToken()){
+                        if(!checkToken()){
                             ActivityUtils.startActivity(new Intent(WelcomeActivity.this,LoginActivity.class));
                             finish();
                         }else{
@@ -84,7 +86,11 @@ public class WelcomeActivity extends AppCompatActivity implements EasyPermission
     }
 
     private boolean checkToken(){
-        return false;
+        if(SPUtils.containsShare(WelcomeActivity.this,Constant.USER_TOKEN)){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     private void requestPermission(){

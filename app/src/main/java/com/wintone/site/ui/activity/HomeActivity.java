@@ -39,17 +39,11 @@ public class HomeActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1 && resultCode == RESULT_OK){
             String result = data.getStringExtra("OCRResult");
-
             HashMap hashMap = JSON.parseObject(result,HashMap.class);
-
             Intent intent = new Intent(this,IdCardInfoActivity.class);
-
             Bundle bundle = new Bundle();
-
             bundle.putSerializable("data",(Serializable)hashMap);
-
             intent.putExtra("bundle",bundle);
-
             ActivityUtils.startActivity(intent);
 
 //            try {

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/person_gray_color"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/accountLayout"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:layout_marginLeft="20dp"
+            android:text="账号"
+            android:textSize="15sp"
+            android:textColor="@color/person_dark_gray_color"/>
+
+        <TextView
+            android:id="@+id/account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/person_dark_black"
+            android:gravity="end"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/organizationLayout"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:layout_marginLeft="20dp"
+            android:text="组织机构"
+            android:textSize="15sp"
+            android:textColor="@color/person_dark_gray_color"/>
+
+        <TextView
+            android:id="@+id/organization"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/person_dark_black"
+            android:gravity="end"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:padding="10dp"
+        android:text="可编辑信息"
+        android:textColor="@color/home_num_color"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:id="@+id/nameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:textSize="15sp"
+            android:maxLines="1"
+            android:text="姓名"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/person_dark_gray_color"/>
+
+
+        <EditText
+            android:id="@+id/nameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textSize="15sp"
+            android:textAlignment="textStart"
+            android:textColor="@color/person_dark_black"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/positionLayout"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:maxLines="1"
+            android:text="职位"
+            android:textSize="15sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/person_dark_gray_color"/>
+
+        <EditText
+            android:id="@+id/position"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textSize="15sp"
+            android:textAlignment="textStart"
+            android:textColor="@color/person_dark_black"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/phoneLayout"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:maxLines="1"
+            android:text="姓名"
+            android:textSize="15sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/person_dark_gray_color"/>
+
+        <EditText
+            android:id="@+id/phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textSize="15sp"
+            android:textAlignment="textStart"
+            android:textColor="@color/person_dark_black"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/keep"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/button_blue"
+        android:text="保存"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+</LinearLayout>

@@ -32,4 +32,7 @@
 
     <string name="switch_project">切换项目</string>
 
+    <string name="attend_in">上班打卡</string>
+    <string name="attend_out">下班打卡</string>
+
 </resources>

@@ -53,4 +53,11 @@
     <color name="new_color">#12d4dc</color>
     <color name="white_color">#ffffffff</color>
 
+    <!-- person info -->
+    <color name="person_bul_color">#3498db</color>
+    <color name="person_black50_color">#808080</color>
+    <color name="person_gray_color">#fff5f5f5</color>
+    <color name="person_dark_gray_color">#939393</color>
+    <color name="person_dark_black">#404040</color>
+
 </resources>

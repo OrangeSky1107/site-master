@@ -1,5 +1,15 @@
 package com.wintone.site.network;
 
+import com.wintone.site.networkmodel.ConstructionModel;
+import com.wintone.site.networkmodel.DictionariesModel;
+import com.wintone.site.networkmodel.HomePagerModel;
+import com.wintone.site.networkmodel.LoginModel;
+import com.wintone.site.networkmodel.ProjectModel;
+import com.wintone.site.networkmodel.ProjectWorkers;
+import com.wintone.site.networkmodel.RegisterInfoModel;
+import com.wintone.site.networkmodel.TeamModel;
+import com.wintone.site.utils.bankinfo.BankModel;
+
 import java.util.Map;
 
 import io.reactivex.Observable;
@@ -93,7 +103,54 @@ public interface NetService {
     );
 
     @GET
-    Observable<ResponseBody> getBankInfoOfAilPay(
+    Observable<BankModel> getBankInfoOfAilPay(
             @Url String url
+    );
+
+    @POST
+    Observable<LoginModel> postLogin(
+            @Url String url,
+            @Body Map<String,String> map
+    );
+
+    @POST
+    Observable<HomePagerModel> postHomePager(
+            @Header("token") String token,
+            @Url  String url,
+            @Body Map<String,String> map
+    );
+
+    @POST
+    Observable<ProjectModel> postProjectList(
+        @Header("token") String token,
+        @Url String url,
+        @Body Map map
+    );
+
+    @POST
+    Observable<ConstructionModel> postConstructionList(
+        @Header("token") String token,
+        @Url String url,
+        @Body Map map
+    );
+
+    @POST
+    Observable<TeamModel> postTeamList(
+            @Header("token") String token,
+            @Url String url,
+            @Body Map map
+    );
+
+    @GET
+    Observable<DictionariesModel> postHotDicList(
+            @Header("token") String token,
+            @Url String url
+    );
+
+    @POST
+    Observable<RegisterInfoModel> postWorkersSaveOrUpdate(
+            @Header("token") String token,
+            @Url String url,
+            @Body ProjectWorkers data
     );
 }

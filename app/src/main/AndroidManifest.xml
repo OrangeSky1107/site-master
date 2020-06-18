@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.wintone.site">
-
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- To access Google+ APIs: -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -13,7 +13,6 @@
     <uses-permission
         android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
         tools:ignore="ProtectedPermissions" />
-
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-feature android:name="android.hardware.camera" />
@@ -26,38 +25,55 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:name="com.wintone.site.SiteApplication"
+        android:name=".SiteApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
-            android:name="com.wintone.site.ui.activity.ScanCamera"/>
-
-        <activity
-            android:name="com.wintone.site.ui.activity.BankInfoActivity"
+            android:name=".ui.activity.FaceAttendanceActivity"
             android:theme="@style/BaseAppTheme"/>
+        <activity android:name=".ui.activity.UserInfoActivity" />
         <activity
-            android:name="com.wintone.site.ui.activity.FacePreViewActivity"
+            android:name=".ui.activity.FeedBackActivity"
             android:theme="@style/BaseAppTheme" />
         <activity
-            android:name="com.wintone.site.ui.activity.IdCardBackInfoActivity"
+            android:name=".ui.activity.AboutCompanyActivity"
             android:theme="@style/BaseAppTheme" />
         <activity
-            android:name="com.wintone.site.ui.activity.IdCardInfoActivity"
+            android:name=".ui.activity.PersonSingleActivity"
             android:theme="@style/BaseAppTheme" />
         <activity
-            android:name="com.wintone.site.ui.activity.ModifyPasswordActivity"
+            android:name=".ui.activity.PersonDetailsActivity"
             android:theme="@style/BaseAppTheme" />
         <activity
-            android:name="com.wintone.site.ui.activity.HomeActivity"
+            android:name=".ui.activity.PersonInfoActivity"
+            android:theme="@style/BaseAppTheme" />
+        <activity android:name=".ui.activity.ScanCamera" />
+        <activity
+            android:name=".ui.activity.BankInfoActivity"
+            android:theme="@style/BaseAppTheme" />
+        <activity
+            android:name=".ui.activity.FacePreViewActivity"
+            android:theme="@style/BaseAppTheme" />
+        <activity
+            android:name=".ui.activity.IdCardBackInfoActivity"
+            android:theme="@style/BaseAppTheme" />
+        <activity
+            android:name=".ui.activity.IdCardInfoActivity"
+            android:theme="@style/BaseAppTheme" />
+        <activity
+            android:name=".ui.activity.ModifyPasswordActivity"
+            android:theme="@style/BaseAppTheme" />
+        <activity
+            android:name=".ui.activity.HomeActivity"
             android:launchMode="singleTask"
             android:theme="@style/LoginAppTheme" />
         <activity
-            android:name="com.wintone.site.ui.activity.WelcomeActivity"
+            android:name=".ui.activity.WelcomeActivity"
             android:theme="@style/BaseAppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -66,10 +82,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.wintone.site.ui.activity.LoginActivity"
+            android:name=".ui.activity.LoginActivity"
             android:theme="@style/LoginAppTheme" />
         <activity
-            android:name="com.wintone.site.ui.activity.TableFlagActivity"
+            android:name=".ui.activity.TableFlagActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data

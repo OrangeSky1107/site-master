@@ -7,8 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
 import android.hardware.Camera.Parameters;
@@ -41,6 +44,9 @@ import com.wintone.bankcard.BankCardAPI;
 import com.wintone.site.R;
 import com.wintone.site.widget.bank.ViewfinderView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
@@ -48,7 +54,7 @@ import java.util.TimerTask;
 
 public class ScanCamera extends Activity implements Callback, PreviewCallback {
     private static final String PATH = new StringBuilder(String.valueOf(Environment.getExternalStorageDirectory().toString())).append("/DCIM/Camera/").toString();
-
+    private static final String IMAGE_PATH = "/storage/emulated/0/Android/data/com.tomcat.ocr.idcard/cache/";
     private static double NORMAL_CARD_SCALE = 1.58577d;
     private BankCardAPI api;
     private ImageButton back;
@@ -395,12 +401,71 @@ public class ScanCamera extends Activity implements Callback, PreviewCallback {
                 Intent intent = new Intent();
                 intent.putExtra("PicR", pLineWarp);
                 intent.putExtra("StringR", recogval);
-                Log.i("ScanCamera","look at data = " + String.valueOf(recogval));
+                intent.putExtra("imagePath",saveCurrentPreView(data,camera));
                 setResult(-1,intent);
                 finish();
                 camera.setPreviewCallback(null);
             }
         }
+    }
+
+    private String saveCurrentPreView(byte[] data, Camera camera){
+        Camera.Size previewSize = camera.getParameters().getPreviewSize();//获取尺寸,格式转换的时候要用到
+        BitmapFactory.Options newOpts = new BitmapFactory.Options();
+        newOpts.inJustDecodeBounds = true;
+        YuvImage yuvimage = new YuvImage(
+                data,
+                ImageFormat.NV21,
+                previewSize.width,
+                previewSize.height,
+                null);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        yuvimage.compressToJpeg(new Rect(0, 0, previewSize.width, previewSize.height), 100, baos);// 80--JPG图片的质量[0-100],100最高
+        byte[] rawImage = baos.toByteArray();
+        Log.i("ScanCamera","look at byte size = " + rawImage.length);
+        //将rawImage转换成bitmap
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        Bitmap bitmap = BitmapFactory.decodeByteArray(rawImage, 0, rawImage.length, options);
+        long systemTime = System.currentTimeMillis();
+        String imageName = systemTime + "-bank";
+        Log.i("ScanCamera","look at bank name = " + imageName);
+        return saveToLocal(bitmap,imageName);
+
+    }
+
+    private String saveToLocal(Bitmap bitmap, String bitName) {
+        String path = IMAGE_PATH + bitName + ".jpg";
+        File file = new File(IMAGE_PATH + bitName + ".jpg");
+        if (file.exists()) {
+            file.delete();
+        }
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(file);
+            if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)) {
+                out.flush();
+                out.close();
+                //保存图片后发送广播通知更新数据库 这样才能看到本地相册看到照片
+                // Uri uri = Uri.fromFile(file);
+                // sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+//                Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//                Uri uri = Uri.fromFile(file);
+//                intent.setData(uri);
+//                this.sendBroadcast(intent);
+//                showToast("保存成功");
+                return path;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return path;
     }
 
     protected void onStop() {

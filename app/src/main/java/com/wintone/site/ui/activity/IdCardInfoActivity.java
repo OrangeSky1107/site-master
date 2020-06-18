@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.socks.library.KLog;
 import com.wintone.site.R;
@@ -32,6 +33,8 @@ public class IdCardInfoActivity extends BaseActivity{
 
     private String imgPath;
 
+    private HashMap hashMap = null;
+
     private static final String[] LIBRARIES = new String[]{
             // 人脸相关
             "libarcsoft_face_engine.so",
@@ -49,7 +52,6 @@ public class IdCardInfoActivity extends BaseActivity{
     protected void initView() {
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("bundle");
-        HashMap hashMap = null;
         if(bundle != null){
             hashMap = (HashMap) bundle.getSerializable("data");
         }
@@ -64,11 +66,8 @@ public class IdCardInfoActivity extends BaseActivity{
             idNoExplain.setText(hashMap.get("num").toString());
             birthdayExplain.setText(hashMap.get("birt").toString());
             addressExplain.setText(hashMap.get("addr").toString());
-
             Glide.with(this).load(hashMap.get("imgPath")).into(idFrontImageView);
-
             imgPath = hashMap.get("headPath").toString();
-
             Glide.with(this).load(hashMap.get("headPath")).into(mCircleImageView);
         }
     }
@@ -85,7 +84,15 @@ public class IdCardInfoActivity extends BaseActivity{
                 if(checkSoFile(LIBRARIES)){
                     Intent intent = new Intent(IdCardInfoActivity.this,FacePreViewActivity.class);
                     intent.putExtra("headPath",imgPath);
+                    if(hashMap == null){
+                        ToastUtils.showShort("请先拍摄身份证正面信息!");
+                        return;
+                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("data",hashMap);
+                    intent.putExtra("bundle",bundle);
                     startActivity(intent);
+                    finish();
                 }else{
                     KLog.i("can't find face so file");
                 }

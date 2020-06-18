@@ -1,13 +1,17 @@
 package com.wintone.site.ui.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.blankj.utilcode.util.ActivityUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.msd.ocr.idcard.LibraryInitOCR;
 import com.wintone.site.R;
@@ -26,6 +30,8 @@ public class IdCardBackInfoActivity extends BaseActivity {
     @BindView(R.id.idFrontImageView) ImageView idFrontImageView;
     @BindView(R.id.openCamera)       TextView openCamera;
 
+    private HashMap dataMap = null;
+
     @Override
     protected int getContentView() {
         return R.layout.activity_id_card_back_info;
@@ -33,7 +39,13 @@ public class IdCardBackInfoActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        Intent intent = getIntent();
+        Bundle bundle = intent.getBundleExtra("bundle");
+        if(bundle != null){
+            dataMap = (HashMap) bundle.getSerializable("data");
 
+            Log.i("IdCardBackInfoActivity","look at map data = " + JSON.toJSONString(dataMap));
+        }
     }
 
     @Override
@@ -57,9 +69,44 @@ public class IdCardBackInfoActivity extends BaseActivity {
 
             case R.id.nextOperation:
                 //是否需要采集银行信息
-                ActivityUtils.startActivity(new Intent(IdCardBackInfoActivity.this,BankInfoActivity.class));
+                Intent intent = new Intent(IdCardBackInfoActivity.this,BankInfoActivity.class);
+                if(dataMap == null){
+                    ToastUtils.showShort("请先采集身份证信息!");
+                    return;
+                }
+                Bundle bankBundle = new Bundle();
+                bankBundle.putSerializable("data",dataMap);
+                intent.putExtra("bundle",bankBundle);
+                ActivityUtils.startActivity(intent);
+                finish();
                 break;
         }
+    }
+
+    private void showPhoneDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(IdCardBackInfoActivity.this);
+        builder.setTitle("温馨提示!");
+        builder.setMessage("是否需要采集银行卡信息!");
+
+        builder.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+        builder.setPositiveButton("确认",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityUtils.startActivity(new Intent(IdCardBackInfoActivity.this,BankInfoActivity.class));
+                    }
+                });
+
+        builder.setCancelable(false);
+
+        builder.show();
     }
 
     @Override
@@ -78,30 +125,9 @@ public class IdCardBackInfoActivity extends BaseActivity {
             nameTextView.setText(hashMap.get("valid").toString());
             Glide.with(this).load(hashMap.get("imgPath").toString()).into(idFrontImageView);
             openCamera.setVisibility(View.GONE);
-//            try {
-//                JSONObject jo = new JSONObject(result);
-//                StringBuffer sb = new StringBuffer();
-//                sb.append(String.format("正面 = %s\n", jo.opt("type")));
-//                sb.append(String.format("姓名 = %s\n", jo.opt("name")));
-//                sb.append(String.format("性别 = %s\n", jo.opt("sex")));
-//                sb.append(String.format("民族 = %s\n", jo.opt("folk")));
-//                sb.append(String.format("日期 = %s\n", jo.opt("birt")));
-//                sb.append(String.format("号码 = %s\n", jo.opt("num")));
-//                sb.append(String.format("住址 = %s\n", jo.opt("addr")));
-//                sb.append(String.format("签发机关 = %s\n", jo.opt("issue")));
-//                sb.append(String.format("有效期限 = %s\n", jo.opt("valid")));
-//                sb.append(String.format("整体照片 = %s\n", jo.opt("imgPath")));
-//                sb.append(String.format("头像路径 = %s\n", jo.opt("headPath")));
-//                sb.append("\n驾照专属字段\n");
-//                sb.append(String.format("国家 = %s\n", jo.opt("nation")));
-//                sb.append(String.format("初始领证 = %s\n", jo.opt("startTime")));
-//                sb.append(String.format("准驾车型 = %s\n", jo.opt("drivingType")));
-//                sb.append(String.format("有效期限 = %s\n", jo.opt("registerDate")));
-//                Log.i("MainActivity","look at current message = " + sb.toString());
-//            } catch (JSONException e) {
-//                KLog.i("look at error message = " + e.getMessage().toString());
-//                e.printStackTrace();
-//            }
+            dataMap.put("issue",hashMap.get("issue").toString());
+            dataMap.put("valid",hashMap.get("valid").toString());
+            dataMap.put("backImagePath",hashMap.get("imgPath").toString());
         }
     }
 }

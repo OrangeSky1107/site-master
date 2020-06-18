@@ -1,5 +1,7 @@
 package com.wintone.site.ui.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,7 +10,10 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.ActivityUtils;
 import com.wintone.site.R;
+import com.wintone.site.ui.activity.AboutCompanyActivity;
+import com.wintone.site.ui.activity.FeedBackActivity;
 import com.wintone.site.ui.activity.ModifyPasswordActivity;
+import com.wintone.site.ui.activity.UserInfoActivity;
 import com.wintone.site.ui.base.fragment.BaseFragment;
 
 import butterknife.BindView;
@@ -53,12 +58,51 @@ public class MineFragment extends BaseFragment {
 
     }
 
-    @OnClick({R.id.mini_password})
+    @OnClick({R.id.mini_password,R.id.mini_ours,R.id.mini_feedback,R.id.mini_customer,R.id.cellAboutAccount})
     public void onClick(View view){
         switch (view.getId()){
             case R.id.mini_password:
                 ActivityUtils.startActivity(new Intent(getActivity(), ModifyPasswordActivity.class));
                 break;
+            case R.id.mini_ours:
+                ActivityUtils.startActivity(new Intent(getActivity(), AboutCompanyActivity.class));
+                break;
+            case R.id.mini_feedback:
+                ActivityUtils.startActivity(new Intent(getActivity(), FeedBackActivity.class));
+                break;
+            case R.id.mini_customer:
+                showPhoneDialog();
+                break;
+            case R.id.cellAboutAccount:
+                ActivityUtils.startActivity(new Intent(getActivity(), UserInfoActivity.class));
+                break;
         }
     }
+
+    private void showPhoneDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("客服电话");
+        builder.setMessage("028-82571111");
+
+        builder.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+        builder.setPositiveButton("立即呼叫",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+        builder.setCancelable(false);
+
+        builder.show();
+    }
+
 }

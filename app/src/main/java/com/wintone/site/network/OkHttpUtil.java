@@ -5,7 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-
 import com.wintone.site.SiteApplication;
 
 import java.io.File;
@@ -15,9 +14,14 @@ import java.util.concurrent.TimeUnit;
 import androidx.annotation.NonNull;
 import okhttp3.Cache;
 import okhttp3.CacheControl;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -109,6 +113,33 @@ public class OkHttpUtil {
             }
         }
     };
+
+    public void uploadTopPost(String url,String token, String pathName , final OkhttpClientRequest mClient){
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+
+        builder.addFormDataPart("file", pathName,
+                RequestBody.create(MediaType.parse("media/type"), new File(pathName)));
+
+
+        RequestBody body = builder.build();
+
+        Request request = new Request.Builder().url(url).addHeader("token",token).post(body).build();
+
+        Call mCall = getOkHttpClient().newCall(request);
+
+        mCall.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                mClient.responseFailure(e.getMessage().toString());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                mClient.responseSuccess(response.body().string());
+            }
+        });
+    }
+
 
 
     @NonNull

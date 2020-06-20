@@ -74,7 +74,7 @@ public class HomeFragment extends BaseFragment {
     public void onClick(View view){
         switch (view.getId()){
             case R.id.real_name_registration:
-                registerPersonInfo();
+                attendanceWorkers();
                 break;
             case R.id.personnel_info:
                 ActivityUtils.startActivity(new Intent(getActivity(), PersonDetailsActivity.class));
@@ -85,7 +85,22 @@ public class HomeFragment extends BaseFragment {
         }
     }
 
+    private void attendanceWorkers(){
+        Integer userType = (Integer) SPUtils.getShare(getActivity(),Constant.USER_TYPE,5);
+        if(userType == 0 || userType == 1){
+            ToastUtils.showShort("该账号权限过高,不支持实名登记!");
+            return;
+        }
+        registerPersonInfo();
+    }
+
     private void faceAttendanceFunction(){
+        Integer userType = (Integer) SPUtils.getShare(getActivity(),Constant.USER_TYPE,5);
+        if(userType == 0 || userType == 1){
+            ToastUtils.showShort("该账号权限过高,不支持考勤!");
+            return;
+        }
+
         String faceImageUrl = (String) SPUtils.getShare(getActivity(),Constant.FACE_URL,"");
         if(faceImageUrl.length() <= 15){
             ToastUtils.showShort("请先进行实名登记,录入考勤信息!");
@@ -94,13 +109,11 @@ public class HomeFragment extends BaseFragment {
                 @Override
                 public void onOptionPicked(int index, String item) {
                     Intent intent = new Intent(getActivity(), FaceAttendanceActivity.class);
-                    Bundle bd = new Bundle();
                     if (index == 0) {
-                        bd.putString("commute", "in");
+                        intent.putExtra("commute", "in");
                     } else {
-                        bd.putString("commute", "out");
+                        intent.putExtra("commute", "out");
                     }
-                    intent.putExtras(bd);
                     startActivity(intent);
                 }
             });

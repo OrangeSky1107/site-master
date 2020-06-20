@@ -23,6 +23,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
 
     <application
         android:name=".SiteApplication"
@@ -34,9 +35,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.activity.FaceAttendanceActivity"
+            android:name=".ui.activity.SystemSettingActivity"
             android:theme="@style/BaseAppTheme"/>
-        <activity android:name=".ui.activity.UserInfoActivity" />
+        <activity
+            android:name=".ui.activity.FaceAttendanceActivity"
+            android:theme="@style/BaseAppTheme" />
+        <activity
+            android:name=".ui.activity.UserInfoActivity"
+            android:theme="@style/BaseAppTheme"/>
         <activity
             android:name=".ui.activity.FeedBackActivity"
             android:theme="@style/BaseAppTheme" />

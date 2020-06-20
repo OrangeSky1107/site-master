@@ -73,6 +73,7 @@ public class LoginModel {
         private int status;
         private String token;
         private int userType;
+        private String empId;
 
         public String getConstructionId() {
             return constructionId;
@@ -192,6 +193,14 @@ public class LoginModel {
 
         public void setUserType(int userType) {
             this.userType = userType;
+        }
+
+        public String getEmpId() {
+            return empId;
+        }
+
+        public void setEmpId(String empId) {
+            this.empId = empId;
         }
     }
 }

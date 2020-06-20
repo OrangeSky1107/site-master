@@ -5,33 +5,89 @@ import android.os.Bundle;
 
 import com.alibaba.fastjson.JSON;
 import com.blankj.utilcode.util.ActivityUtils;
+import com.blankj.utilcode.util.AppUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.socks.library.KLog;
 import com.wintone.site.R;
+import com.wintone.site.network.NetService;
+import com.wintone.site.network.NetWorkUtils;
+import com.wintone.site.networkmodel.AppVersionModel;
+import com.wintone.site.ui.base.activity.BaseActivity;
+import com.wintone.site.utils.Constant;
+import com.wintone.site.utils.SPUtils;
 
 import java.io.Serializable;
 import java.util.HashMap;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends BaseActivity {
+
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_main);
+//        BottomNavigationView navView = findViewById(R.id.nav_view);
+//        // Passing each menu ID as a set of Ids because each
+//        // menu should be considered as top level destinations.
+////        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+////                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
+////               .build();
+//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+////        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+//        NavigationUI.setupWithNavController(navView, navController);
+//    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    protected int getContentView() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected void initView() {
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-//        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-//                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
-//               .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+    }
+
+    @Override
+    protected void initData() {
+        checkCurrentVersion();
+    }
+
+    private void checkCurrentVersion(){
+        String token = (String) SPUtils.getShare(this, Constant.USER_TOKEN,"");
+
+        String url = Constant.CHECK_VERSION_URL + "1" + "/V"+AppUtils.getAppVersionName();
+
+        NetWorkUtils.getInstance().createService(NetService.class)
+                .getAppVersionInfo(url,token)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<AppVersionModel>() {
+                    @Override public void onSubscribe(Disposable d) { }
+
+                    @Override
+                    public void onNext(AppVersionModel value) {
+                        KLog.i("look at response body = " + JSON.toJSONString(value));
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        KLog.i("look at response error message  = " + e.getMessage());
+                    }
+
+                    @Override public void onComplete() { }
+                });
     }
 
     @Override

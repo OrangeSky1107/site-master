@@ -2,6 +2,8 @@ package com.wintone.site.ui.base.activity;
 
 import android.os.Bundle;
 
+import com.wintone.site.SiteApplication;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import butterknife.ButterKnife;
@@ -15,6 +17,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentView());
+        SiteApplication.getInstance().addActivity(this);
         m = ButterKnife.bind(this);
         initView();
     }
@@ -30,6 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onDestroy();
         m.unbind();
         m = null;
+        SiteApplication.getInstance().removeActivity(this);
     }
 
     protected abstract int getContentView();

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/person_gray_color"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/toolbar_layout"/>
+
+    <TextView
+        android:visibility="gone"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:text="推送通知设置"/>
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:background="@color/white"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:gravity="center_vertical"
+        android:layout_height="50dp">
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="设备警告"/>
+
+        <com.kyleduo.switchbutton.SwitchButton
+            android:id="@+id/leaderSwitch"
+            android:checked="false"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:kswTintColor="@color/person_bul_color">
+        </com.kyleduo.switchbutton.SwitchButton>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:background="@color/white"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:gravity="center_vertical"
+        android:layout_height="50dp">
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="业务通知"/>
+
+        <com.kyleduo.switchbutton.SwitchButton
+            android:id="@+id/notifySwitch"
+            android:checked="false"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:kswTintColor="@color/person_bul_color">
+        </com.kyleduo.switchbutton.SwitchButton>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="60dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/button_blue"
+        android:text="退出登录"
+        android:textColor="@color/white"
+        android:textSize="18sp"/>
+</LinearLayout>

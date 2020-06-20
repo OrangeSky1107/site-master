@@ -1,5 +1,8 @@
 package com.wintone.site.ui.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -11,6 +14,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 
+import com.alibaba.fastjson.JSON;
 import com.arcsoft.face.ActiveFileInfo;
 import com.arcsoft.face.AgeInfo;
 import com.arcsoft.face.ErrorInfo;
@@ -28,9 +32,15 @@ import com.arcsoft.face.enums.DetectModel;
 import com.arcsoft.face.enums.RuntimeABI;
 import com.arcsoft.imageutil.ArcSoftImageFormat;
 import com.arcsoft.imageutil.ArcSoftImageUtil;
+import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.wintone.site.R;
+import com.wintone.site.network.NetService;
+import com.wintone.site.network.NetWorkUtils;
+import com.wintone.site.networkmodel.AttendanceModel;
+import com.wintone.site.networkmodel.AttendanceRecord;
 import com.wintone.site.ui.base.activity.BaseActivity;
+import com.wintone.site.utils.AppUtils;
 import com.wintone.site.utils.Constant;
 import com.wintone.site.utils.SPUtils;
 import com.wintone.site.utils.camera.CameraHelper;
@@ -73,6 +83,8 @@ public class FaceAttendanceActivity extends BaseActivity implements ViewTreeObse
 
     private FaceFeature imageFace;
 
+    private String way = "";
+
     @BindView(R.id.face_rect_view)  FaceRectView faceRectView;
     @BindView(R.id.texture_preview) View previewView;
 
@@ -90,12 +102,19 @@ public class FaceAttendanceActivity extends BaseActivity implements ViewTreeObse
             getWindow().setAttributes(attributes);
         }
 
+        getIntentData();
+
         // Activity启动后就锁定为启动时的方向
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
         previewView.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
         activeEngine();
+    }
+
+    private void getIntentData(){
+        Intent intent = getIntent();
+        way = intent.getStringExtra("commute");
     }
 
     @Override
@@ -189,10 +208,7 @@ public class FaceAttendanceActivity extends BaseActivity implements ViewTreeObse
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Object>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
+                    @Override public void onSubscribe(Disposable d) {}
 
                     @Override
                     public void onNext(Object value) {
@@ -204,10 +220,7 @@ public class FaceAttendanceActivity extends BaseActivity implements ViewTreeObse
                         e.printStackTrace();
                     }
 
-                    @Override
-                    public void onComplete() {
-
-                    }
+                    @Override public void onComplete() {}
                 });
     }
 
@@ -357,12 +370,13 @@ public class FaceAttendanceActivity extends BaseActivity implements ViewTreeObse
                                 if(flag){
                                     flag = false;
                                     if (cameraHelper != null) {
+                                        cameraHelper.stop();
                                         cameraHelper.release();
                                         cameraHelper = null;
                                     }
                                     destroyImageEngine();
                                     unDestroyEngine();
-                                    Log.i("FaceAttendanceActivity", " distinguish success");
+                                    showPhoneDialog();
                                 }
                             }
                         }
@@ -398,6 +412,76 @@ public class FaceAttendanceActivity extends BaseActivity implements ViewTreeObse
                 .build();
         cameraHelper.init();
         cameraHelper.start();
+    }
+
+    private void showPhoneDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(FaceAttendanceActivity.this);
+        builder.setTitle("考勤打卡");
+        builder.setMessage("考勤打卡成功!");
+
+        builder.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+
+        builder.setPositiveButton("确认",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        entryAttendance();
+                    }
+                });
+
+        builder.setCancelable(false);
+
+        builder.show();
+    }
+
+    private void entryAttendance(){
+        String token = (String)SPUtils.getShare(FaceAttendanceActivity.this,Constant.USER_TOKEN,"");
+
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        String empId = (String)SPUtils.getShare(FaceAttendanceActivity.this,Constant.EMP_ID,"");
+        attendanceRecord.setEmployeeId(empId);
+        attendanceRecord.setDirection(way);
+        attendanceRecord.setWay(1);
+        String faceUrl = (String)SPUtils.getShare(FaceAttendanceActivity.this,Constant.FACE_URL,"");
+        attendanceRecord.setSitePhoto(faceUrl);
+        attendanceRecord.setDeviceType("2");
+        attendanceRecord.setDeviceSn(AppUtils.getPhoneSign());
+
+        Log.i("FaceAttendanceActivity","look at response body = " + JSON.toJSONString(attendanceRecord));
+
+        NetWorkUtils.getInstance().createService(NetService.class)
+                .postAttendanceRecord(token,Constant.ATTENDANCE_RECORD_URL,attendanceRecord)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<AttendanceModel>() {
+                    @Override public void onSubscribe(Disposable d) { }
+
+                    @Override
+                    public void onNext(AttendanceModel value) {
+                        Log.i("FaceAttendanceActivity","look at response body = " + JSON.toJSONString(value));
+                        if(value.getCode() == 1000){
+                            ToastUtils.showLong("考勤成功!");
+                            finish();
+                        }else{
+                            ToastUtils.showLong("考勤失败,请联系管理员!");
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i("FaceAttendanceActivity","look at error message = " + e.getMessage());
+                        finish();
+                    }
+
+                    @Override public void onComplete() { }
+                });
     }
 
     @Override

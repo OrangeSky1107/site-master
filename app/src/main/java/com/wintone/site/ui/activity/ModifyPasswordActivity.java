@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.kaopiz.kprogresshud.KProgressHUD;
 import com.socks.library.KLog;
 import com.wintone.site.R;
 import com.wintone.site.network.NetService;
@@ -35,6 +36,8 @@ public class ModifyPasswordActivity extends BaseActivity {
     @BindView(R.id.et_confirm_password) EditText etConfirmPassword;
     @BindView(R.id.btn_login)   Button btnLogin;
 
+    private KProgressHUD mHUD;
+
     @Override
     protected int getContentView() {
         return R.layout.activity_modify_password;
@@ -43,6 +46,8 @@ public class ModifyPasswordActivity extends BaseActivity {
     @Override
     protected void initView() {
         toolbarTitle.setText("修改密码");
+
+        initProgress();
     }
 
     @Override
@@ -57,6 +62,7 @@ public class ModifyPasswordActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.btn_login:
+                mHUD.show();
                 submit();
                 break;
         }
@@ -98,6 +104,8 @@ public class ModifyPasswordActivity extends BaseActivity {
                     public void onNext(ResponseBody value) {
                         try {
                             KLog.i("look at response message = " + value.string());
+                            mHUD.dismiss();
+                            finish();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -106,6 +114,7 @@ public class ModifyPasswordActivity extends BaseActivity {
                     @Override
                     public void onError(Throwable e) {
                         KLog.i("look at error message = " + e.getMessage().toString());
+                        mHUD.dismiss();
                     }
 
                     @Override
@@ -113,6 +122,14 @@ public class ModifyPasswordActivity extends BaseActivity {
 
                     }
                 });
+    }
 
+    private void initProgress() {
+        mHUD = KProgressHUD.create(ModifyPasswordActivity.this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setDetailsLabel("退出中...")
+                .setCancellable(true)
+                .setAnimationSpeed(2)
+                .setDimAmount(0.5f);
     }
 }

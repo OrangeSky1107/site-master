@@ -56,6 +56,9 @@
     <!--android:textSize="@dimen/search_text_size"/>-->
     <!--</RelativeLayout>-->
     <!--</RelativeLayout>-->
+
+    <include layout="@layout/toolbar_layout"/>
+
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"

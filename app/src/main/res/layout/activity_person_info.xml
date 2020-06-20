@@ -83,12 +83,6 @@
                 android:text="所属分包商"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/person_bul_color"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/red"
-                android:textSize="20sp"
-                android:text="*"/>
 
             <TextView
                 android:id="@+id/companyTextView"
@@ -131,12 +125,6 @@
                 android:text="班组"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/person_bul_color"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/red"
-                android:textSize="20sp"
-                android:text="*"/>
 
             <TextView
                 android:id="@+id/teamTextView"

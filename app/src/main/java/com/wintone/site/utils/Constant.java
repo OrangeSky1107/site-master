@@ -35,6 +35,8 @@ public class Constant {
 
     public static final String FACE_URL = "face_url";
 
+    public static final String EMP_ID = "emp_id";
+
     //首页人员情况接口
     public static final String HOME_PAGER_URL = "/appUser/personnel";
 
@@ -55,6 +57,21 @@ public class Constant {
 
     //人员信息录入
     public static final String WORKERS_SAVEORUPDATE_URL = "/appWorkers/workersSaveOrUpdate";
+
+    //用户考勤
+    public static final String ATTENDANCE_RECORD_URL = "/appAttendanceRecord/punchTheClock";
+
+    //人员信息列表
+    public static final String WORKERS_PERSONNEL_LIST = "/appWorkers/personnelList";
+
+    //详细人员信息
+    public static final String WORKERS_INFO_URL = "/appWorkers/findWorkersInfo/";
+
+    //退出登录
+    public static final String USER_LOGINOUT = "/appUser/loginOut";
+
+    //版本更新
+    public static final String CHECK_VERSION_URL = "/appVersion/findByType/";
 
     //小米5s BqkBdwpRbi6iJWEE8BcgUBddrfXAqrUJ9iRhaxJGhCxc
     public static final String APP_ID = "839bFTR4q4EbqXJBhZQjXR6ArtoJqRNw1vwuV4wzSo8Z";

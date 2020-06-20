@@ -10,7 +10,7 @@
     <LinearLayout
         android:id="@+id/cellProject"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="55dp"
         android:layout_marginTop="1dp"
         android:background="@color/white"
         android:clickable="true"
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:textSize="15sp"
+            android:textSize="17sp"
             android:textStyle="bold"
             android:paddingLeft="16dp"
             android:text="@string/switch_project"
@@ -34,7 +34,7 @@
             android:layout_width="21dp"
             android:layout_height="21dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="15dp"
+            android:layout_marginEnd="16dp"
             android:src="@drawable/change" />
 
     </LinearLayout>

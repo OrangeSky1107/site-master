@@ -68,7 +68,7 @@
     <!-- person tab layout-->
     <style name="TabStyle" parent="TextAppearance.Design.Tab">
         <item name="textAllCaps">false</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
 </resources>

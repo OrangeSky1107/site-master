@@ -5,11 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/base_toolbar"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
+    android:layout_height="52dp"
     android:background="@color/home_num_color"
     app:contentInsetLeft="0dp"
     app:contentInsetStart="0dp">
-
+<!--    ?attr/actionBarSize-->
     <ImageView
         android:id="@+id/iv_back"
         android:layout_width="wrap_content"

@@ -107,7 +107,7 @@ public class PersonInfoActivity extends BaseActivity {
         switch (view.getId()){
             case R.id.nextButton:
                 mHUD.show();
-                uploadIdCardImage();
+                checkRegex();
                 break;
             case R.id.projectTextView:
                 mHUD.show();
@@ -361,6 +361,39 @@ public class PersonInfoActivity extends BaseActivity {
                 .setDimAmount(0.5f);
     }
 
+
+    private void checkRegex(){
+        String projectName = projectTextView.getText().toString();
+        if(projectName.equals("请选择所选项目")){
+            ToastUtils.showShort("项目必须选择!");
+            mHUD.dismiss();
+            return;
+        }
+
+        String workTypeName = workTypeTextView.getText().toString();
+        if(workTypeName.equals("请选择工种")){
+            ToastUtils.showShort("工种不能为空!");
+            mHUD.dismiss();
+            return;
+        }
+
+        String entranceDate = entranceDateTextView.getText().toString();
+        if(entranceDate.equals("请选择进场日期")){
+            ToastUtils.showShort("进场时间不能为空!");
+            mHUD.dismiss();
+            return;
+        }
+
+        String phone = phoneTextView.getText().toString();
+        if(phone.length() < 11 && TextUtils.isEmpty(phone)){
+            ToastUtils.showShort("手机格式不对!");
+            mHUD.dismiss();
+            return;
+        }
+
+        uploadIdCardImage();
+    }
+
     private void uploadIdCardImage(){
         String token = (String)SPUtils.getShare(PersonInfoActivity.this,Constant.USER_TOKEN,"");
         String imgPath = dataMap.get("imgPath").toString();
@@ -450,43 +483,30 @@ public class PersonInfoActivity extends BaseActivity {
     }
 
     private void submit(String cloudIdCardPath,String cloudheadPath,String cloudIdCardBackPath,String cloudBankPath){
-        String projectName = projectTextView.getText().toString();
-        if(TextUtils.isEmpty(projectName)){
-            ToastUtils.showShort("项目不能为空!");
-            return;
-        }
-        String constructionName = companyTextView.getText().toString();
-        if(TextUtils.isEmpty(constructionName)){
-            ToastUtils.showShort("分包商不能为空!");
-            return;
-        }
-        String teamName = teamTextView.getText().toString();
-        if(TextUtils.isEmpty(teamName)){
-            ToastUtils.showShort("班组不能为空!");
-            return;
-        }
-        String workTypeName = workTypeTextView.getText().toString();
-        if(TextUtils.isEmpty(workTypeName)){
-            ToastUtils.showShort("工种不能为空!");
-            return;
-        }
-        String entranceDate = entranceDateTextView.getText().toString();
-        if(TextUtils.isEmpty(entranceDate)){
-            ToastUtils.showShort("进场时间不能为空!");
-            return;
-        }
-        String phone = phoneTextView.getText().toString();
-        if(TextUtils.isEmpty(phone) || phone.length() < 11){
-            ToastUtils.showShort("手机格式不对!");
-            return;
-        }
         ProjectWorkers projectWorkers = new ProjectWorkers();
+        String projectName = projectTextView.getText().toString();
+
+        String constructionName = companyTextView.getText().toString();
+        if(!constructionName.equals("请选择所属分包商")){
+            projectWorkers.setConstructionName(constructionName);
+            projectWorkers.setConstructionId(mConstructionModel.getResult().getRecords().get(constructionIndex).getId());
+        }
+
+        String teamName = teamTextView.getText().toString();
+        if(!teamName.equals("请选择班组")){
+            projectWorkers.setTeamName(teamName);
+            projectWorkers.setTeamId(mTeamModel.getResult().getRecords().get(teamIndex).getId());
+        }
+
+        String workTypeName = workTypeTextView.getText().toString();
+        projectWorkers.setJobName(workTypeName);
+
+        String entranceDate = entranceDateTextView.getText().toString();
+        String phone = phoneTextView.getText().toString();
+
+        projectWorkers.setEmpPhon(phone);
         projectWorkers.setProjectId(mProjectModel.getResult().getRecords().get(projectIndex).getId());
-        projectWorkers.setConstructionId(mConstructionModel.getResult().getRecords().get(constructionIndex).getId());
         projectWorkers.setProjectName(projectName);
-        projectWorkers.setConstructionName(constructionName);
-        projectWorkers.setTeamId(mTeamModel.getResult().getRecords().get(teamIndex).getId());
-        projectWorkers.setTeamName(teamName);
 
         if(leaderFlag > 0){
             projectWorkers.setIsTeam(1);
@@ -497,7 +517,13 @@ public class PersonInfoActivity extends BaseActivity {
         projectWorkers.setJobName(mDictionariesModel.getResult().get(hotDicIndex).getTag());
         projectWorkers.setEmpName(dataMap.get("name").toString());
         projectWorkers.setIdCode(dataMap.get("num").toString());
-        projectWorkers.setEmpPhon(phone);
+        projectWorkers.setEmpSex(dataMap.get("sex").toString());
+        projectWorkers.setEmpNation(dataMap.get("folk").toString());
+        projectWorkers.setDateOfBirth(dataMap.get("birt").toString());
+        projectWorkers.setIdAddress(dataMap.get("addr").toString());
+        projectWorkers.setIdAgency(dataMap.get("issue").toString());
+        projectWorkers.setIdValiddate(dataMap.get("valid").toString());
+
 
         if(dataMap.get("bankCard").toString().length() > 10){
             projectWorkers.setEmpCardnum(dataMap.get("bankCard").toString());

@@ -1,9 +1,14 @@
 package com.wintone.site.network;
 
+import com.wintone.site.networkmodel.AppVersionModel;
+import com.wintone.site.networkmodel.AttendanceModel;
+import com.wintone.site.networkmodel.AttendanceRecord;
 import com.wintone.site.networkmodel.ConstructionModel;
 import com.wintone.site.networkmodel.DictionariesModel;
 import com.wintone.site.networkmodel.HomePagerModel;
 import com.wintone.site.networkmodel.LoginModel;
+import com.wintone.site.networkmodel.PersonDetailsModel;
+import com.wintone.site.networkmodel.PersonSignalModel;
 import com.wintone.site.networkmodel.ProjectModel;
 import com.wintone.site.networkmodel.ProjectWorkers;
 import com.wintone.site.networkmodel.RegisterInfoModel;
@@ -122,16 +127,16 @@ public interface NetService {
 
     @POST
     Observable<ProjectModel> postProjectList(
-        @Header("token") String token,
-        @Url String url,
-        @Body Map map
+            @Header("token") String token,
+            @Url String url,
+            @Body Map map
     );
 
     @POST
     Observable<ConstructionModel> postConstructionList(
-        @Header("token") String token,
-        @Url String url,
-        @Body Map map
+            @Header("token") String token,
+            @Url String url,
+            @Body Map map
     );
 
     @POST
@@ -153,4 +158,44 @@ public interface NetService {
             @Url String url,
             @Body ProjectWorkers data
     );
+
+    @POST
+    Observable<AttendanceModel> postAttendanceRecord(
+            @Header("token") String token,
+            @Url String url,
+            @Body AttendanceRecord data
+    );
+
+    @POST
+    Observable<PersonDetailsModel> postWorkersPersonnelList(
+            @Header("token") String token,
+            @Url String url,
+            @Body Map map
+    );
+
+    @POST
+    Observable<ResponseBody> postWorkersInfo(
+            @Header("token") String token,
+            @Url String url,
+            @Body Map map
+    );
+
+    @POST
+    Observable<ResponseBody> postLoginOut(
+            @Url String url,
+            @Header("token") String token
+    );
+
+    @GET
+    Observable<PersonSignalModel> getSignalPersonInfo(
+            @Url String url,
+            @Header("token") String token
+    );
+
+    @GET
+    Observable<AppVersionModel> getAppVersionInfo(
+            @Url String url,
+            @Header("token") String token
+    );
+
 }

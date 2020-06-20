@@ -182,10 +182,7 @@ public class FacePreViewActivity extends BaseActivity implements ViewTreeObserve
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Integer>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
+                    @Override public void onSubscribe(Disposable d) { }
 
                     @Override
                     public void onNext(Integer activeCode) {

@@ -15,6 +15,8 @@ public class Constant {
 
     public static final String USER_TOKEN = "user_token";
 
+    public static final String USER_ID = "user_id";
+
     public static final String USER_NAME = "user_name";
 
     public static final String CONSTRUCTION_ID = "construction_id";
@@ -72,6 +74,12 @@ public class Constant {
 
     //版本更新
     public static final String CHECK_VERSION_URL = "/appVersion/findByType/";
+
+    //用户反馈
+    public static final String FEEDBACK_URL = "/appFeedBack/saveOrUpdata";
+
+    //用户信息更新
+    public static final String USER_UPDATE_URL = "/appUser/updateUser";
 
     //小米5s BqkBdwpRbi6iJWEE8BcgUBddrfXAqrUJ9iRhaxJGhCxc
     public static final String APP_ID = "839bFTR4q4EbqXJBhZQjXR6ArtoJqRNw1vwuV4wzSo8Z";

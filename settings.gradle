@@ -1,2 +1,2 @@
-include ':app', ':arcfacelibrary', ':bankinfolibrary', ':prdownloader'
+include ':app', ':arcfacelibrary', ':bankinfolibrary', ':prdownloader', ':takephotolibrary', ':animateloading'
 rootProject.name='site-master'

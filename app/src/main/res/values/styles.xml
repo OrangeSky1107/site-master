@@ -71,4 +71,16 @@
         <item name="android:textSize">15sp</item>
     </style>
 
+    <!-- pop layout from up to down -->
+    <style name="take_photo_anim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/pop_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/pop_exit_anim</item>
+    </style>
+
+    <!-- pop layout from down to up  -->
+    <style name="pop_down_to_up" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/pop_delete_enter</item>
+        <item name="android:windowExitAnimation">@anim/pop_delete_exit</item>
+    </style>
+
 </resources>

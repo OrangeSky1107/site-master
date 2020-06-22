@@ -178,6 +178,7 @@ public class LoginActivity extends BaseActivity {
             SPUtils.putShare(LoginActivity.this,Constant.STATUS,loginModel.getResult().getStatus());
             SPUtils.putShare(LoginActivity.this,Constant.USER_TYPE,loginModel.getResult().getUserType());
             SPUtils.putShare(LoginActivity.this,Constant.FACE_URL,loginModel.getResult().getFaceUrl());
+            SPUtils.putShare(LoginActivity.this,Constant.USER_ID,loginModel.getResult().getId());
 
             ActivityUtils.startActivity(new Intent(LoginActivity.this, HomeActivity.class));
             finish();

@@ -93,7 +93,7 @@ public class MineFragment extends BaseFragment {
 
     }
 
-    @OnClick({R.id.mini_password,R.id.mini_ours,R.id.mini_feedback,R.id.mini_customer,R.id.cellAboutAccount,R.id.mini_setting})
+    @OnClick({R.id.mini_password,R.id.mini_ours,R.id.mini_feedback,R.id.mini_customer,R.id.cellAboutAccount,R.id.mini_setting,R.id.cellProject})
     public void onClick(View view){
         switch (view.getId()){
             case R.id.mini_password:
@@ -113,6 +113,8 @@ public class MineFragment extends BaseFragment {
                 break;
             case R.id.mini_setting:
                 ActivityUtils.startActivity(new Intent(getActivity(), SystemSettingActivity.class));
+                break;
+            case R.id.cellProject:
                 break;
         }
     }

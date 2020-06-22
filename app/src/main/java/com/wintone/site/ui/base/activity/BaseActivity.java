@@ -2,6 +2,7 @@ package com.wintone.site.ui.base.activity;
 
 import android.os.Bundle;
 
+import com.kaopiz.kprogresshud.KProgressHUD;
 import com.wintone.site.SiteApplication;
 
 import androidx.annotation.Nullable;
@@ -11,7 +12,9 @@ import butterknife.Unbinder;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    private Unbinder m;
+    private   Unbinder m;
+    protected KProgressHUD mHUD;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -19,7 +22,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(getContentView());
         SiteApplication.getInstance().addActivity(this);
         m = ButterKnife.bind(this);
+        initProgress();
         initView();
+    }
+
+    private void initProgress() {
+        mHUD = KProgressHUD.create(this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setDetailsLabel("反馈中...")
+                .setCancellable(true)
+                .setAnimationSpeed(2)
+                .setDimAmount(0.5f);
     }
 
     @Override
@@ -29,10 +42,18 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        mHUD.dismiss();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         m.unbind();
         m = null;
+        mHUD.dismiss();
+        mHUD = null;
         SiteApplication.getInstance().removeActivity(this);
     }
 

@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:focusable="true"
+    android:id="@+id/feedBackLayout"
     android:focusableInTouchMode="true"
     android:background="@color/person_gray_color"
     android:layout_height="match_parent">
@@ -26,6 +27,7 @@
                 android:textSize="16sp"
                 android:text="图片"
                 android:layout_margin="20dp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:background="@color/white"
@@ -34,35 +36,35 @@
                 <RelativeLayout
                     android:layout_margin="20dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="80dp"
                     android:orientation="horizontal"
                     android:background="@color/white">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:src="@drawable/rectangle"/>
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:id="@+id/feedbackImage"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
                         android:layout_centerInParent="true"
                         android:src="@drawable/add" />
+
                 </RelativeLayout>
 
             </LinearLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:text="问题"
                 android:layout_margin="20dp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:background="@color/white"
                 android:layout_height="wrap_content">
 
                 <EditText
+                    android:id="@+id/feedbackText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:minLines="5"
@@ -127,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:layout_marginLeft="20dp"
-                    android:text="银行卡号"
+                    android:text="邮箱"
                     android:textSize="15sp"
                     android:textColor="@color/black25PercentColor"/>
 
@@ -144,6 +146,7 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/submit"
                 android:layout_width="250dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="60dp"

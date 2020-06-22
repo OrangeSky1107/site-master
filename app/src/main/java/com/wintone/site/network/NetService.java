@@ -5,6 +5,7 @@ import com.wintone.site.networkmodel.AttendanceModel;
 import com.wintone.site.networkmodel.AttendanceRecord;
 import com.wintone.site.networkmodel.ConstructionModel;
 import com.wintone.site.networkmodel.DictionariesModel;
+import com.wintone.site.networkmodel.FeedModelRequetModel;
 import com.wintone.site.networkmodel.HomePagerModel;
 import com.wintone.site.networkmodel.LoginModel;
 import com.wintone.site.networkmodel.PersonDetailsModel;
@@ -13,6 +14,7 @@ import com.wintone.site.networkmodel.ProjectModel;
 import com.wintone.site.networkmodel.ProjectWorkers;
 import com.wintone.site.networkmodel.RegisterInfoModel;
 import com.wintone.site.networkmodel.TeamModel;
+import com.wintone.site.networkmodel.UpdateUserModel;
 import com.wintone.site.utils.bankinfo.BankModel;
 
 import java.util.Map;
@@ -198,4 +200,17 @@ public interface NetService {
             @Header("token") String token
     );
 
+    @POST
+    Observable<ResponseBody> postFeedbackInfo(
+            @Url String url,
+            @Header("token") String token,
+            @Body FeedModelRequetModel feedModelRequetModel
+    );
+
+    @POST
+    Observable<ResponseBody> postUpdateUserInfo(
+            @Url String url,
+            @Header("token") String token,
+            @Body UpdateUserModel model
+    );
 }

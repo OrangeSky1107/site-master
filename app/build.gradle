@@ -125,6 +125,7 @@ dependencies {
     implementation project(':bankinfolibrary')
     implementation project(':prdownloader')
     implementation project(':takephotolibrary')
+    implementation project(':animateloading')
 
 
     testImplementation 'junit:junit:4.12'

@@ -74,6 +74,8 @@ public class LoginModel {
         private String token;
         private int userType;
         private String empId;
+        private String displayName;
+        private String nickName;
 
         public String getConstructionId() {
             return constructionId;
@@ -201,6 +203,22 @@ public class LoginModel {
 
         public void setEmpId(String empId) {
             this.empId = empId;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public void setDisplayName(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getNickName() {
+            return nickName;
+        }
+
+        public void setNickName(String nickName) {
+            this.nickName = nickName;
         }
     }
 }

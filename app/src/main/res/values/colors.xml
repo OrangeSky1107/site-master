@@ -60,4 +60,12 @@
     <color name="person_dark_gray_color">#939393</color>
     <color name="person_dark_black">#404040</color>
 
+    <!-- animate progress -style -->
+    <color name="animate_progress_bg">#65828e</color>
+    <color name="main_color">#ff9a00</color>
+    <color name="secondary_color">#BDBDBD</color>
+
+    <!-- project style -->
+    <color name="project_white_color">#ecf0f1</color>
+
 </resources>

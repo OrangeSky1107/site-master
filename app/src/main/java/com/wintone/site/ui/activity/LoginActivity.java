@@ -167,18 +167,20 @@ public class LoginActivity extends BaseActivity {
 
     private void saveUserInfo(LoginModel loginModel){
         if(loginModel.getCode() == 1000){
-            SPUtils.putShare(LoginActivity.this,Constant.USER_TOKEN,loginModel.getResult().getToken());
-            SPUtils.putShare(LoginActivity.this,Constant.USER_NAME,loginModel.getResult().getLoginName());
-            SPUtils.putShare(LoginActivity.this,Constant.CONSTRUCTION_ID,loginModel.getResult().getConstructionId());
-            SPUtils.putShare(LoginActivity.this,Constant.HEADER_IMAGE,loginModel.getResult().getIco());
-            SPUtils.putShare(LoginActivity.this,Constant.IS_MANAGER,loginModel.getResult().getIsManager());
-            SPUtils.putShare(LoginActivity.this,Constant.ORG_ID,loginModel.getResult().getOrgId());
-            SPUtils.putShare(LoginActivity.this,Constant.PROJECT_ID,loginModel.getResult().getProjectId());
-            SPUtils.putShare(LoginActivity.this,Constant.SEX,loginModel.getResult().getSex());
-            SPUtils.putShare(LoginActivity.this,Constant.STATUS,loginModel.getResult().getStatus());
-            SPUtils.putShare(LoginActivity.this,Constant.USER_TYPE,loginModel.getResult().getUserType());
-            SPUtils.putShare(LoginActivity.this,Constant.FACE_URL,loginModel.getResult().getFaceUrl());
-            SPUtils.putShare(LoginActivity.this,Constant.USER_ID,loginModel.getResult().getId());
+            SPUtils.putShare(this,Constant.USER_TOKEN,loginModel.getResult().getToken());
+            SPUtils.putShare(this,Constant.USER_NAME,loginModel.getResult().getLoginName());
+            SPUtils.putShare(this,Constant.CONSTRUCTION_ID,loginModel.getResult().getConstructionId());
+            SPUtils.putShare(this,Constant.HEADER_IMAGE,loginModel.getResult().getIco());
+            SPUtils.putShare(this,Constant.IS_MANAGER,loginModel.getResult().getIsManager());
+            SPUtils.putShare(this,Constant.ORG_ID,loginModel.getResult().getOrgId());
+            SPUtils.putShare(this,Constant.PROJECT_ID,loginModel.getResult().getProjectId());
+            SPUtils.putShare(this,Constant.SEX,loginModel.getResult().getSex());
+            SPUtils.putShare(this,Constant.STATUS,loginModel.getResult().getStatus());
+            SPUtils.putShare(this,Constant.USER_TYPE,loginModel.getResult().getUserType());
+            SPUtils.putShare(this,Constant.FACE_URL,loginModel.getResult().getFaceUrl());
+            SPUtils.putShare(this,Constant.USER_ID,loginModel.getResult().getId());
+            SPUtils.putShare(this,Constant.PROJECT_NAME,loginModel.getResult().getDisplayName());
+            SPUtils.putShare(this,Constant.NIKE_NAME,loginModel.getResult().getNickName());
 
             ActivityUtils.startActivity(new Intent(LoginActivity.this, HomeActivity.class));
             finish();

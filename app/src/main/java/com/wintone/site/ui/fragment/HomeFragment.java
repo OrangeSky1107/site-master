@@ -15,7 +15,7 @@ import com.wintone.site.R;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
 import com.wintone.site.networkmodel.HomePagerModel;
-import com.wintone.site.ui.activity.FaceAttendanceActivity;
+import com.wintone.site.ui.activity.FaceActionActivity;
 import com.wintone.site.ui.activity.PersonDetailsActivity;
 import com.wintone.site.ui.base.fragment.BaseFragment;
 import com.wintone.site.utils.CalendarUtil;
@@ -108,7 +108,7 @@ public class HomeFragment extends BaseFragment {
             UiUtils.showOptionPicker(getActivity(), getResources().getStringArray(R.array.attend_options), 0, new OptionPicker.OnOptionPickListener() {
                 @Override
                 public void onOptionPicked(int index, String item) {
-                    Intent intent = new Intent(getActivity(), FaceAttendanceActivity.class);
+                    Intent intent = new Intent(getActivity(), FaceActionActivity.class);
                     if (index == 0) {
                         intent.putExtra("commute", "in");
                     } else {

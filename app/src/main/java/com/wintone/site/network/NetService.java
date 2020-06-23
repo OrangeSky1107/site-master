@@ -148,10 +148,11 @@ public interface NetService {
             @Body Map map
     );
 
-    @GET
+    @POST
     Observable<DictionariesModel> postHotDicList(
             @Header("token") String token,
-            @Url String url
+            @Url String url,
+            @Body Map map
     );
 
     @POST
@@ -212,5 +213,12 @@ public interface NetService {
             @Url String url,
             @Header("token") String token,
             @Body UpdateUserModel model
+    );
+
+    @POST
+    Observable<ResponseBody> postSwitchProject(
+            @Url String url,
+            @Header("token") String token,
+            @Body Map map
     );
 }

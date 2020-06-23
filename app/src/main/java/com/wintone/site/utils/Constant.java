@@ -39,6 +39,10 @@ public class Constant {
 
     public static final String EMP_ID = "emp_id";
 
+    public static final String PROJECT_NAME = "project_name";
+
+    public static final String NIKE_NAME = "nike_name";
+
     //首页人员情况接口
     public static final String HOME_PAGER_URL = "/appUser/personnel";
 
@@ -51,8 +55,8 @@ public class Constant {
     //班组下拉列表接口
     public static final String TEAM_LIST_URL = "/appTeam/getTeamList";
 
-    //热门工种下拉列表接口
-    public static final String DICTIONARIES_HOTDIC_URL = "/appDictionaries/hotDic";
+    //工种下拉列表接口
+    public static final String DICTIONARIES_HOTDIC_URL = "/appDictionaries/findDictionarie";
 
     //图片上传地址 user/upload
     public static final String USER_UPLOAD_URL = BASE_URL + "/user/upload";
@@ -80,6 +84,12 @@ public class Constant {
 
     //用户信息更新
     public static final String USER_UPDATE_URL = "/appUser/updateUser";
+
+    //切换项目
+    public static final String SWITCH_PROJECT_URL = "/appProject/switchProject";
+
+    //安装APK 名字
+    public static final String APK_NAME = "site-master.apk";
 
     //小米5s BqkBdwpRbi6iJWEE8BcgUBddrfXAqrUJ9iRhaxJGhCxc
     public static final String APP_ID = "839bFTR4q4EbqXJBhZQjXR6ArtoJqRNw1vwuV4wzSo8Z";

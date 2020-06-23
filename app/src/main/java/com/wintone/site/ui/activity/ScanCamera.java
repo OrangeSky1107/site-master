@@ -431,7 +431,6 @@ public class ScanCamera extends Activity implements Callback, PreviewCallback {
         String imageName = systemTime + "-bank";
         Log.i("ScanCamera","look at bank name = " + imageName);
         return saveToLocal(bitmap,imageName);
-
     }
 
     private String saveToLocal(Bitmap bitmap, String bitName) {

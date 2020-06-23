@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.blankj.utilcode.util.ToastUtils;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.socks.library.KLog;
 import com.wintone.site.R;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
@@ -301,17 +302,22 @@ public class PersonInfoActivity extends BaseActivity {
     private void pullHotDicList(){
         String token = (String)SPUtils.getShare(PersonInfoActivity.this,Constant.USER_TOKEN,"");
 
+        Map map = new HashMap();
+        map.put("page",1);
+        map.put("rows",100000);
+
         NetWorkUtils.getInstance().createService(NetService.class)
-                .postHotDicList(token,Constant.DICTIONARIES_HOTDIC_URL)
+                .postHotDicList(token,Constant.DICTIONARIES_HOTDIC_URL,map)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<DictionariesModel>() {
-                    @Override public void onSubscribe(Disposable d) { }
+                    @Override public void onSubscribe(Disposable d) {}
 
                     @Override
                     public void onNext(DictionariesModel value) {
+                        KLog.i("dic list = " + JSON.toJSONString(value));
                         mDictionariesModel = value;
-                        fillHotDicList(value.getResult());
+                        fillHotDicList(value.getResult().getRecords());
                         mHUD.dismiss();
                     }
 
@@ -325,7 +331,7 @@ public class PersonInfoActivity extends BaseActivity {
                 });
     }
 
-    private void fillHotDicList(List<DictionariesModel.ResultBean> recordsBeans){
+    private void fillHotDicList(List<DictionariesModel.ResultBean.RecordsBean> recordsBeans){
         List<String> teamName = new ArrayList<>();
 
         for (int i = 0; i < recordsBeans.size();i++){
@@ -514,7 +520,7 @@ public class PersonInfoActivity extends BaseActivity {
             projectWorkers.setIsTeam(0);
         }
 
-        projectWorkers.setJobName(mDictionariesModel.getResult().get(hotDicIndex).getTag());
+        projectWorkers.setJobName(mDictionariesModel.getResult().getRecords().get(hotDicIndex).getTag());
         projectWorkers.setEmpName(dataMap.get("name").toString());
         projectWorkers.setIdCode(dataMap.get("num").toString());
         projectWorkers.setEmpSex(dataMap.get("sex").toString());

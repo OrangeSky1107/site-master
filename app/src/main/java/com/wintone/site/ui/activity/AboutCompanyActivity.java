@@ -3,11 +3,23 @@ package com.wintone.site.ui.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.downloader.Error;
+import com.downloader.OnCancelListener;
+import com.downloader.OnDownloadListener;
+import com.downloader.OnPauseListener;
+import com.downloader.OnProgressListener;
+import com.downloader.OnStartOrResumeListener;
+import com.downloader.PRDownloader;
+import com.downloader.Progress;
+import com.downloader.Status;
+import com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView;
 import com.wintone.site.R;
+import com.wintone.site.SiteApplication;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
 import com.wintone.site.networkmodel.AppVersionModel;
@@ -26,6 +38,8 @@ public class AboutCompanyActivity extends BaseActivity {
 
     @BindView(R.id.currentVersion) TextView currentVersion;
     @BindView(R.id.toolbar_title)  TextView toolbar_title;
+    @BindView(R.id.frameLayout)    FrameLayout mFrameLayout;
+    @BindView(R.id.circle_loading_view) AnimatedCircleLoadingView mCircleLoadingView;
 
     private AppVersionModel mVersionModel;
 
@@ -39,7 +53,6 @@ public class AboutCompanyActivity extends BaseActivity {
         currentVersion.setText(AppUtils.getAppVersionName());
 
         toolbar_title.setText("关于我们");
-
         mHUD.setDetailsLabel("加载中...");
     }
 
@@ -85,7 +98,8 @@ public class AboutCompanyActivity extends BaseActivity {
                 if(mVersionModel.getResult().getIsUpdate() == 0){
                     ToastUtils.showShort("当前已经是最新版本了");
                 }else{
-                    //开始更新APK
+                    mFrameLayout.setVisibility(View.VISIBLE);
+                    startUploaderUrl(mVersionModel.getResult().getDownloadUrl());
                 }
                 break;
             case R.id.update_history:
@@ -119,5 +133,66 @@ public class AboutCompanyActivity extends BaseActivity {
 
         builder.show();
     }
+
+    public void startUploaderUrl(String downloaderUrl){
+
+        int downloadOne = 0;
+
+        if (Status.RUNNING == PRDownloader.getStatus(downloadOne)) {
+            PRDownloader.pause(downloadOne);
+            return;
+        }
+
+        if (Status.PAUSED == PRDownloader.getStatus(downloadOne)) {
+            PRDownloader.resume(downloadOne);
+            return;
+        }
+
+        final String installPath = com.wintone.site.utils.AppUtils.getRootDirPath(SiteApplication.getInstance());
+
+        downloadOne = PRDownloader.download(downloaderUrl, installPath, Constant.APK_NAME)
+                .build()
+                .setOnStartOrResumeListener(new OnStartOrResumeListener() {
+                    @Override
+                    public void onStartOrResume() {
+                        //开始
+                        mCircleLoadingView.startDeterminate();
+                    }
+                })
+                .setOnPauseListener(new OnPauseListener() {
+                    @Override
+                    public void onPause() {
+                        //暂停
+                        mCircleLoadingView.stopOk();
+                    }
+                })
+                .setOnCancelListener(new OnCancelListener() {
+                    @Override
+                    public void onCancel() {
+                        //取消
+                    }
+                })
+                .setOnProgressListener(new OnProgressListener() {
+                    @Override
+                    public void onProgress(Progress progress) {
+                        //进度条
+                        long progressPercent = progress.currentBytes * 100 / progress.totalBytes;
+                        mCircleLoadingView.setPercent((int)progressPercent);
+                    }
+                })
+                .start(new OnDownloadListener() {
+                    @Override
+                    public void onDownloadComplete() {
+                        com.wintone.site.utils.AppUtils.installApk(AboutCompanyActivity.this,
+                                installPath+"/"+Constant.APK_NAME);
+                    }
+
+                    @Override
+                    public void onError(Error error) {
+                        ToastUtils.showShort("更新出现错误:"+error.toString());
+                    }
+                });
+    }
+
 
 }

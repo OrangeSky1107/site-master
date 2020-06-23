@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.wintone.site.SiteApplication;
+import com.wintone.site.networkmodel.AttendacedofUpload;
 
 import java.io.File;
 import java.io.IOException;
@@ -120,7 +121,6 @@ public class OkHttpUtil {
         builder.addFormDataPart("file", pathName,
                 RequestBody.create(MediaType.parse("media/type"), new File(pathName)));
 
-
         RequestBody body = builder.build();
 
         Request request = new Request.Builder().url(url).addHeader("token",token).post(body).build();
@@ -140,7 +140,36 @@ public class OkHttpUtil {
         });
     }
 
+    public void uploadAndAttendance(AttendacedofUpload attendacedofUpload,String url, String token, String pathName, final OkhttpClientRequest mClient){
+        MultipartBody.Builder builder = new MultipartBody.Builder();
 
+        builder.addFormDataPart("file", pathName,
+                RequestBody.create(MediaType.parse("media/type"), new File(pathName)));
+        builder.addFormDataPart("projectId",attendacedofUpload.getProjectId());
+        builder.addFormDataPart("constructionId",attendacedofUpload.getConstructionId());
+        builder.addFormDataPart("direction",attendacedofUpload.getDirection());
+        builder.addFormDataPart("way",attendacedofUpload.getWay());
+        builder.addFormDataPart("deviceType",attendacedofUpload.getDeviceType());
+        builder.addFormDataPart("deviceSn",attendacedofUpload.getDeviceSn());
+
+        RequestBody body = builder.build();
+
+        Request request = new Request.Builder().url(url).addHeader("token",token).post(body).build();
+
+        Call mCall = getOkHttpClient().newCall(request);
+
+        mCall.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                mClient.responseFailure(e.getMessage().toString());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                mClient.responseSuccess(response.body().string());
+            }
+        });
+    }
 
     @NonNull
     public static String getCacheControl(){

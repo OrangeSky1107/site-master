@@ -60,7 +60,6 @@ public class ProjectSwitchActivity extends BaseActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
         mListAdapter = new ProjectListAdapter();
-
     }
 
     @Override

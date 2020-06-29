@@ -166,26 +166,45 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void saveUserInfo(LoginModel loginModel){
-        if(loginModel.getCode() == 1000){
-            SPUtils.putShare(this,Constant.USER_TOKEN,loginModel.getResult().getToken());
-            SPUtils.putShare(this,Constant.USER_NAME,loginModel.getResult().getLoginName());
-            SPUtils.putShare(this,Constant.CONSTRUCTION_ID,loginModel.getResult().getConstructionId());
-            SPUtils.putShare(this,Constant.HEADER_IMAGE,loginModel.getResult().getIco());
-            SPUtils.putShare(this,Constant.IS_MANAGER,loginModel.getResult().getIsManager());
-            SPUtils.putShare(this,Constant.ORG_ID,loginModel.getResult().getOrgId());
-            SPUtils.putShare(this,Constant.PROJECT_ID,loginModel.getResult().getProjectId());
-            SPUtils.putShare(this,Constant.SEX,loginModel.getResult().getSex());
-            SPUtils.putShare(this,Constant.STATUS,loginModel.getResult().getStatus());
-            SPUtils.putShare(this,Constant.USER_TYPE,loginModel.getResult().getUserType());
-            SPUtils.putShare(this,Constant.FACE_URL,loginModel.getResult().getFaceUrl());
-            SPUtils.putShare(this,Constant.USER_ID,loginModel.getResult().getId());
-            SPUtils.putShare(this,Constant.PROJECT_NAME,loginModel.getResult().getDisplayName());
-            SPUtils.putShare(this,Constant.NIKE_NAME,loginModel.getResult().getNickName());
-
-            ActivityUtils.startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-            finish();
-        }else{
-            ToastUtils.showShort(loginModel.getCode() + "--- 错误信息:"+loginModel.getMessage());
+        try{
+            if(loginModel.getCode() == 1000){
+                KLog.i("data = " + JSON.toJSONString(loginModel));
+                SPUtils.putShare(this,Constant.USER_TOKEN,loginModel.getResult().getToken());
+                SPUtils.putShare(this,Constant.USER_NAME,loginModel.getResult().getLoginName());
+                SPUtils.putShare(this,Constant.CONSTRUCTION_ID,loginModel.getResult().getConstructionId());
+                SPUtils.putShare(this,Constant.HEADER_IMAGE,loginModel.getResult().getIco());
+                SPUtils.putShare(this,Constant.IS_MANAGER,loginModel.getResult().getIsManager());
+                SPUtils.putShare(this,Constant.ORG_ID,loginModel.getResult().getOrgId());
+                SPUtils.putShare(this,Constant.PROJECT_ID,loginModel.getResult().getProjectId());
+                SPUtils.putShare(this,Constant.SEX,loginModel.getResult().getSex());
+                SPUtils.putShare(this,Constant.STATUS,loginModel.getResult().getStatus());
+                SPUtils.putShare(this,Constant.USER_TYPE,loginModel.getResult().getUserType());
+                SPUtils.putShare(this,Constant.FACE_URL,loginModel.getResult().getFaceUrl());
+                SPUtils.putShare(this,Constant.USER_ID,loginModel.getResult().getId());
+                if(null == loginModel.getResult().getDisplayName()){
+                    SPUtils.putShare(this,Constant.NIKE_NAME,"");
+                }else{
+                    SPUtils.putShare(this,Constant.NIKE_NAME,loginModel.getResult().getNickName());
+                }
+                if(null == loginModel.getResult().getCompanyName()){
+                    SPUtils.putShare(this,Constant.COMPANY_NAME,"无所属公司");
+                }else{
+                    SPUtils.putShare(this,Constant.COMPANY_NAME,loginModel.getResult().getCompanyName());
+                }
+                if(null == loginModel.getResult().getProjectName()){
+                    SPUtils.putShare(this,Constant.PROJECT_NAME,"无所属项目");
+                }else{
+                    SPUtils.putShare(this,Constant.PROJECT_NAME,loginModel.getResult().getProjectName());
+                }
+                ActivityUtils.startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                finish();
+            }else{
+                ToastUtils.showShort(loginModel.getCode() + "--- 错误信息:"+loginModel.getMessage());
+            }
+        }catch (Exception e){
+            ToastUtils.showShort("登录出现异常:"+e.getMessage().toString());
+            SPUtils.clearShare(this);
+            e.printStackTrace();
         }
     }
 

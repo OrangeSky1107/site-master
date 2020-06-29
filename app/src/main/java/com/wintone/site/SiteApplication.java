@@ -5,10 +5,22 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.arcsoft.face.ErrorInfo;
+import com.arcsoft.face.FaceEngine;
+import com.arcsoft.face.enums.RuntimeABI;
+import com.wintone.site.utils.Constant;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.multidex.MultiDex;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class SiteApplication extends Application {
 
@@ -30,6 +42,7 @@ public class SiteApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        activeEngine();
     }
 
     public void addActivity(Activity activity){
@@ -51,5 +64,50 @@ public class SiteApplication extends Application {
                 activity.finish();
             }
         }
+    }
+
+    public void activeEngine() {
+        Observable.create(new ObservableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(ObservableEmitter<Integer> emitter) {
+                RuntimeABI runtimeABI = FaceEngine.getRuntimeABI();
+                Log.i( "SiteApplication","SiteApplication subscribe: getRuntimeABI() " + runtimeABI);
+
+                int activeCode = FaceEngine.activeOnline(instance, Constant.APP_ID, Constant.SDK_KEY);
+                emitter.onNext(activeCode);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Integer>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {}
+
+                    @Override
+                    public void onNext(Integer activeCode) {
+                        if (activeCode == ErrorInfo.MOK) {
+                            Log.i("SiteApplication","SiteApplication active is success ");
+                        } else if (activeCode == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
+                            Log.i("SiteApplication","SiteApplication active is ALREADY ");
+                        } else {
+                            Log.i("SiteApplication","SiteApplication active is failed code = " + activeCode);
+                        }
+
+//                        ActiveFileInfo activeFileInfo = new ActiveFileInfo();
+//                        int res = FaceEngine.getActiveFileInfo(instance, activeFileInfo);
+//                        if (res == ErrorInfo.MOK) {
+//                            Log.i("SiteApplication",activeFileInfo.toString());
+//                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i("SiteApplication","look at error message = " + e.getMessage().toString());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
     }
 }

@@ -216,7 +216,7 @@ public interface NetService {
     );
 
     @POST
-    Observable<ResponseBody> postSwitchProject(
+    Observable<ProjectModel> postSwitchProject(
             @Url String url,
             @Header("token") String token,
             @Body Map map

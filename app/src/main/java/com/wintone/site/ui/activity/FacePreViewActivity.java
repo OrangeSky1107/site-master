@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 
-import com.arcsoft.face.ActiveFileInfo;
 import com.arcsoft.face.AgeInfo;
 import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.Face3DAngle;
@@ -28,14 +27,12 @@ import com.arcsoft.face.enums.CompareModel;
 import com.arcsoft.face.enums.DetectFaceOrientPriority;
 import com.arcsoft.face.enums.DetectMode;
 import com.arcsoft.face.enums.DetectModel;
-import com.arcsoft.face.enums.RuntimeABI;
 import com.arcsoft.imageutil.ArcSoftImageFormat;
 import com.arcsoft.imageutil.ArcSoftImageUtil;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.wintone.site.R;
 import com.wintone.site.ui.base.activity.BaseActivity;
-import com.wintone.site.utils.Constant;
 import com.wintone.site.utils.camera.CameraHelper;
 import com.wintone.site.utils.camera.CameraListener;
 import com.wintone.site.utils.faceutils.ConfigUtil;
@@ -111,7 +108,7 @@ public class FacePreViewActivity extends BaseActivity implements ViewTreeObserve
             headPath = hashMap.get("headPath").toString();
         }
 
-        activeEngine();
+        initImageEngine();
 
         previewView.getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
@@ -143,76 +140,6 @@ public class FacePreViewActivity extends BaseActivity implements ViewTreeObserve
             faceVideoEngineCOde = faceVideoEngine.unInit();
             Log.i("FacePreViewActivity", "unInitEngine: " + faceVideoEngineCOde);
         }
-    }
-
-    /**
-     * 切换相机。注意：若切换相机发现检测不到人脸，则极有可能是检测角度导致的，需要销毁引擎重新创建或者在设置界面修改配置的检测角度
-     *
-     * @param
-     */
-//    public void switchCamera() {
-//        if (cameraHelper != null) {
-//            boolean success = cameraHelper.switchCamera();
-//            if (!success) {
-//                Log.i("FacePreViewActivity","switch camera failed ");
-//            } else {
-//                Log.i("FacePreViewActivity","camera switched, if no face detected, please change face detect degree in homepage ");
-//            }
-//        }
-//    }
-
-    /**
-     * 激活引擎
-     *
-     * @param
-     */
-    public void activeEngine() {
-        Observable.create(new ObservableOnSubscribe<Integer>() {
-            @Override
-            public void subscribe(ObservableEmitter<Integer> emitter) {
-                RuntimeABI runtimeABI = FaceEngine.getRuntimeABI();
-                Log.i( "FacePreViewActivity","FacePreViewActivity subscribe: getRuntimeABI() " + runtimeABI);
-
-                long start = System.currentTimeMillis();
-                int activeCode = FaceEngine.activeOnline(FacePreViewActivity.this, Constant.APP_ID, Constant.SDK_KEY);
-                Log.i("FacePreViewActivity", "FacePreViewActivity subscribe cost: " + (System.currentTimeMillis() - start));
-                emitter.onNext(activeCode);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Integer>() {
-                    @Override public void onSubscribe(Disposable d) { }
-
-                    @Override
-                    public void onNext(Integer activeCode) {
-                        if (activeCode == ErrorInfo.MOK) {
-                            Log.i("FacePreViewActivity","FacePreViewActivity active is success ");
-                        } else if (activeCode == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
-                            Log.i("FacePreViewActivity","FacePreViewActivity active is ALREADY ");
-                        } else {
-                            Log.i("FacePreViewActivity","FacePreViewActivity active is failed code = " + activeCode);
-                        }
-
-                        ActiveFileInfo activeFileInfo = new ActiveFileInfo();
-                        int res = FaceEngine.getActiveFileInfo(FacePreViewActivity.this, activeFileInfo);
-                        if (res == ErrorInfo.MOK) {
-                            Log.i("FacePreViewActivity",activeFileInfo.toString());
-                        }
-
-                        initImageEngine();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.i("FacePreViewActivity","look at error message = " + e.getMessage().toString());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
-
     }
 
     private void initImageEngine() {
@@ -427,6 +354,7 @@ public class FacePreViewActivity extends BaseActivity implements ViewTreeObserve
     @Override
     protected void onDestroy() {
         if (cameraHelper != null) {
+            cameraHelper.stop();
             cameraHelper.release();
             cameraHelper = null;
         }

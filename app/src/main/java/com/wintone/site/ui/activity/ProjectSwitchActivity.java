@@ -5,16 +5,17 @@ import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.socks.library.KLog;
 import com.wintone.site.R;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
+import com.wintone.site.networkmodel.ProjectModel;
 import com.wintone.site.ui.adapter.ProjectListAdapter;
 import com.wintone.site.ui.base.activity.BaseActivity;
 import com.wintone.site.utils.Constant;
 import com.wintone.site.utils.SPUtils;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +26,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 
 public class ProjectSwitchActivity extends BaseActivity {
 
@@ -49,17 +49,28 @@ public class ProjectSwitchActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 inputContent = s.toString();
-                getProjectData(inputContent);
+                switchProjectData(inputContent);
             }
             @Override
             public void afterTextChanged(Editable s) {}
         });
+
+        initLayoutManager();
     }
 
-    private void initLayotuManager(){
+    private void initLayoutManager(){
         LinearLayoutManager layoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
         mListAdapter = new ProjectListAdapter();
+        mListAdapter.setOnItemClickListener(new ProjectListAdapter.OnItemClickListener() {
+            @Override
+            public void onClickItem(int position, ProjectModel.ResultBean.RecordsBean recordsBean) {
+                switchProjectData(recordsBean.getProjectName());
+                ToastUtils.showShort("切换成功!");
+                finish();
+            }
+        });
+        recyclerView.setAdapter(mListAdapter);
     }
 
     @Override
@@ -78,17 +89,13 @@ public class ProjectSwitchActivity extends BaseActivity {
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new Observer<ProjectModel>() {
                     @Override public void onSubscribe(Disposable d) { }
 
                     @Override
-                    public void onNext(ResponseBody value) {
-                        try {
-                            KLog.i("look at response body message = " + value.string());
-                            mHUD.dismiss();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                    public void onNext(ProjectModel value) {
+                        mListAdapter.submitList(value.getResult().getRecords());
+                        mHUD.dismiss();
                     }
 
                     @Override
@@ -100,7 +107,7 @@ public class ProjectSwitchActivity extends BaseActivity {
                 });
     }
 
-    private void getProjectData(String projectName){
+    private void switchProjectData(String projectName){
         mHUD.show();
         String token = (String) SPUtils.getShare(this,Constant.USER_TOKEN,"");
         String loginName = (String)SPUtils.getShare(this,Constant.USER_NAME,"");
@@ -116,17 +123,13 @@ public class ProjectSwitchActivity extends BaseActivity {
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new Observer<ProjectModel>() {
                     @Override public void onSubscribe(Disposable d) { }
 
                     @Override
-                    public void onNext(ResponseBody value) {
-                        try {
-                            KLog.i("look at response body message = " + value.string());
-                            mHUD.dismiss();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                    public void onNext(ProjectModel value) {
+                        mListAdapter.submitList(value.getResult().getRecords());
+                        mHUD.dismiss();
                     }
 
                     @Override

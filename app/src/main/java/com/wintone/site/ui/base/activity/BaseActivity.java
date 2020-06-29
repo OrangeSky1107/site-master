@@ -29,7 +29,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private void initProgress() {
         mHUD = KProgressHUD.create(this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setDetailsLabel("反馈中...")
+                .setDetailsLabel("加载中...")
                 .setCancellable(true)
                 .setAnimationSpeed(2)
                 .setDimAmount(0.5f);

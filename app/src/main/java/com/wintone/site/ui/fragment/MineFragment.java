@@ -9,17 +9,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.arcsoft.face.enums.DetectFaceOrientPriority;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.wintone.site.R;
 import com.wintone.site.ui.activity.AboutCompanyActivity;
 import com.wintone.site.ui.activity.FeedBackActivity;
 import com.wintone.site.ui.activity.ModifyPasswordActivity;
+import com.wintone.site.ui.activity.ProjectSwitchActivity;
 import com.wintone.site.ui.activity.SystemSettingActivity;
 import com.wintone.site.ui.activity.UserInfoActivity;
 import com.wintone.site.ui.base.fragment.BaseFragment;
 import com.wintone.site.utils.Constant;
 import com.wintone.site.utils.SPUtils;
+import com.wintone.site.utils.faceutils.ConfigUtil;
 import com.wintone.site.widget.CircleImageView;
 
 import butterknife.BindView;
@@ -47,28 +51,38 @@ public class MineFragment extends BaseFragment {
         toolbarTitle.setText("我的");
 
         String imgUrl = (String) SPUtils.getShare(getActivity(), Constant.FACE_URL,"");
-        Glide.with(getActivity()).load(imgUrl).into(headerPhoto);
+
+        RequestOptions options = new RequestOptions()
+                .placeholder(R.drawable.mine_default_avatar)
+                .error(R.drawable.mine_default_avatar);
+        Glide.with(getActivity()).load(imgUrl).apply(options).into(headerPhoto);
 
         String name = (String)SPUtils.getShare(getActivity(),Constant.USER_NAME,"");
         mini_phone.setText(name);
 
         Integer user_Type = (Integer) SPUtils.getShare(getActivity(),Constant.USER_TYPE,5);
 
+        String companyName = (String)SPUtils.getShare(getActivity(),Constant.COMPANY_NAME,"无所属公司");
+        String projectName = (String)SPUtils.getShare(getActivity(),Constant.PROJECT_NAME,"无所属项目");
+
         switch (user_Type){
             case 0:
-                userExplain.setText("集团");
+                //company
+                userExplain.setText(companyName);
                 break;
             case 1:
-                userExplain.setText("企业");
+                //company
+                userExplain.setText(companyName);
                 break;
             case 2:
-                userExplain.setText("项目");
+                userExplain.setText(projectName);
+                //project
                 break;
             case 3:
-                userExplain.setText("参建单位");
+                userExplain.setText(projectName);
                 break;
             default:
-                userExplain.setText("超级管理员");
+                userExplain.setText(companyName);
                 break;
         }
     }
@@ -93,7 +107,8 @@ public class MineFragment extends BaseFragment {
 
     }
 
-    @OnClick({R.id.mini_password,R.id.mini_ours,R.id.mini_feedback,R.id.mini_customer,R.id.cellAboutAccount,R.id.mini_setting,R.id.cellProject})
+    @OnClick({R.id.mini_password,R.id.mini_ours,R.id.mini_feedback,R.id.mini_customer,R.id.cellAboutAccount,R.id.mini_setting,R.id.cellProject
+    ,R.id.mini_camera})
     public void onClick(View view){
         switch (view.getId()){
             case R.id.mini_password:
@@ -115,6 +130,10 @@ public class MineFragment extends BaseFragment {
                 ActivityUtils.startActivity(new Intent(getActivity(), SystemSettingActivity.class));
                 break;
             case R.id.cellProject:
+                ActivityUtils.startActivity(new Intent(getActivity(), ProjectSwitchActivity.class));
+                break;
+            case R.id.mini_camera:
+                switchCameraDialog();
                 break;
         }
     }
@@ -140,6 +159,46 @@ public class MineFragment extends BaseFragment {
                         Uri data = Uri.parse("tel:" + "028-82571111");
                         intent.setData(data);
                         startActivity(intent);
+                    }
+                });
+
+        builder.setCancelable(false);
+
+        builder.show();
+    }
+
+    private void switchCameraDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("切换摄像头");
+        Integer integer = (Integer)SPUtils.getShare(getActivity(),Constant.CAMERA_SWITCH,1);
+        if(integer == 1){
+            builder.setMessage("是否要切换成后置摄像头");
+        }else{
+            builder.setMessage("是否要切换成前置摄像头");
+        }
+
+        builder.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builder.setPositiveButton("确认",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        int flag = 1;
+                        if(integer == 1){
+                            ConfigUtil.setFtOrient(getActivity(), DetectFaceOrientPriority.ASF_OP_ALL_OUT);
+                            flag = 0;
+                        }else{
+                            ConfigUtil.setFtOrient(getActivity(),DetectFaceOrientPriority.ASF_OP_270_ONLY);
+                            flag = 1;
+                        }
+                        SPUtils.putShare(getActivity(),Constant.CAMERA_SWITCH,flag);
+                        dialog.dismiss();
                     }
                 });
 

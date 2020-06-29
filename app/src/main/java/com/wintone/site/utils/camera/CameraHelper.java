@@ -11,6 +11,10 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 
+import com.wintone.site.SiteApplication;
+import com.wintone.site.utils.Constant;
+import com.wintone.site.utils.SPUtils;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -84,7 +88,8 @@ public class CameraHelper implements Camera.PreviewCallback {
             }
 
             if (mCamera == null) {
-                mCamera = Camera.open(1);
+                Integer integer = (Integer) SPUtils.getShare(SiteApplication.getInstance(), Constant.CAMERA_SWITCH,1);
+                mCamera = Camera.open(integer);
             }
 
             displayOrientation = getCameraOri(rotation);

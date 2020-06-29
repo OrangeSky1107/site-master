@@ -95,7 +95,7 @@ public class ImageRotateUtil {
      * @param degree 旋转角度
      * @return 旋转后的图片
      */
-    private Bitmap rotateBitmapByDegree(Bitmap bm, int degree) {
+    public Bitmap rotateBitmapByDegree(Bitmap bm, int degree) {
         Bitmap returnBm = null;
 
         // 根据旋转角度，生成旋转矩阵

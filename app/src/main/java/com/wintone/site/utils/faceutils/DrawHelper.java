@@ -6,9 +6,6 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.hardware.Camera;
 
-import com.arcsoft.face.AgeInfo;
-import com.arcsoft.face.GenderInfo;
-import com.arcsoft.face.LivenessInfo;
 import com.wintone.site.widget.face.DrawInfo;
 import com.wintone.site.widget.face.FaceRectView;
 
@@ -211,19 +208,28 @@ public class DrawHelper {
         paint.setStrokeWidth(1);
 
         if (drawInfo.getName() == null) {
-            paint.setStyle(Paint.Style.FILL_AND_STROKE);
-            paint.setTextSize(rect.width() / 8);
+            Paint.FontMetrics fontMetrics = paint.getFontMetrics();
+            float distance=(fontMetrics.bottom - fontMetrics.top)/2 - fontMetrics.bottom;
+            float baseline=rect.centerY()+distance;
 
-            String str = (drawInfo.getSex() == GenderInfo.MALE ? "MALE" : (drawInfo.getSex() == GenderInfo.FEMALE ? "FEMALE" : "UNKNOWN"))
-                    + ","
-                    + (drawInfo.getAge() == AgeInfo.UNKNOWN_AGE ? "UNKNOWN" : drawInfo.getAge())
-                    + ","
-                    + (drawInfo.getLiveness() == LivenessInfo.ALIVE ? "ALIVE" : (drawInfo.getLiveness() == LivenessInfo.NOT_ALIVE ? "NOT_ALIVE" : "UNKNOWN"));
-            canvas.drawText(str, rect.left, rect.top - 10, paint);
-        } else {
             paint.setStyle(Paint.Style.FILL_AND_STROKE);
-            paint.setTextSize(rect.width() / 8);
-            canvas.drawText(drawInfo.getName(), rect.left, rect.top - 10, paint);
+            paint.setTextSize(rect.width() / 12);
+//            String str = (drawInfo.getSex() == GenderInfo.MALE ? "MALE" : (drawInfo.getSex() == GenderInfo.FEMALE ? "FEMALE" : "UNKNOWN"))
+//                    + ","
+//                    + (drawInfo.getAge() == AgeInfo.UNKNOWN_AGE ? "UNKNOWN" : drawInfo.getAge())
+//                    + ","
+//                    + (drawInfo.getLiveness() == LivenessInfo.ALIVE ? "ALIVE" : (drawInfo.getLiveness() == LivenessInfo.NOT_ALIVE ? "NOT_ALIVE" : "UNKNOWN"));
+            String content = "请您面对摄像头3秒!";
+
+            canvas.drawText(content, rect.centerX()/2 , baseline/2 , paint);
+        } else {
+            Paint.FontMetrics fontMetrics = paint.getFontMetrics();
+            float distance=(fontMetrics.bottom - fontMetrics.top)/2 - fontMetrics.bottom;
+            float baseline=rect.centerY()+distance;
+
+            paint.setStyle(Paint.Style.FILL_AND_STROKE);
+            paint.setTextSize(rect.width() / 12);
+            canvas.drawText(drawInfo.getName(), rect.centerX()/2 , baseline/2 , paint);
         }
     }
 

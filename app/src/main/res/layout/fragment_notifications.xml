@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/page_bg_color"
@@ -7,259 +8,289 @@
 
    <include layout="@layout/toolbar_layout"/>
 
-    <LinearLayout
-        android:id="@+id/cellProject"
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_marginBottom="?attr/actionBarSize"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_marginTop="1dp"
-        android:background="@color/white"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="horizontal">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/project_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            android:paddingLeft="16dp"
-            android:text="@string/switch_project"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
-            android:textColor="@color/black25PercentColor" />
-
-        <ImageView
-            android:layout_width="21dp"
-            android:layout_height="21dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="16dp"
-            android:src="@drawable/change" />
-
-    </LinearLayout>
-
-
-    <RelativeLayout
-        android:id="@+id/cellAboutAccount"
-        android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/white"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="horizontal">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-
-            <com.wintone.site.widget.CircleImageView
-                android:id="@+id/headerPhoto"
-                android:src="@drawable/mine_default_avatar"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="17dp"
-                android:layout_width="60dp"
-                android:layout_height="60dp"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <LinearLayout
-                android:layout_toEndOf="@+id/headerPhoto"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="12dp"
-                android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:id="@+id/cellProject"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/mini_phone"
-                    android:text="13022210895"
+                    android:id="@+id/project_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:textSize="17sp"
-                    android:layout_marginBottom="4dp"
-                    android:textColor="@color/black25PercentColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:textStyle="bold"
+                    android:paddingLeft="16dp"
+                    android:text="@string/switch_project"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+                    android:textColor="@color/black25PercentColor" />
 
-                <TextView
-                    android:id="@+id/userExplain"
-                    android:text="超级管理员"
-                    android:textSize="17sp"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/black25PercentColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <ImageView
+                    android:layout_width="21dp"
+                    android:layout_height="21dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/change" />
 
             </LinearLayout>
 
-        </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/cellAboutAccount"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="8dp"
-            android:layout_height="15dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="15dp"
-            android:src="@drawable/right_arrow" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
 
-    </RelativeLayout>
+                    <com.wintone.site.widget.CircleImageView
+                        android:id="@+id/headerPhoto"
+                        android:src="@drawable/mine_default_avatar"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="17dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"/>
 
-    <LinearLayout
-        android:id="@+id/mini_customer"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/white"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_toEndOf="@+id/headerPhoto"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="12dp"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:padding="17dp"
-            android:drawablePadding="10dp"
-            android:lineSpacingExtra="4dp"
-            android:drawableLeft="@drawable/customer"
-            android:textSize="17sp"
-            android:text="@string/mani_customer"
-            android:textColor="@color/black25PercentColor" />
+                        <TextView
+                            android:id="@+id/mini_phone"
+                            android:text="13022210895"
+                            android:textSize="17sp"
+                            android:layout_marginBottom="4dp"
+                            android:textColor="@color/black25PercentColor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
 
-        <ImageView
-            android:layout_width="8dp"
-            android:layout_height="15dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="15dp"
-            android:src="@drawable/right_arrow" />
+                        <TextView
+                            android:id="@+id/userExplain"
+                            android:text="超级管理员"
+                            android:textSize="17sp"
+                            android:layout_marginTop="4dp"
+                            android:textColor="@color/black25PercentColor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
 
-    </LinearLayout>
+                    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/mini_password"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_marginTop="1dp"
-        android:background="@color/white"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="horizontal">
+                </RelativeLayout>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:padding="17dp"
-            android:drawablePadding="10dp"
-            android:lineSpacingExtra="4dp"
-            android:drawableLeft="@drawable/password"
-            android:textSize="17sp"
-            android:text="@string/mani_password"
-            android:textColor="@color/black25PercentColor" />
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="15dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/right_arrow" />
 
-        <ImageView
-            android:layout_width="8dp"
-            android:layout_height="15dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="15dp"
-            android:src="@drawable/right_arrow" />
+            </RelativeLayout>
 
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/mini_customer"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
 
-    <LinearLayout
-        android:id="@+id/mini_feedback"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_marginTop="1dp"
-        android:background="@color/white"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:padding="17dp"
+                    android:drawablePadding="10dp"
+                    android:lineSpacingExtra="4dp"
+                    android:drawableLeft="@drawable/customer"
+                    android:textSize="17sp"
+                    android:text="@string/mani_customer"
+                    android:textColor="@color/black25PercentColor" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:padding="17dp"
-            android:drawablePadding="10dp"
-            android:lineSpacingExtra="4dp"
-            android:drawableLeft="@drawable/callback"
-            android:textSize="17sp"
-            android:text="@string/mani_callback"
-            android:textColor="@color/black25PercentColor" />
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/right_arrow" />
 
-        <ImageView
-            android:layout_width="8dp"
-            android:layout_height="15dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="15dp"
-            android:src="@drawable/right_arrow" />
+            </LinearLayout>
 
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/mini_password"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="1dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
 
-    <LinearLayout
-        android:id="@+id/mini_ours"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_marginTop="1dp"
-        android:background="@color/white"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:padding="17dp"
+                    android:drawablePadding="10dp"
+                    android:lineSpacingExtra="4dp"
+                    android:drawableLeft="@drawable/password"
+                    android:textSize="17sp"
+                    android:text="@string/mani_password"
+                    android:textColor="@color/black25PercentColor" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:padding="17dp"
-            android:drawablePadding="10dp"
-            android:lineSpacingExtra="4dp"
-            android:drawableLeft="@drawable/ours"
-            android:textSize="17sp"
-            android:text="@string/mani_ours"
-            android:textColor="@color/black25PercentColor" />
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/right_arrow" />
 
-        <ImageView
-            android:layout_width="8dp"
-            android:layout_height="15dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="15dp"
-            android:src="@drawable/right_arrow" />
+            </LinearLayout>
 
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/mini_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="1dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
 
-    <LinearLayout
-        android:id="@+id/mini_setting"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/white"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:padding="17dp"
+                    android:drawablePadding="10dp"
+                    android:lineSpacingExtra="4dp"
+                    android:drawableLeft="@drawable/callback"
+                    android:textSize="17sp"
+                    android:text="@string/mani_callback"
+                    android:textColor="@color/black25PercentColor" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:padding="17dp"
-            android:drawablePadding="10dp"
-            android:lineSpacingExtra="4dp"
-            android:drawableLeft="@drawable/setting"
-            android:textSize="17sp"
-            android:text="@string/mani_setting"
-            android:textColor="@color/black25PercentColor" />
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/right_arrow" />
 
-        <ImageView
-            android:layout_width="8dp"
-            android:layout_height="15dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="15dp"
-            android:src="@drawable/right_arrow" />
+            </LinearLayout>
 
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/mini_camera"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="1dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:padding="17dp"
+                    android:drawablePadding="10dp"
+                    android:lineSpacingExtra="4dp"
+                    android:drawableLeft="@drawable/camera"
+                    android:textSize="17sp"
+                    android:text="摄像头切换"
+                    android:textColor="@color/black25PercentColor" />
+
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/right_arrow" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/mini_ours"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="1dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:padding="17dp"
+                    android:drawablePadding="10dp"
+                    android:lineSpacingExtra="4dp"
+                    android:drawableLeft="@drawable/ours"
+                    android:textSize="17sp"
+                    android:text="@string/mani_ours"
+                    android:textColor="@color/black25PercentColor" />
+
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/right_arrow" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/mini_setting"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:padding="17dp"
+                    android:drawablePadding="10dp"
+                    android:lineSpacingExtra="4dp"
+                    android:drawableLeft="@drawable/setting"
+                    android:textSize="17sp"
+                    android:text="@string/mani_setting"
+                    android:textColor="@color/black25PercentColor" />
+
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/right_arrow" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

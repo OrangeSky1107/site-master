@@ -76,6 +76,8 @@ public class LoginModel {
         private String empId;
         private String displayName;
         private String nickName;
+        private String projectName;
+        private String companyName;
 
         public String getConstructionId() {
             return constructionId;
@@ -219,6 +221,22 @@ public class LoginModel {
 
         public void setNickName(String nickName) {
             this.nickName = nickName;
+        }
+
+        public String getProjectName() {
+            return projectName;
+        }
+
+        public void setProjectName(String projectName) {
+            this.projectName = projectName;
+        }
+
+        public String getCompanyName() {
+            return companyName;
+        }
+
+        public void setCompanyName(String companyName) {
+            this.companyName = companyName;
         }
     }
 }

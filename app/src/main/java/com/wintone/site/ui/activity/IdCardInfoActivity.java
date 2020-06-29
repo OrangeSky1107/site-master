@@ -30,6 +30,7 @@ public class IdCardInfoActivity extends BaseActivity{
     @BindView(R.id.addressExplain)    TextView addressExplain;
     @BindView(R.id.idFrontImageView)  ImageView idFrontImageView;
     @BindView(R.id.idHeaderImageView) ImageView mCircleImageView;
+    @BindView(R.id.toolbar_title)     TextView toolbarTitle;
 
     private String imgPath;
 
@@ -55,6 +56,9 @@ public class IdCardInfoActivity extends BaseActivity{
         if(bundle != null){
             hashMap = (HashMap) bundle.getSerializable("data");
         }
+
+        toolbarTitle.setText("录取身份证信息");
+
         operationView(hashMap);
     }
 

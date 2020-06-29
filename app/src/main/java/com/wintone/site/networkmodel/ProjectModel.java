@@ -174,6 +174,7 @@ public class ProjectModel {
             private int showState;
             private long startingTime;
             private long updateDate;
+            private String companyName;
 
             public String getAcreage() {
                 return acreage;
@@ -389,6 +390,14 @@ public class ProjectModel {
 
             public void setUpdateDate(long updateDate) {
                 this.updateDate = updateDate;
+            }
+
+            public String getCompanyName() {
+                return companyName;
+            }
+
+            public void setCompanyName(String companyName) {
+                this.companyName = companyName;
             }
         }
     }

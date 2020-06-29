@@ -15,7 +15,6 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 
 import com.alibaba.fastjson.JSON;
-import com.arcsoft.face.ActiveFileInfo;
 import com.arcsoft.face.AgeInfo;
 import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.Face3DAngle;
@@ -29,7 +28,6 @@ import com.arcsoft.face.enums.CompareModel;
 import com.arcsoft.face.enums.DetectFaceOrientPriority;
 import com.arcsoft.face.enums.DetectMode;
 import com.arcsoft.face.enums.DetectModel;
-import com.arcsoft.face.enums.RuntimeABI;
 import com.arcsoft.imageutil.ArcSoftImageFormat;
 import com.arcsoft.imageutil.ArcSoftImageUtil;
 import com.blankj.utilcode.util.ToastUtils;
@@ -109,7 +107,7 @@ public class FaceAttendanceActivity extends BaseActivity implements ViewTreeObse
 
         previewView.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
-        activeEngine();
+        initImageEngine();
     }
 
     private void getIntentData(){
@@ -125,57 +123,6 @@ public class FaceAttendanceActivity extends BaseActivity implements ViewTreeObse
     public void onGlobalLayout() {
         initFaceEngine();
         initCamera();
-    }
-
-    public void activeEngine() {
-        Observable.create(new ObservableOnSubscribe<Integer>() {
-            @Override
-            public void subscribe(ObservableEmitter<Integer> emitter) {
-                RuntimeABI runtimeABI = FaceEngine.getRuntimeABI();
-                Log.i( "FaceAttendanceActivity","FaceAttendanceActivity subscribe: getRuntimeABI() " + runtimeABI);
-
-                long start = System.currentTimeMillis();
-                int activeCode = FaceEngine.activeOnline(FaceAttendanceActivity.this, Constant.APP_ID, Constant.SDK_KEY);
-                Log.i("FaceAttendanceActivity", "FaceAttendanceActivity subscribe cost: " + (System.currentTimeMillis() - start));
-                emitter.onNext(activeCode);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Integer>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Integer activeCode) {
-                        if (activeCode == ErrorInfo.MOK) {
-                            Log.i("FaceAttendanceActivity","FaceAttendanceActivity active is success ");
-                        } else if (activeCode == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
-                            Log.i("FaceAttendanceActivity","FaceAttendanceActivity active is ALREADY ");
-                        } else {
-                            Log.i("FaceAttendanceActivity","FaceAttendanceActivity active is failed code = " + activeCode);
-                        }
-
-                        ActiveFileInfo activeFileInfo = new ActiveFileInfo();
-                        int res = FaceEngine.getActiveFileInfo(FaceAttendanceActivity.this, activeFileInfo);
-                        if (res == ErrorInfo.MOK) {
-                            Log.i("FaceAttendanceActivity",activeFileInfo.toString());
-                        }
-
-                        initImageEngine();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.i("FaceAttendanceActivity","look at error message = " + e.getMessage().toString());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
     }
 
     private void initImageEngine() {

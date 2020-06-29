@@ -19,6 +19,12 @@ public class DrawInfo {
         this.name = name;
     }
 
+    public DrawInfo(Rect rect,int color,String name){
+        this.rect = rect;
+        this.color = color;
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

@@ -7,11 +7,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.wintone.site.R;
-import com.wintone.site.networkmodel.ProjectListModel;
+import com.wintone.site.networkmodel.ProjectModel;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,22 +22,23 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ProjectViewHolder> {
 
-    private AsyncListDiffer<ProjectListModel> mAsyncListDiffer;
+    private AsyncListDiffer<ProjectModel.ResultBean.RecordsBean> mAsyncListDiffer;
+    private OnItemClickListener mOnItemClickListener;
 
-    private DiffUtil.ItemCallback<ProjectListModel> mModelItemCallback = new DiffUtil.ItemCallback<ProjectListModel>() {
+    private DiffUtil.ItemCallback<ProjectModel.ResultBean.RecordsBean> mModelItemCallback = new DiffUtil.ItemCallback<ProjectModel.ResultBean.RecordsBean>() {
         @Override
-        public boolean areItemsTheSame(@NonNull ProjectListModel oldItem, @NonNull ProjectListModel newItem) {
+        public boolean areItemsTheSame(@NonNull ProjectModel.ResultBean.RecordsBean oldItem, @NonNull ProjectModel.ResultBean.RecordsBean newItem) {
             return TextUtils.equals(oldItem.getId(),newItem.getId());
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull ProjectListModel oldItem, @NonNull ProjectListModel newItem) {
+        public boolean areContentsTheSame(@NonNull ProjectModel.ResultBean.RecordsBean oldItem, @NonNull ProjectModel.ResultBean.RecordsBean newItem) {
             return oldItem.getProjectName().equals(newItem.getProjectName());
         }
     };
 
     public ProjectListAdapter(){
-        mAsyncListDiffer = new AsyncListDiffer<ProjectListModel>(this,mModelItemCallback);
+        mAsyncListDiffer = new AsyncListDiffer<ProjectModel.ResultBean.RecordsBean>(this,mModelItemCallback);
     }
 
     @NonNull
@@ -48,7 +50,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ProjectViewHolder holder, int position) {
-        holder.setData(getItem(position));
+        holder.setData(position,getItem(position));
     }
 
     @Override
@@ -56,11 +58,11 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         return mAsyncListDiffer.getCurrentList().size();
     }
 
-    public void submitList(List<ProjectListModel> listModels){
+    public void submitList(List<ProjectModel.ResultBean.RecordsBean> listModels){
         mAsyncListDiffer.submitList(listModels);
     }
 
-    public ProjectListModel getItem(int position){
+    public ProjectModel.ResultBean.RecordsBean getItem(int position){
         return mAsyncListDiffer.getCurrentList().get(position);
     }
 
@@ -69,18 +71,35 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         private TextView projectTitle;
         private TextView addressName;
         private TextView companyName;
+        private ConstraintLayout mConstraintLayout;
 
         public ProjectViewHolder(View view){
             super(view);
             projectTitle = view.findViewById(R.id.projectTitle);
             addressName = view.findViewById(R.id.addressName);
             companyName = view.findViewById(R.id.companyName);
+            mConstraintLayout = view.findViewById(R.id.constraintLayout);
         }
 
-        public void setData(ProjectListModel listModel){
+        public void setData(int position,ProjectModel.ResultBean.RecordsBean listModel){
             projectTitle.setText(listModel.getProjectName());
             addressName.setText(listModel.getProjectAddress());
             companyName.setText(listModel.getCompanyName());
+
+            mConstraintLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnItemClickListener.onClickItem(position,listModel);
+                }
+            });
         }
+    }
+
+    public interface OnItemClickListener{
+        void onClickItem(int position,ProjectModel.ResultBean.RecordsBean recordsBean);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+        this.mOnItemClickListener = onItemClickListener;
     }
 }

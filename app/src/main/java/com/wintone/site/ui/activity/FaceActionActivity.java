@@ -19,17 +19,10 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 
 import com.alibaba.fastjson.JSON;
-import com.arcsoft.face.ActiveFileInfo;
-import com.arcsoft.face.AgeInfo;
 import com.arcsoft.face.ErrorInfo;
-import com.arcsoft.face.Face3DAngle;
 import com.arcsoft.face.FaceEngine;
 import com.arcsoft.face.FaceInfo;
-import com.arcsoft.face.GenderInfo;
-import com.arcsoft.face.LivenessInfo;
 import com.arcsoft.face.enums.DetectMode;
-import com.arcsoft.face.enums.RuntimeABI;
-import com.socks.library.KLog;
 import com.wintone.site.R;
 import com.wintone.site.network.OkHttpUtil;
 import com.wintone.site.network.OkhttpClientRequest;
@@ -46,6 +39,8 @@ import com.wintone.site.utils.faceutils.RecognizeColor;
 import com.wintone.site.widget.face.DrawInfo;
 import com.wintone.site.widget.face.FaceRectView;
 
+import org.devio.takephoto.uitl.ImageRotateUtil;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,15 +48,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class FaceActionActivity extends BaseActivity implements ViewTreeObserver.OnGlobalLayoutListener{
 
@@ -104,61 +97,12 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
 
         previewView.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
-        activeEngine();
+        mHUD.setDetailsLabel("考勤打卡...");
     }
 
     private void getIntentData(){
         Intent intent = getIntent();
         direction = intent.getStringExtra("commute");
-    }
-
-    public void activeEngine() {
-        Observable.create(new ObservableOnSubscribe<Integer>() {
-            @Override
-            public void subscribe(ObservableEmitter<Integer> emitter) {
-                RuntimeABI runtimeABI = FaceEngine.getRuntimeABI();
-                Log.i( "FaceAttendanceActivity","FaceAttendanceActivity subscribe: getRuntimeABI() " + runtimeABI);
-
-                long start = System.currentTimeMillis();
-                int activeCode = FaceEngine.activeOnline(FaceActionActivity.this, Constant.APP_ID, Constant.SDK_KEY);
-                Log.i("FaceAttendanceActivity", "FaceAttendanceActivity subscribe cost: " + (System.currentTimeMillis() - start));
-                emitter.onNext(activeCode);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Integer>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Integer activeCode) {
-                        if (activeCode == ErrorInfo.MOK) {
-                            Log.i("FaceAttendanceActivity","FaceAttendanceActivity active is success ");
-                        } else if (activeCode == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
-                            Log.i("FaceAttendanceActivity","FaceAttendanceActivity active is ALREADY ");
-                        } else {
-                            Log.i("FaceAttendanceActivity","FaceAttendanceActivity active is failed code = " + activeCode);
-                        }
-
-                        ActiveFileInfo activeFileInfo = new ActiveFileInfo();
-                        int res = FaceEngine.getActiveFileInfo(FaceActionActivity.this, activeFileInfo);
-                        if (res == ErrorInfo.MOK) {
-                            Log.i("FaceAttendanceActivity",activeFileInfo.toString());
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.i("FaceAttendanceActivity","look at error message = " + e.getMessage().toString());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
     }
 
     @Override
@@ -176,20 +120,21 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
         faceVideoEngineCOde = faceVideoEngine.init(this, DetectMode.ASF_DETECT_MODE_VIDEO, ConfigUtil.getFtOrient(this),
                 16, 10, FaceEngine.ASF_FACE_DETECT | FaceEngine.ASF_AGE |FaceEngine.ASF_FACE_RECOGNITION|
                         FaceEngine.ASF_FACE3DANGLE | FaceEngine.ASF_GENDER | FaceEngine.ASF_LIVENESS);
-        Log.i("FaceAttendanceActivity", "initEngine:  init: " + faceVideoEngineCOde);
+        Log.i("FaceActionActivity", "initEngine:  init: " + faceVideoEngineCOde);
         if (faceVideoEngineCOde == ErrorInfo.MOK) {
-            Log.i("FaceAttendanceActivity", "initEngine:  init success ");
+            Log.i("FaceActionActivity", "initEngine:  init success ");
         }
     }
 
     private void unDestroyEngine() {
         if (faceVideoEngineCOde == 0) {
             faceVideoEngineCOde = faceVideoEngine.unInit();
-            Log.i("FaceAttendanceActivity", "unInitEngine: " + faceVideoEngineCOde);
+            Log.i("FaceActionActivity", "unInitEngine: " + faceVideoEngineCOde);
         }
     }
 
     private boolean flag = true;
+    private boolean attendanceFlag = true;
 
     private void initCamera() {
         DisplayMetrics metrics = new DisplayMetrics();
@@ -198,12 +143,11 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
         CameraListener cameraListener = new CameraListener() {
             @Override
             public void onCameraOpened(Camera camera, int cameraId, int displayOrientation, boolean isMirror) {
-                Log.i("FaceAttendanceActivity", "onCameraOpened: " + cameraId + "  " + displayOrientation + " " + isMirror);
+                Log.i("FaceActionActivity", "onCameraOpened: " + cameraId + "  " + displayOrientation + " " + isMirror);
                 previewSize = camera.getParameters().getPreviewSize();
                 drawHelper = new DrawHelper(previewSize.width, previewSize.height, previewView.getWidth(), previewView.getHeight(), displayOrientation
                         , cameraId, isMirror, false, false);
             }
-
 
             @Override
             public void onPreview(byte[] nv21, Camera camera) {
@@ -211,13 +155,11 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
                     faceRectView.clearFaceInfo();
                 }
                 List<FaceInfo> faceInfoList = new ArrayList<>();
-                long start = System.currentTimeMillis();
+
                 int code = faceVideoEngine.detectFaces(nv21, previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, faceInfoList);
-                Log.i("FaceAttendanceActivity", "code id = " + code);
-                Log.i("FaceAttendanceActivity", "size = " + faceInfoList.size());
+
                 if (code == ErrorInfo.MOK && faceInfoList.size() > 0) {
                     code = faceVideoEngine.process(nv21, previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, faceInfoList, processMask);
-                    Log.i("FaceAttendanceActivity", "process code = " + code);
                     if (code != ErrorInfo.MOK) {
                         return;
                     }
@@ -225,48 +167,54 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
                     return;
                 }
 
-                List<AgeInfo> ageInfoList = new ArrayList<>();
-                List<GenderInfo> genderInfoList = new ArrayList<>();
-                List<Face3DAngle> face3DAngleList = new ArrayList<>();
-                List<LivenessInfo> faceLivenessInfoList = new ArrayList<>();
-                int ageCode = faceVideoEngine.getAge(ageInfoList);
-                int genderCode = faceVideoEngine.getGender(genderInfoList);
-                int face3DAngleCode = faceVideoEngine.getFace3DAngle(face3DAngleList);
-                int livenessCode = faceVideoEngine.getLiveness(faceLivenessInfoList);
-                // 有其中一个的错误码不为ErrorInfo.MOK，return
-                if ((ageCode | genderCode | face3DAngleCode | livenessCode) != ErrorInfo.MOK) {
-                    return;
-                }
-                if (faceRectView != null && drawHelper != null) {
-                    List<DrawInfo> drawInfoList = new ArrayList<>();
-                    for (int i = 0; i < faceInfoList.size(); i++) {
-                        drawInfoList.add(new DrawInfo(drawHelper.adjustRect(faceInfoList.get(i).getRect()), genderInfoList.get(i).getGender(), ageInfoList.get(i).getAge(), faceLivenessInfoList.get(i).getLiveness(), RecognizeColor.COLOR_UNKNOWN, null));
-                    }
-                    drawHelper.draw(faceRectView, drawInfoList);
-                }
                 if(faceInfoList.size() > 0){
-                    if(flag){
-                        flag = false;
-                        String imgPath = saveCurrentPreView(nv21,camera);
-                        faceAttendanceAction(imgPath);
-                        if (cameraHelper != null) {
-                            cameraHelper.stop();
-                            cameraHelper.release();
-                            cameraHelper = null;
+                    if (faceRectView != null && drawHelper != null) {
+                        List<DrawInfo> drawInfoList = new ArrayList<>();
+                        for (int i = 0; i < faceInfoList.size(); i++) {
+                            int color = flag ? RecognizeColor.COLOR_UNKNOWN : RecognizeColor.COLOR_SUCCESS;
+                            String name = flag ? null : "识别成功,正在打卡!";
+                            drawInfoList.add(new DrawInfo(drawHelper.adjustRect(faceInfoList.get(i).getRect()), color , name));
                         }
-                        unDestroyEngine();
+                        drawHelper.draw(faceRectView, drawInfoList);
+                    }
+
+                    if(attendanceFlag){
+                        Observable.timer(3000, TimeUnit.MILLISECONDS)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Observer<Long>() {
+                                    @Override public void onSubscribe(Disposable d) {
+                                        attendanceFlag = false;
+                                    }
+
+                                    @Override
+                                    public void onNext(Long value) {
+                                        flag = false;
+                                        mHUD.show();
+                                        String imgPath = saveCurrentPreView(nv21,camera);
+                                        faceAttendanceAction(imgPath);
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+
+                                    }
+
+                                    @Override
+                                    public void onComplete() {
+                                    }
+                                });
                     }
                 }
             }
 
             @Override
             public void onCameraClosed() {
-                Log.i("FaceAttendanceActivity", "onCameraClosed: ");
+                Log.i("FaceActionActivity", "onCameraClosed: ");
             }
 
             @Override
             public void onCameraError(Exception e) {
-                Log.i("FaceAttendanceActivity", "onCameraError: " + e.getMessage());
+                Log.i("FaceActionActivity", "onCameraError: " + e.getMessage());
             }
 
             @Override
@@ -274,7 +222,7 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
                 if (drawHelper != null) {
                     drawHelper.setCameraDisplayOrientation(displayOrientation);
                 }
-                Log.i("FaceAttendanceActivity", "onCameraConfigurationChanged: " + cameraID + "  " + displayOrientation);
+                Log.i("FaceActionActivity", "onCameraConfigurationChanged: " + cameraID + "  " + displayOrientation);
             }
         };
         cameraHelper = new CameraHelper.Builder()
@@ -307,10 +255,11 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.RGB_565;
         Bitmap bitmap = BitmapFactory.decodeByteArray(rawImage, 0, rawImage.length, options);
+        Bitmap rotationMap = ImageRotateUtil.of().rotateBitmapByDegree(bitmap,-90);
         long systemTime = System.currentTimeMillis();
         String imageName = systemTime + "-face";
         Log.i("ScanCamera","look at face name = " + imageName);
-        return saveToLocal(bitmap,imageName);
+        return saveToLocal(rotationMap,imageName);
     }
 
     private String saveToLocal(Bitmap bitmap, String bitName) {
@@ -354,9 +303,7 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
         attendacedofUpload.setDeviceSn(deviceSn);
         attendacedofUpload.setWay(way);
 
-        KLog.i("look at json data = " + JSON.toJSONString(attendacedofUpload));
         String url = Constant.BASE_URL + Constant.ATTENDANCE_RECORD_URL;
-        KLog.i("look at url  = " + url);
 
         String token = (String)SPUtils.getShare(this,Constant.USER_TOKEN,"");
 
@@ -367,6 +314,13 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
                     @Override
                     public void run() {
                         showPhoneDialog("打卡出现错误:"+errorMessage);
+                        if (cameraHelper != null) {
+                            cameraHelper.stop();
+                            cameraHelper.release();
+                            cameraHelper = null;
+                        }
+                        unDestroyEngine();
+                        mHUD.dismiss();
                     }
                 });
             }
@@ -379,11 +333,18 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
                         HashMap map = JSON.parseObject(successMessage,HashMap.class);
                         Integer code = (Integer) map.get("code");
                         if(code == 1000){
-                            showPhoneDialog("打卡成功");
+                            showPhoneDialog("打卡成功!");
                         }else{
                             String message = (String) map.get("message");
                             showPhoneDialog(message);
                         }
+                        if (cameraHelper != null) {
+                            cameraHelper.stop();
+                            cameraHelper.release();
+                            cameraHelper = null;
+                        }
+                        unDestroyEngine();
+                        mHUD.dismiss();
                     }
                 });
             }
@@ -399,6 +360,7 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                         finish();
                     }
                 });
@@ -420,6 +382,7 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
     @Override
     protected void onDestroy() {
         if (cameraHelper != null) {
+            cameraHelper.stop();
             cameraHelper.release();
             cameraHelper = null;
         }

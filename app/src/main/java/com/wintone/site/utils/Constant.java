@@ -5,7 +5,7 @@ public class Constant {
     // 测试接口地址 http://192.168.1.76/gdb-api/
     // http://127.0.0.1:8005/version/updatePassword
     // 谭皓本地地址 http://192.168.1.30:8005/
-    public static final String BASE_URL = "http://192.168.1.38:19999";
+    public static final String BASE_URL = "http://192.168.1.188:19999";
 
     //修改密码
     public static final String UPDATE_PASSWORD_URL = "/version/updatePassword";
@@ -41,13 +41,14 @@ public class Constant {
 
     public static final String PROJECT_NAME = "project_name";
 
+    public static final String COMPANY_NAME="company_name";
+
     public static final String NIKE_NAME = "nike_name";
+
+    public static final String CAMERA_SWITCH = "camera_switch";
 
     //首页人员情况接口
     public static final String HOME_PAGER_URL = "/appUser/personnel";
-
-    //所属项目下拉
-    public static final String PROJECT_LIST_URL = "/appProject/getProjectList";
 
     //所属分包商列表
     public static final String CONSTRUCTION_LIST_URL = "/appConstruction/getConstList";
@@ -84,6 +85,9 @@ public class Constant {
 
     //用户信息更新
     public static final String USER_UPDATE_URL = "/appUser/updateUser";
+
+    //所属项目下拉
+    public static final String PROJECT_LIST_URL = "/appProject/getProjectList";
 
     //切换项目
     public static final String SWITCH_PROJECT_URL = "/appProject/switchProject";

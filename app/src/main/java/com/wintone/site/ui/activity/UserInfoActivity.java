@@ -110,21 +110,27 @@ public class UserInfoActivity extends BaseActivity {
 
         Integer user_Type = (Integer) SPUtils.getShare(this,Constant.USER_TYPE,5);
 
+        String companyName = (String)SPUtils.getShare(this,Constant.COMPANY_NAME,"无所属公司");
+        String projectName = (String)SPUtils.getShare(this,Constant.PROJECT_NAME,"无所属项目");
+
         switch (user_Type){
             case 0:
-                organizationLayout.setText("集团");
+                //company
+                organizationLayout.setText(companyName);
                 break;
             case 1:
-                organizationLayout.setText("企业");
+                //company
+                organizationLayout.setText(companyName);
                 break;
             case 2:
-                organizationLayout.setText("项目");
+                organizationLayout.setText(projectName);
+                //project
                 break;
             case 3:
-                organizationLayout.setText("参建单位");
+                organizationLayout.setText(projectName);
                 break;
             default:
-                organizationLayout.setText("超级管理员");
+                organizationLayout.setText(companyName);
                 break;
         }
     }

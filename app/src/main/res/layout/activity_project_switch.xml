@@ -12,18 +12,26 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:background="@drawable/search_bar_background">
+        android:layout_height="52dp"
+        android:background="@color/home_num_color"
+        android:layout_gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/toorbar_back"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="5dp"
+            android:paddingRight="3dp" />
 
         <EditText
             android:id="@+id/editTextSearch"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="32dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_centerVertical="true"
             android:background="@drawable/search_bar_background"
             android:textColorHint="@color/person_dark_gray_color"
             android:inputType="text|textPostalAddress"
@@ -37,25 +45,18 @@
             android:textCursorDrawable="@null"
             android:visibility="visible"/>
 
-        <RelativeLayout
+        <TextView
             android:id="@+id/searchMaskView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="搜索项目"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:drawableStart="@drawable/search"
-                android:drawablePadding="6dp"
-                android:layout_centerInParent="true"
-                android:textColor="@color/person_dark_gray_color"
-                android:textSize="14sp"/>
-
-        </RelativeLayout>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:text="搜索项目"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:drawableStart="@drawable/search"
+            android:drawablePadding="6dp"
+            android:layout_centerInParent="true"
+            android:textColor="@color/person_dark_gray_color"
+            android:textSize="14sp"/>
 
     </RelativeLayout>
 

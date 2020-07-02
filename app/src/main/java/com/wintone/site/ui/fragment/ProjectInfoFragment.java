@@ -1,5 +1,6 @@
 package com.wintone.site.ui.fragment;
 
+import android.content.res.ColorStateList;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -53,13 +54,14 @@ public class ProjectInfoFragment extends BaseFragment {
             leaderSwitch.setChecked(false);
         }else{
             leaderSwitch.setChecked(true);
+            leaderSwitch.setThumbColor(ColorStateList.valueOf(R.color.home_num_color));
         }
 
         workTypeTextView.setText(mPersonSignalModel.getResult().getJobName());
-//        TimeUtils.millis2String(mPersonSignalModel.getResult().getCreateDate())
+
         entranceDateTextView.setText(mPersonSignalModel.getResult().getStartTime());
 
-//        phoneTextView.setText(mPersonSignalModel.getResult().getStartTime());
+        phoneTextView.setText(mPersonSignalModel.getResult().getEmpPhon());
     }
 
     @Override

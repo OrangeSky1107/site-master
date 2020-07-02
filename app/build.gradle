@@ -75,9 +75,7 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.0.2'
     //分包
     implementation 'com.android.support:multidex:1.0.1'
-    //上拉加载下拉刷新
-    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.2-alpha-7'
-    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.2-alpha-7'
+
     //黄油刀 注解
     implementation 'com.jakewharton:butterknife:10.2.1'
     implementation 'androidx.vectordrawable:vectordrawable:1.0.1'
@@ -109,8 +107,6 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.4.0'
     implementation(name: 'library-multi-image-selector-1.0.5-SNAPSHOT', ext: 'aar')
     implementation(name: 'library-ocr-1.0.5-SNAPSHOT', ext: 'aar')
-    //    implementation files('libs/arcsoft_face.jar')
-    //    implementation files('libs/arcsoft_image_util.jar')
 
     // switch button
     implementation 'com.kyleduo.switchbutton:library:2.0.0'
@@ -127,6 +123,9 @@ dependencies {
     implementation project(':takephotolibrary')
     implementation project(':animateloading')
 
+    implementation project(':refresh-header')
+    implementation project(':refresh-layout')
+    implementation project(':refresh-layout-kernel')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'

@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.ActivityUtils;
 import com.kaopiz.kprogresshud.KProgressHUD;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.wintone.site.R;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
@@ -32,7 +31,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class PersonDetailsActivity extends BaseActivity {
 
-    @BindView(R.id.refreshLayout) RefreshLayout refreshLayout;
     @BindView(R.id.gridView)      GridView mGridView;
     @BindView(R.id.tips)          TextView tips;
     @BindView(R.id.toolbar_title) TextView toolbarTitle;
@@ -73,7 +71,6 @@ public class PersonDetailsActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-
         mHUD.show();
 
         String token = (String) SPUtils.getShare(PersonDetailsActivity.this, Constant.USER_TOKEN,"");

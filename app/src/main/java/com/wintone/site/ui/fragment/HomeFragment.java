@@ -1,5 +1,6 @@
 package com.wintone.site.ui.fragment;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,11 +11,16 @@ import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.msd.ocr.idcard.LibraryInitOCR;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.socks.library.KLog;
 import com.wintone.site.R;
+import com.wintone.site.SiteApplication;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
 import com.wintone.site.networkmodel.HomePagerModel;
+import com.wintone.site.permissions.EasyPermission;
 import com.wintone.site.ui.activity.FaceActionActivity;
 import com.wintone.site.ui.activity.PersonDetailsActivity;
 import com.wintone.site.ui.base.fragment.BaseFragment;
@@ -24,8 +30,11 @@ import com.wintone.site.utils.SPUtils;
 import com.wintone.site.utils.UiUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import butterknife.BindView;
 import butterknife.OnClick;
 import cn.qqtheme.framework.picker.OptionPicker;
@@ -34,20 +43,23 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class HomeFragment extends BaseFragment {
+public class HomeFragment extends BaseFragment implements EasyPermission.PermissionCallback{
 
-    @BindView(R.id.weekTv) TextView currentWeek;
-    @BindView(R.id.dateTv) TextView currentDate;
+    @BindView(R.id.weekTv)                  TextView currentWeek;
+    @BindView(R.id.dateTv)                  TextView currentDate;
     @BindView(R.id.workerAttencePercentage) TextView workerAttencePercentage;
-    @BindView(R.id.workerTotalNum)   TextView workerTotalNum;
-    @BindView(R.id.workerPresentNum) TextView workerPresentNum;
-    @BindView(R.id.todayAttenceWorkerNum) TextView todayAttenceWorkerNum;
-    @BindView(R.id.managerPercentage)   TextView managerPercentage;
-    @BindView(R.id.totalManager)        TextView totalManager;
-    @BindView(R.id.managerPresent)      TextView managerPresent;
-    @BindView(R.id.todayAttenceManagerNum) TextView todayAttenceManagerNum;
+    @BindView(R.id.workerTotalNum)          TextView workerTotalNum;
+    @BindView(R.id.workerPresentNum)        TextView workerPresentNum;
+    @BindView(R.id.todayAttenceWorkerNum)   TextView todayAttenceWorkerNum;
+    @BindView(R.id.managerPercentage)       TextView managerPercentage;
+    @BindView(R.id.totalManager)            TextView totalManager;
+    @BindView(R.id.managerPresent)          TextView managerPresent;
+    @BindView(R.id.todayAttenceManagerNum)  TextView todayAttenceManagerNum;
+    @BindView(R.id.refreshLayout)           SmartRefreshLayout mSmartRefreshLayout;
 
     private KProgressHUD mHUD;
+
+    private int selectorType = -1;
 
     @Override
     protected int getContentView() {
@@ -58,15 +70,33 @@ public class HomeFragment extends BaseFragment {
     protected void initView(View view) {
         currentWeek.setText(CalendarUtil.transformDate(0));
         currentDate.setText(CalendarUtil.transformDate(1));
-
         initProgress();
+
+        initListener();
+    }
+
+    private void initProgress() {
+        mHUD = KProgressHUD.create(getActivity())
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setDetailsLabel("加载中...")
+                .setCancellable(true)
+                .setAnimationSpeed(2)
+                .setDimAmount(0.5f);
+    }
+
+    private void initListener(){
+        mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                loadData();
+                refreshLayout.finishRefresh(1500);
+            }
+        });
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        LibraryInitOCR.initOCR(getActivity());
-
         loadData();
     }
 
@@ -74,20 +104,22 @@ public class HomeFragment extends BaseFragment {
     public void onClick(View view){
         switch (view.getId()){
             case R.id.real_name_registration:
-                attendanceWorkers();
+                selectorType = 2;
+                checkRegisterPermissions();
                 break;
             case R.id.personnel_info:
                 ActivityUtils.startActivity(new Intent(getActivity(), PersonDetailsActivity.class));
                 break;
             case R.id.face_attendance:
-                faceAttendanceFunction();
+                selectorType = 1;
+                checkFacePermissions();
                 break;
         }
     }
 
     private void attendanceWorkers(){
         Integer userType = (Integer) SPUtils.getShare(getActivity(),Constant.USER_TYPE,5);
-        if(userType == 0 || userType == 1){
+        if(userType == 0 || userType == 1 || userType == 3){
             ToastUtils.showShort("该账号权限过高,不支持实名登记!");
             return;
         }
@@ -101,23 +133,18 @@ public class HomeFragment extends BaseFragment {
             return;
         }
 
-        String faceImageUrl = (String) SPUtils.getShare(getActivity(),Constant.FACE_URL,"");
-        if(faceImageUrl.length() <= 15){
-            ToastUtils.showShort("请先进行实名登记,录入考勤信息!");
-        }else{
-            UiUtils.showOptionPicker(getActivity(), getResources().getStringArray(R.array.attend_options), 0, new OptionPicker.OnOptionPickListener() {
-                @Override
-                public void onOptionPicked(int index, String item) {
-                    Intent intent = new Intent(getActivity(), FaceActionActivity.class);
-                    if (index == 0) {
-                        intent.putExtra("commute", "in");
-                    } else {
-                        intent.putExtra("commute", "out");
-                    }
-                    startActivity(intent);
+        UiUtils.showOptionPicker(getActivity(), getResources().getStringArray(R.array.attend_options), 0, new OptionPicker.OnOptionPickListener() {
+            @Override
+            public void onOptionPicked(int index, String item) {
+                Intent intent = new Intent(getActivity(), FaceActionActivity.class);
+                if (index == 0) {
+                    intent.putExtra("commute", "in");
+                } else {
+                    intent.putExtra("commute", "out");
                 }
-            });
-        }
+                startActivity(intent);
+            }
+        });
     }
 
     private void registerPersonInfo(){
@@ -217,12 +244,80 @@ public class HomeFragment extends BaseFragment {
         todayAttenceManagerNum.setText(homePagerModel.getResult().getAttendanceAdminCount()+"");
     }
 
-    private void initProgress() {
-        mHUD = KProgressHUD.create(getActivity())
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setDetailsLabel("加载中...")
-                .setCancellable(true)
-                .setAnimationSpeed(2)
-                .setDimAmount(0.5f);
+    private void checkFacePermissions(){
+        requestPermission();
+    }
+
+    private void checkRegisterPermissions(){
+        requestPermission();
+    }
+
+    private String[] permissions = new String[]{
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_PHONE_STATE,
+    };
+
+    private final int REQUEST_PERMISSIONS = 2;
+
+    private void requestPermission(){
+        if(EasyPermission.hasPermissions(getActivity(), permissions)){
+            if(selectorType == 1){
+                faceAttendanceFunction();
+            }else{
+                LibraryInitOCR.initOCR(getActivity());
+                attendanceWorkers();
+            }
+        }else{
+            EasyPermission.with(this)
+                    .rationale(getString(com.msd.ocr.idcard.R.string.rationale_camera))
+                    .addRequestCode(REQUEST_PERMISSIONS)
+                    .permissions(permissions)
+                    .request();
+        }
+    }
+
+    @Override
+    public void onPermissionGranted(int requestCode, List<String> perms) {
+        SiteApplication.getInstance().activeEngine();
+        if(selectorType == 1){
+            faceAttendanceFunction();
+        }else{
+            LibraryInitOCR.initOCR(getActivity());
+            attendanceWorkers();
+        }
+    }
+
+    @Override
+    public void onPermissionDenied(int requestCode, List<String> perms) {
+        ToastUtils.showShort("不打开权限,部分功能将使用不了!");
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermission.onRequestPermissionsResult(this,REQUEST_PERMISSIONS,permissions,grantResults);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == EasyPermission.SETTINGS_REQ_CODE){
+            if(EasyPermission.hasPermissions(getActivity(), permissions)){
+                SiteApplication.getInstance().activeEngine();
+                if(selectorType == 1){
+                    faceAttendanceFunction();
+                }else{
+                    LibraryInitOCR.initOCR(getActivity());
+                    attendanceWorkers();
+                }
+            }else{
+                EasyPermission.with(this)
+                        .rationale(getString(com.msd.ocr.idcard.R.string.rationale_camera))
+                        .addRequestCode(REQUEST_PERMISSIONS)
+                        .permissions(permissions)
+                        .request();
+            }
+        }
     }
 }

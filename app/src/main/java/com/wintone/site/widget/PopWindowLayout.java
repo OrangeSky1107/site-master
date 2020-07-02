@@ -3,7 +3,6 @@ package com.wintone.site.widget;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
@@ -52,20 +51,6 @@ public class PopWindowLayout extends PopupWindow {
     }
 
     private void initListener(){
-        mMenuView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int height = mMenuView.findViewById(R.id.popLayout).getTop();
-                int y=(int) event.getY();
-                if(event.getAction() == MotionEvent.ACTION_UP){
-                    if(y<height){
-                        dismiss();
-                    }
-                }
-                return false;
-            }
-        });
-
         selectLocal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

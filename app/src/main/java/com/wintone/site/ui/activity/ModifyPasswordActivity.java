@@ -14,6 +14,7 @@ import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
 import com.wintone.site.ui.base.activity.BaseActivity;
 import com.wintone.site.utils.Constant;
+import com.wintone.site.utils.SPUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -69,28 +70,32 @@ public class ModifyPasswordActivity extends BaseActivity {
     }
 
     private void submit(){
+        String token = (String) SPUtils.getShare(this,Constant.USER_TOKEN,"");
+        String loginName = (String) SPUtils.getShare(this,Constant.USER_NAME,"");
         String oldPassword = etOldPassword.getText().toString().trim();
         String newPassword = etNewPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
         if (StringUtils.isEmpty(oldPassword) || StringUtils.isEmpty(newPassword) || StringUtils.isEmpty(confirmPassword)) {
             ToastUtils.showShort("密码不能为空");
+            mHUD.dismiss();
             return;
         }
 
         if (!StringUtils.equals(newPassword, confirmPassword)) {
             ToastUtils.showShort("两次密码不一致");
+            mHUD.dismiss();
             return;
         }
 
         Map<String,String> stringMap = new HashMap<>();
-        stringMap.put("loginName","admin");
+        stringMap.put("loginName",loginName);
         stringMap.put("oldPassword",oldPassword);
         stringMap.put("newPassword",newPassword);
         stringMap.put("confirmPassword",confirmPassword);
 
         NetWorkUtils.getInstance().createService(NetService.class)
-                .postUpdatePassword("b09e5d16c48a438c80d1cdd3e52d2a0c",Constant.UPDATE_PASSWORD_URL,stringMap)
+                .postUpdatePassword(token,Constant.UPDATE_PASSWORD_URL,stringMap)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -127,7 +132,7 @@ public class ModifyPasswordActivity extends BaseActivity {
     private void initProgress() {
         mHUD = KProgressHUD.create(ModifyPasswordActivity.this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setDetailsLabel("退出中...")
+                .setDetailsLabel("修改中...")
                 .setCancellable(true)
                 .setAnimationSpeed(2)
                 .setDimAmount(0.5f);

@@ -3,12 +3,14 @@ package com.wintone.site.ui.activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -40,7 +42,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 
-public class FeedBackActivity extends TakePhotoActivity implements PopWindowLayout.OpenWindowListener,PopWindowLayout.OnDismissListener{
+public class FeedBackActivity extends TakePhotoActivity implements PopWindowLayout.OpenWindowListener, PopupWindow.OnDismissListener {
 
     @BindView(R.id.toolbar_title)  TextView toolbar_title;
     @BindView(R.id.submit)         Button submit;
@@ -93,10 +95,21 @@ public class FeedBackActivity extends TakePhotoActivity implements PopWindowLayo
         }
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mPopWindowLayout != null && mPopWindowLayout.isShowing()) {
+            mPopWindowLayout.dismiss();
+            mPopWindowLayout = null;
+            setWindowAttributes(1f);
+        }
+        return super.onTouchEvent(event);
+    }
+
     private void popLayout(){
         if(mPopWindowLayout == null){
             mPopWindowLayout = new PopWindowLayout(this);
             mPopWindowLayout.setOpenWindowListener(this);
+            mPopWindowLayout.setOnDismissListener(this);
             setWindowAttributes(0.5f);
             mPopWindowLayout.showAtLocation(feedBackLayout,
                     Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
@@ -178,11 +191,6 @@ public class FeedBackActivity extends TakePhotoActivity implements PopWindowLayo
     }
 
     @Override
-    public void onDismiss() {
-        setWindowAttributes(1f);
-    }
-
-    @Override
     public void fromLocalImage() {
         CustomImageUtils.selectLocalImage(getTakePhoto());
     }
@@ -214,4 +222,8 @@ public class FeedBackActivity extends TakePhotoActivity implements PopWindowLayo
         ToastUtils.showShort("图片选择失败:"+msg);
     }
 
+    @Override
+    public void onDismiss() {
+        setWindowAttributes(1f);
+    }
 }

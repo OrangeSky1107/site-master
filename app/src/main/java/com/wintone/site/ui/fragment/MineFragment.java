@@ -38,6 +38,7 @@ public class MineFragment extends BaseFragment {
     @BindView(R.id.headerPhoto)   CircleImageView headerPhoto;
     @BindView(R.id.mini_phone)    TextView mini_phone;
     @BindView(R.id.userExplain)   TextView userExplain;
+    @BindView(R.id.cellProject)   LinearLayout cellProject;
 
     @Override
     protected int getContentView() {
@@ -50,7 +51,7 @@ public class MineFragment extends BaseFragment {
 
         toolbarTitle.setText("我的");
 
-        String imgUrl = (String) SPUtils.getShare(getActivity(), Constant.FACE_URL,"");
+        String imgUrl = (String) SPUtils.getShare(getActivity(), Constant.HEADER_IMAGE,"");
 
         RequestOptions options = new RequestOptions()
                 .placeholder(R.drawable.mine_default_avatar)
@@ -77,9 +78,11 @@ public class MineFragment extends BaseFragment {
             case 2:
                 userExplain.setText(projectName);
                 //project
+                cellProject.setVisibility(View.GONE);
                 break;
             case 3:
                 userExplain.setText(projectName);
+                cellProject.setVisibility(View.GONE);
                 break;
             default:
                 userExplain.setText(companyName);

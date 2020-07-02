@@ -45,6 +45,7 @@ public class NetWorkUtils {
             synchronized (NetWorkUtils.class){
                 if(sOkHttpClient == null){
                     sOkHttpClient = OkHttpUtil.getInstance().getOkHttpClient();
+                    sOkHttpClient.sslSocketFactory();
                 }
             }
         }

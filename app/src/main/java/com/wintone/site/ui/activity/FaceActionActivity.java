@@ -11,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -123,6 +124,8 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
         Log.i("FaceActionActivity", "initEngine:  init: " + faceVideoEngineCOde);
         if (faceVideoEngineCOde == ErrorInfo.MOK) {
             Log.i("FaceActionActivity", "initEngine:  init success ");
+        }else if(faceVideoEngineCOde == 90128){
+            Log.i("FaceActionActivity", "initEngine:error");
         }
     }
 
@@ -234,7 +237,28 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
                 .cameraListener(cameraListener)
                 .build();
         cameraHelper.init();
-        cameraHelper.start();
+        try{
+            cameraHelper.start();
+        }catch (Exception e){
+            e.printStackTrace();
+            androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("功能权限授权")
+                    .setMessage("相机权限被拒绝,请从新安装该APP")
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent();
+                            intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+                            intent.setData(Uri.fromParts("package", getPackageName(), null));
+                            startActivity(intent);
+                        }
+                    })
+                    .setCancelable(false)
+                    .create();
+
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+        }
     }
 
     private String saveCurrentPreView(byte[] data, Camera camera){

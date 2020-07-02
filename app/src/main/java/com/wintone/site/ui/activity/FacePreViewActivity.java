@@ -32,6 +32,7 @@ import com.arcsoft.imageutil.ArcSoftImageUtil;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.wintone.site.R;
+import com.wintone.site.SiteApplication;
 import com.wintone.site.ui.base.activity.BaseActivity;
 import com.wintone.site.utils.camera.CameraHelper;
 import com.wintone.site.utils.camera.CameraListener;
@@ -133,6 +134,12 @@ public class FacePreViewActivity extends BaseActivity implements ViewTreeObserve
         if (faceVideoEngineCOde == ErrorInfo.MOK) {
             Log.i("FacePreViewActivity", "initEngine:  init success ");
         }
+
+        if(faceVideoEngineCOde == 90115){
+            SiteApplication.getInstance().activeEngine();
+
+            initVideoEngine();
+        }
     }
 
     private void unDestroyEngine() {
@@ -152,6 +159,12 @@ public class FacePreViewActivity extends BaseActivity implements ViewTreeObserve
         if (faceEngineCode == ErrorInfo.MOK) {
             Log.i("FacePreViewActivity"," init engine is success");
             process();
+        }
+
+        if(faceVideoEngineCOde == 90115){
+            SiteApplication.getInstance().activeEngine();
+
+            initImageEngine();
         }
     }
 

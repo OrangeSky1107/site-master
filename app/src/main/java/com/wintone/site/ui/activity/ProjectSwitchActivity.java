@@ -2,8 +2,9 @@ package com.wintone.site.ui.activity;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.socks.library.KLog;
@@ -22,6 +23,7 @@ import java.util.Map;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
+import butterknife.OnClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -30,7 +32,7 @@ import io.reactivex.schedulers.Schedulers;
 public class ProjectSwitchActivity extends BaseActivity {
 
     @BindView(R.id.recyclerView)   RecyclerView recyclerView;
-    @BindView(R.id.searchMaskView) RelativeLayout searchMaskView;
+    @BindView(R.id.searchMaskView) TextView searchMaskView;
     @BindView(R.id.editTextSearch) EditText editTextSearch;
 
     private String inputContent = "";
@@ -56,6 +58,15 @@ public class ProjectSwitchActivity extends BaseActivity {
         });
 
         initLayoutManager();
+    }
+
+    @OnClick({R.id.iv_back})
+    public void onClick(View view){
+        switch (view.getId()){
+            case R.id.iv_back:
+                finish();
+                break;
+        }
     }
 
     private void initLayoutManager(){

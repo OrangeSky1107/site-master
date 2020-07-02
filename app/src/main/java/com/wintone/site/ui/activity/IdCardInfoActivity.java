@@ -3,11 +3,14 @@ package com.wintone.site.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
+import com.msd.ocr.idcard.LibraryInitOCR;
 import com.socks.library.KLog;
 import com.wintone.site.R;
 import com.wintone.site.ui.base.activity.BaseActivity;
@@ -17,20 +20,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import butterknife.BindView;
 import butterknife.OnClick;
 
 public class IdCardInfoActivity extends BaseActivity{
 
-    @BindView(R.id.nameTextView)      TextView nameTextView;
-    @BindView(R.id.sexExplain)        TextView sexExplain;
-    @BindView(R.id.nationExplain)     TextView nationExplain;
-    @BindView(R.id.idNoExplain)       TextView idNoExplain;
-    @BindView(R.id.birthdayExplain)   TextView birthdayExplain;
-    @BindView(R.id.addressExplain)    TextView addressExplain;
+    @BindView(R.id.nameTextView)      EditText nameTextView;
+    @BindView(R.id.sexExplain)        EditText sexExplain;
+    @BindView(R.id.nationExplain)     EditText nationExplain;
+    @BindView(R.id.idNoExplain)       EditText idNoExplain;
+    @BindView(R.id.birthdayExplain)   EditText birthdayExplain;
+    @BindView(R.id.addressExplain)    EditText addressExplain;
     @BindView(R.id.idFrontImageView)  ImageView idFrontImageView;
     @BindView(R.id.idHeaderImageView) ImageView mCircleImageView;
     @BindView(R.id.toolbar_title)     TextView toolbarTitle;
+    @BindView(R.id.toolbar_right)     ImageView toolbarRight;
 
     private String imgPath;
 
@@ -57,7 +62,10 @@ public class IdCardInfoActivity extends BaseActivity{
             hashMap = (HashMap) bundle.getSerializable("data");
         }
 
-        toolbarTitle.setText("录取身份证信息");
+        toolbarTitle.setText("身份证信息");
+
+        toolbarRight.setVisibility(View.VISIBLE);
+        toolbarRight.setImageResource(R.drawable.reset_photo);
 
         operationView(hashMap);
     }
@@ -76,12 +84,29 @@ public class IdCardInfoActivity extends BaseActivity{
         }
     }
 
+    private HashMap extraInoutText(){
+        String name = nameTextView.getText().toString();
+        hashMap.put("name",name);
+        String sex = sexExplain.getText().toString();
+        hashMap.put("sex",sex);
+        String nation = nationExplain.getText().toString();
+        hashMap.put("folk",nation);
+        String idNo = idNoExplain.getText().toString();
+        hashMap.put("num",idNo);
+        String birthday = birthdayExplain.getText().toString();
+        hashMap.put("birt",birthday);
+        String address = addressExplain.getText().toString();
+        hashMap.put("addr",address);
+        return hashMap;
+    }
+
     @Override
     protected void initData() {
 
     }
 
-    @OnClick({R.id.next})
+    @OnClick({R.id.next,R.id.toolbar_right})
+
     public void onClick(View view){
         switch(view.getId()){
             case R.id.next:{
@@ -93,7 +118,7 @@ public class IdCardInfoActivity extends BaseActivity{
                         return;
                     }
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("data",hashMap);
+                    bundle.putSerializable("data",extraInoutText());
                     intent.putExtra("bundle",bundle);
                     startActivity(intent);
                     finish();
@@ -102,6 +127,16 @@ public class IdCardInfoActivity extends BaseActivity{
                 }
                 break;
             }
+            case R.id.toolbar_right:
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("saveImage", true);  // 是否保存识别图片
+                bundle.putBoolean("showSelect", true); // 是否显示选择图片
+                bundle.putBoolean("showCamera", true); // 显示图片界面是否显示拍照(驾照选择图片识别率比扫描高)
+                bundle.putInt("requestCode", 1);       // requestCode
+                bundle.putInt("type", 0);              // 0身份证, 1驾驶证
+
+                LibraryInitOCR.startScan(this, bundle);
+                break;
         }
     }
 
@@ -126,5 +161,25 @@ public class IdCardInfoActivity extends BaseActivity{
             exists &= libraryNameList.contains(library);
         }
         return exists;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1 && resultCode == RESULT_OK){
+            String result = data.getStringExtra("OCRResult");
+            HashMap hashMap = JSON.parseObject(result,HashMap.class);
+            if(hashMap != null){
+                nameTextView.setText(hashMap.get("name").toString());
+                sexExplain.setText(hashMap.get("sex").toString());
+                nationExplain.setText(hashMap.get("folk").toString());
+                idNoExplain.setText(hashMap.get("num").toString());
+                birthdayExplain.setText(hashMap.get("birt").toString());
+                addressExplain.setText(hashMap.get("addr").toString());
+                Glide.with(this).load(hashMap.get("imgPath")).into(idFrontImageView);
+                imgPath = hashMap.get("headPath").toString();
+                Glide.with(this).load(hashMap.get("headPath")).into(mCircleImageView);
+            }
+        }
     }
 }

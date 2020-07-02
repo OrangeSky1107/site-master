@@ -13,6 +13,7 @@ import com.wintone.site.utils.Constant;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDex;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -22,7 +23,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+
 public class SiteApplication extends Application {
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     private static SiteApplication instance;
 
@@ -92,7 +98,6 @@ public class SiteApplication extends Application {
                         } else {
                             Log.i("SiteApplication","SiteApplication active is failed code = " + activeCode);
                         }
-
 //                        ActiveFileInfo activeFileInfo = new ActiveFileInfo();
 //                        int res = FaceEngine.getActiveFileInfo(instance, activeFileInfo);
 //                        if (res == ErrorInfo.MOK) {

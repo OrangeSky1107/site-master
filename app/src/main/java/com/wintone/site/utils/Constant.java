@@ -8,7 +8,7 @@ public class Constant {
     public static final String BASE_URL = "http://192.168.1.188:19999";
 
     //修改密码
-    public static final String UPDATE_PASSWORD_URL = "/version/updatePassword";
+    public static final String UPDATE_PASSWORD_URL = "/appUser/updatePassword";
 
     //用户登录 /appUser/appLogin
     public static final String USER_LOGIN_URL = "/appUser/appLogin";

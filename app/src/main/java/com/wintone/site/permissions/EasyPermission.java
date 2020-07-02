@@ -24,6 +24,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.Settings;
 
+import com.socks.library.KLog;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -112,6 +114,7 @@ public class EasyPermission {
         }
 
         for (String perm : perms) {
+            //遍历循环所有权限,当发现有权限是没有授权的会返回false
             boolean hasPerm =
                     (ContextCompat.checkSelfPermission(context, perm) == PackageManager.PERMISSION_GRANTED);
             if (!hasPerm) {
@@ -152,15 +155,14 @@ public class EasyPermission {
 
 
         boolean shouldShowRationale = false;
+
         for (String perm : deniedPermissions) {
-            shouldShowRationale =
-                    shouldShowRationale || Utils.shouldShowRequestPermissionRationale(object, perm);
+            shouldShowRationale = shouldShowRationale || Utils.shouldShowRequestPermissionRationale(object, perm);
         }
 
         if (Utils.isEmpty(deniedPermissions)) {
             mCallBack.onPermissionGranted(requestCode, Arrays.asList(permissions));
         } else {
-
             final String[] deniedPermissionArray =
                     deniedPermissions.toArray(new String[deniedPermissions.size()]);
 
@@ -169,27 +171,8 @@ public class EasyPermission {
                 if (null == activity) {
                     return;
                 }
-
-                AlertDialog dialog = new AlertDialog.Builder(activity).setMessage(rationale)
-                        .setPositiveButton(positiveButton, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                executePermissionsRequest(object, deniedPermissionArray, requestCode);
-                            }
-                        })
-//                        .setNegativeButton(negativeButton, new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                // act as if the permissions were denied
-//                                ((PermissionCallback) object).onPermissionDenied(requestCode,
-//                                        deniedPermissions);
-//                            }
-//                        })
-                        .setCancelable(false)
-                        .create();
-
-                dialog.setCanceledOnTouchOutside(false);
-                dialog.show();
+                String message = "需要去设置界面开启所有权限才能使用此功能!";
+                checkDeniedPermissionsNeverAskAgain(object,message,positiveButton,negativeButton,deniedPermissions);
             } else {
                 executePermissionsRequest(object, deniedPermissionArray, requestCode);
             }
@@ -262,17 +245,8 @@ public class EasyPermission {
                                                               @StringRes int positiveButton, @StringRes int negativeButton,
                                                               @Nullable DialogInterface.OnClickListener negativeButtonOnClickListener,
                                                               List<String> deniedPerms) {
-        boolean shouldShowRationale;
-        for (String perm : deniedPerms) {
-            shouldShowRationale = Utils.shouldShowRequestPermissionRationale(object, perm);
-
-            if (!shouldShowRationale) {
                 final Activity activity = Utils.getActivity(object);
-                if (null == activity) {
-                    return true;
-                }
-
-                AlertDialog dialog = new AlertDialog.Builder(activity).setMessage(rationale)
+                AlertDialog dialog = new AlertDialog.Builder(activity).setTitle("功能权限授权").setMessage(rationale)
                         .setPositiveButton(positiveButton, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -282,17 +256,20 @@ public class EasyPermission {
                                 startAppSettingsScreen(object, intent);
                             }
                         })
-                        .setNegativeButton(negativeButton, negativeButtonOnClickListener)
+                        .setNegativeButton(negativeButton, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ((PermissionCallback) object).onPermissionDenied(2,
+                                        deniedPerms);
+                            }
+                        })
                         .setCancelable(false)
                         .create();
 
                 dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
-                return true;
-            }
-        }
 
-        return false;
+                return true;
     }
 
 

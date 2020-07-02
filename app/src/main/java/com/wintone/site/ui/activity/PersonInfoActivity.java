@@ -3,10 +3,12 @@ package com.wintone.site.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -49,13 +51,14 @@ public class PersonInfoActivity extends BaseActivity {
 
     private HashMap dataMap = null;
 
-    @BindView(R.id.projectTextView) TextView projectTextView;
+    @BindView(R.id.projectTextView) EditText projectTextView;
     @BindView(R.id.companyTextView) TextView companyTextView;
     @BindView(R.id.teamTextView)    TextView teamTextView;
-    @BindView(R.id.workTypeTextView)TextView workTypeTextView;
-    @BindView(R.id.entranceDateTextView) TextView entranceDateTextView;
+    @BindView(R.id.workTypeTextView)EditText workTypeTextView;
+    @BindView(R.id.entranceDateTextView) EditText entranceDateTextView;
     @BindView(R.id.phoneTextView)   EditText phoneTextView;
     @BindView(R.id.leaderSwitch)    SwitchButton leaderSwitch;
+    @BindView(R.id.nextButton)      Button nextButton;
 
     private KProgressHUD mHUD;
 
@@ -91,16 +94,62 @@ public class PersonInfoActivity extends BaseActivity {
         initProgress();
     }
 
+    private String project = "";
+    private String team = "";
+    private String date = "";
+    private String phone = "";
+
     @Override
     protected void initData() {
         phoneTextView.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                phone = s.toString();
+                listenerAllEditText(project,team,date,phone);
+            }
 
             @Override
             public void afterTextChanged(Editable s) {}
         });
+        workTypeTextView.setInputType(InputType.TYPE_NULL);
+        workTypeTextView.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                team = s.toString();
+                listenerAllEditText(project,team,date,phone);
+            }
+            @Override public void afterTextChanged(Editable s) {}
+        });
+        entranceDateTextView.setInputType(InputType.TYPE_NULL);
+        entranceDateTextView.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                date = s.toString();
+                listenerAllEditText(project,team,date,phone);
+            }
+            @Override public void afterTextChanged(Editable s) {}
+        });
+        projectTextView.setInputType(InputType.TYPE_NULL);
+        projectTextView.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                project = s.toString();
+                listenerAllEditText(project,team,date,phone);
+            }
+            @Override public void afterTextChanged(Editable s) { }
+        });
+    }
+
+    private void listenerAllEditText(String project,String team,String date,String phone){
+        if(project.length() > 0 && team.length() > 0 && date.length() > 0 && phone.length() > 0){
+            nextButton.setEnabled(true);
+        }else{
+            nextButton.setEnabled(false);
+        }
     }
 
     @OnClick({R.id.nextButton,R.id.projectTextView,R.id.companyTextView,R.id.teamTextView,R.id.workTypeTextView,R.id.entranceDateTextView,R.id.leaderSwitch})
@@ -172,6 +221,8 @@ public class PersonInfoActivity extends BaseActivity {
                 });
     }
 
+    private boolean projectFlag = true;
+
     private void fillProject(List<ProjectModel.ResultBean.RecordsBean> recordsBeans){
         List<String> projectName = new ArrayList<>();
 
@@ -183,6 +234,13 @@ public class PersonInfoActivity extends BaseActivity {
         UiUtils.showOptionInfoPicker(this, projectName, 0, new OptionPicker.OnOptionPickListener() {
             @Override
             public void onOptionPicked(int index, String item) {
+                if(projectFlag){
+                    //只记录第一次进来修改选择项目不控制,以后进来的都必须先清空一次
+                    projectFlag = false;
+                }else{
+                    companyTextView.setText("");
+                    teamTextView.setText("");
+                }
                 projectIndex = index;
                 projectTextView.setText(item);
             }
@@ -367,7 +425,6 @@ public class PersonInfoActivity extends BaseActivity {
                 .setDimAmount(0.5f);
     }
 
-
     private void checkRegex(){
         String projectName = projectTextView.getText().toString();
         if(projectName.equals("请选择所选项目")){
@@ -529,7 +586,6 @@ public class PersonInfoActivity extends BaseActivity {
         projectWorkers.setIdAddress(dataMap.get("addr").toString());
         projectWorkers.setIdAgency(dataMap.get("issue").toString());
         projectWorkers.setIdValiddate(dataMap.get("valid").toString());
-
 
         if(dataMap.get("bankCard").toString().length() > 10){
             projectWorkers.setEmpCardnum(dataMap.get("bankCard").toString());

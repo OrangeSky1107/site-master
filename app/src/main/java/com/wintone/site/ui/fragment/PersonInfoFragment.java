@@ -53,12 +53,21 @@ public class PersonInfoFragment extends BaseFragment {
 
         nameTextView.setText(mPersonSignalModel.getResult().getEmpName());
         idNoTextView.setText(mPersonSignalModel.getResult().getIdCode());
-//        birthdayTextView.setText(mPersonSignalModel);
+        birthdayTextView.setText(mPersonSignalModel.getResult().getDateOfBirth());
+        sexTextView.setText(mPersonSignalModel.getResult().getEmpSex());
+        nationTextView.setText(mPersonSignalModel.getResult().getEmpNation());
+        addressTextView.setText(mPersonSignalModel.getResult().getIdAddress());
+        idIssuerTextView.setText(mPersonSignalModel.getResult().getIdAgency());
+        idDateTextView.setText(mPersonSignalModel.getResult().getIdValiddate());
+        bankNoTextView.setText(mPersonSignalModel.getResult().getEmpCardnum());
+        bankNameTextView.setText(mPersonSignalModel.getResult().getEmpBankname());
 
 //        if(null != mPersonSignalModel.getResult().get)
         Glide.with(getActivity()).load(mPersonSignalModel.getResult().getIdphotoScan()).into(idFrontImageView);
 
         Glide.with(getActivity()).load(mPersonSignalModel.getResult().getIdphotoScan2()).into(idBackImageView);
+
+        Glide.with(getActivity()).load(mPersonSignalModel.getResult().getBankCardUrl()).into(bankImageView);
     }
 
     @Override

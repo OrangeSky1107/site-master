@@ -1,2 +1,2 @@
-include ':app', ':arcfacelibrary', ':bankinfolibrary', ':prdownloader', ':takephotolibrary', ':animateloading'
+include ':app', ':arcfacelibrary', ':bankinfolibrary', ':prdownloader', ':takephotolibrary', ':animateloading', ':refresh-header-two-level', ':refresh-layout-kernel', ':refresh-layout', ':refresh-header-material', ':refresh-drawable-path', ':refresh-header', ':refresh-footer-ball', ':refresh-header-classics', ':refresh-header-radar', ':refresh-header-falsify', ':refresh-footer-classics', ':refresh-drawable-paint'
 rootProject.name='site-master'

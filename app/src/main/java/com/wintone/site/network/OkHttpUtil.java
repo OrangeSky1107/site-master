@@ -10,7 +10,15 @@ import com.wintone.site.networkmodel.AttendacedofUpload;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import androidx.annotation.NonNull;
 import okhttp3.Cache;
@@ -39,6 +47,8 @@ public class OkHttpUtil {
 
     private static final String CACHE_CONTROL_AGE = "max-age="+CACHE_MAX_AGE;
 
+    private CustomX509TrustManager sCustomX509TrustManager;
+
     public static OkHttpUtil getInstance(){
        return new OkHttpUtil();
     }
@@ -50,10 +60,49 @@ public class OkHttpUtil {
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10, TimeUnit.SECONDS)
+                .sslSocketFactory(createSSLSocketFactory())
                 .addInterceptor(mLoginInterceptor)
                 .addNetworkInterceptor(mRewriteCacheControlInterceptor)
                 .addInterceptor(mRewriteCacheControlInterceptor)
                 .build();
+    }
+
+    /**
+     * 解决okhttp请求https 证书如果是用来测试的(不可信任)的情况下  支持https网站是CA机构颁发的证书，默认情况下是可以信任的，否则是不可信任的。
+     * 添加 OkHttp中忽略SSL验证
+     * javax.net.ssl.SSLHandshakeException:
+     *     java.security.cert.CertPathValidatorException:
+     *         Trust anchor for certification path not found.
+     * @return
+     */
+    private SSLSocketFactory createSSLSocketFactory(){
+        SSLSocketFactory sslSocketFactory = null;
+        try{
+            sCustomX509TrustManager = new CustomX509TrustManager();
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null,new TrustManager[]{sCustomX509TrustManager},new SecureRandom());
+            sslSocketFactory = sslContext.getSocketFactory();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return sslSocketFactory;
+    }
+
+    public static class CustomX509TrustManager implements X509TrustManager{
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+
+        }
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return new X509Certificate[0];
+        }
     }
 
     public static boolean isNetWorkAvailable(){

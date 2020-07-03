@@ -7,10 +7,11 @@
     android:id="@+id/refreshLayout"
     app:srlPrimaryColor="@color/home_num_color"
     app:srlAccentColor="@android:color/white"
-    app:srlEnableHeaderTranslationContent="true"
+    app:srlEnableHeaderTranslationContent="false"
     app:srlEnableLoadMore="false">
 
-    <com.scwang.smartrefresh.header.BezierCircleHeader
+    <com.scwang.smartrefresh.header.MaterialHeader
+        android:id="@+id/materialHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

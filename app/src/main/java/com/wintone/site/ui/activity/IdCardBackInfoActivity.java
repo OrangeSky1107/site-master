@@ -47,7 +47,6 @@ public class IdCardBackInfoActivity extends BaseActivity {
         Bundle bundle = intent.getBundleExtra("bundle");
         if(bundle != null){
             dataMap = (HashMap) bundle.getSerializable("data");
-
             Log.i("IdCardBackInfoActivity","look at map data = " + JSON.toJSONString(dataMap));
         }
 

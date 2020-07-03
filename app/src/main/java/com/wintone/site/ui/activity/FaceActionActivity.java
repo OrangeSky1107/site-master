@@ -25,6 +25,7 @@ import com.arcsoft.face.FaceEngine;
 import com.arcsoft.face.FaceInfo;
 import com.arcsoft.face.enums.DetectMode;
 import com.wintone.site.R;
+import com.wintone.site.SiteApplication;
 import com.wintone.site.network.OkHttpUtil;
 import com.wintone.site.network.OkhttpClientRequest;
 import com.wintone.site.networkmodel.AttendacedofUpload;
@@ -279,7 +280,13 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.RGB_565;
         Bitmap bitmap = BitmapFactory.decodeByteArray(rawImage, 0, rawImage.length, options);
-        Bitmap rotationMap = ImageRotateUtil.of().rotateBitmapByDegree(bitmap,-90);
+        Bitmap rotationMap = null;
+        Integer integer = (Integer) SPUtils.getShare(SiteApplication.getInstance(), Constant.CAMERA_SWITCH,1);
+        if(integer == 1){
+            rotationMap = ImageRotateUtil.of().rotateBitmapByDegree(bitmap,-90);
+        }else{
+            rotationMap = ImageRotateUtil.of().rotateBitmapByDegree(bitmap,-270);
+        }
         long systemTime = System.currentTimeMillis();
         String imageName = systemTime + "-face";
         Log.i("ScanCamera","look at face name = " + imageName);

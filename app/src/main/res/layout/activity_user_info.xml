@@ -106,10 +106,9 @@
                     android:layout_marginLeft="20dp"
                     android:textSize="15sp"
                     android:maxLines="1"
-                    android:text="姓名"
+                    android:text="昵称"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textColor="@color/person_dark_gray_color"/>
-
 
                 <EditText
                     android:id="@+id/nameTextView"
@@ -119,6 +118,7 @@
                     android:textSize="15sp"
                     android:textAlignment="textStart"
                     android:textColor="@color/person_dark_black"/>
+
             </LinearLayout>
 
             <LinearLayout

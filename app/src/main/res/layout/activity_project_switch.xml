@@ -60,10 +60,19 @@
 
     </RelativeLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/recyclerView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:background="@color/white"/>-->
+    <LinearLayout
+        android:id="@+id/ll_keyword_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"/>
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+    </LinearLayout>
 
 </LinearLayout>

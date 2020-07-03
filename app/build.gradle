@@ -126,6 +126,7 @@ dependencies {
     implementation project(':refresh-header')
     implementation project(':refresh-layout')
     implementation project(':refresh-layout-kernel')
+    implementation project(':refresh-header-material')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'

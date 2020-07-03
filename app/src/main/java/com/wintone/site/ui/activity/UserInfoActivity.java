@@ -2,6 +2,7 @@ package com.wintone.site.ui.activity;
 
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -31,7 +32,7 @@ public class UserInfoActivity extends BaseActivity {
     @BindView(R.id.toolbar_title)       TextView toolbar_title;
     @BindView(R.id.account)             TextView accountLayout;
     @BindView(R.id.organization)        TextView organizationLayout;
-    @BindView(R.id.nameTextView)        TextView nameTextView;
+    @BindView(R.id.nameTextView)        EditText nameTextView;
 
     @Override
     protected int getContentView() {
@@ -43,6 +44,10 @@ public class UserInfoActivity extends BaseActivity {
         toolbar_title.setText("个人信息");
 
         mHUD.setDetailsLabel("保存中...");
+
+        String nikeName = (String)SPUtils.getShare(this,Constant.NIKE_NAME,"");
+
+        nameTextView.setHint(nikeName);
     }
 
     @OnClick({R.id.iv_back,R.id.save})
@@ -87,8 +92,9 @@ public class UserInfoActivity extends BaseActivity {
                             HashMap map =  JSON.parseObject(value.string(),HashMap.class);
                             Integer code = (Integer) map.get("code");
                             if(code == 1000){
-                               ToastUtils.showShort("修改成功!");
-                               finish();
+                                SPUtils.putShare(UserInfoActivity.this,Constant.NIKE_NAME,nikeName);
+                                ToastUtils.showShort("修改成功!");
+                                finish();
                             }
                             mHUD.dismiss();
                         } catch (IOException e) {

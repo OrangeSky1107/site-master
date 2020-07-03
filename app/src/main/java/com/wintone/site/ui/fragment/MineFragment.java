@@ -58,9 +58,6 @@ public class MineFragment extends BaseFragment {
                 .error(R.drawable.mine_default_avatar);
         Glide.with(getActivity()).load(imgUrl).apply(options).into(headerPhoto);
 
-        String name = (String)SPUtils.getShare(getActivity(),Constant.USER_NAME,"");
-        mini_phone.setText(name);
-
         Integer user_Type = (Integer) SPUtils.getShare(getActivity(),Constant.USER_TYPE,5);
 
         String companyName = (String)SPUtils.getShare(getActivity(),Constant.COMPANY_NAME,"无所属公司");
@@ -87,6 +84,18 @@ public class MineFragment extends BaseFragment {
             default:
                 userExplain.setText(companyName);
                 break;
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        String nikeName = (String)SPUtils.getShare(getActivity(),Constant.NIKE_NAME,"");
+
+        if(nikeName.length() == 0){
+            mini_phone.setText("无设置昵称");
+        }else{
+            mini_phone.setText(nikeName);
         }
     }
 

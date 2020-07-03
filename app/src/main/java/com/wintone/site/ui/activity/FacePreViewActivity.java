@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,6 +37,8 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.wintone.site.R;
 import com.wintone.site.SiteApplication;
 import com.wintone.site.ui.base.activity.BaseActivity;
+import com.wintone.site.utils.Constant;
+import com.wintone.site.utils.SPUtils;
 import com.wintone.site.utils.camera.CameraHelper;
 import com.wintone.site.utils.camera.CameraListener;
 import com.wintone.site.utils.faceutils.ConfigUtil;
@@ -42,6 +47,12 @@ import com.wintone.site.utils.faceutils.RecognizeColor;
 import com.wintone.site.widget.face.DrawInfo;
 import com.wintone.site.widget.face.FaceRectView;
 
+import org.devio.takephoto.uitl.ImageRotateUtil;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +68,8 @@ import io.reactivex.schedulers.Schedulers;
 
 public class FacePreViewActivity extends BaseActivity implements ViewTreeObserver.OnGlobalLayoutListener{
 
-//    private String headPath = "/storage/emulated/0/Android/data/com.tomcat.ocr.idcard/cache/1592213063907-head.jpg";
+    private static final String IMAGE_PATH = "/storage/emulated/0/Android/data/com.tomcat.ocr.idcard/cache/";
+
     private String headPath;
 
     private Bitmap mBitmap = null;
@@ -310,13 +322,11 @@ public class FacePreViewActivity extends BaseActivity implements ViewTreeObserve
                             Log.i("FacePreViewActivity", "success = " + faceSimilar.getScore() );
                             if(faceSimilar.getScore() >= 0.8){
                                 if(flag){
-                                    flag = false;
-                                    if (cameraHelper != null) {
-                                        cameraHelper.release();
-                                        cameraHelper = null;
-                                    }
-                                    unInitEngine();
-                                    unDestroyEngine();
+
+                                    String faceImgPath = saveCurrentPreView(nv21,camera);
+
+                                    hashMap.put("faceImg",faceImgPath);
+
                                     Intent intent = new Intent(FacePreViewActivity.this,IdCardBackInfoActivity.class);
                                     Bundle bundle = new Bundle();
                                     if(hashMap == null){
@@ -325,6 +335,13 @@ public class FacePreViewActivity extends BaseActivity implements ViewTreeObserve
                                     }
                                     bundle.putSerializable("data",hashMap);
                                     intent.putExtra("bundle",bundle);
+                                    flag = false;
+                                    if (cameraHelper != null) {
+                                        cameraHelper.release();
+                                        cameraHelper = null;
+                                    }
+                                    unInitEngine();
+                                    unDestroyEngine();
                                     ActivityUtils.startActivity(intent);
                                     finish();
                                 }
@@ -384,4 +401,62 @@ public class FacePreViewActivity extends BaseActivity implements ViewTreeObserve
             Log.i("FacePreViewActivity","unInitEngine: " + faceEngineCode);
         }
     }
+
+    private String saveCurrentPreView(byte[] data, Camera camera){
+        Camera.Size previewSize = camera.getParameters().getPreviewSize();//获取尺寸,格式转换的时候要用到
+        BitmapFactory.Options newOpts = new BitmapFactory.Options();
+        newOpts.inJustDecodeBounds = true;
+        YuvImage yuvimage = new YuvImage(
+                data,
+                ImageFormat.NV21,
+                previewSize.width,
+                previewSize.height,
+                null);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        yuvimage.compressToJpeg(new Rect(0, 0, previewSize.width, previewSize.height), 100, baos);// 80--JPG图片的质量[0-100],100最高
+        byte[] rawImage = baos.toByteArray();
+        Log.i("ScanCamera","look at byte size = " + rawImage.length);
+        //将rawImage转换成bitmap
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        Bitmap bitmap = BitmapFactory.decodeByteArray(rawImage, 0, rawImage.length, options);
+        Integer integer = (Integer) SPUtils.getShare(SiteApplication.getInstance(), Constant.CAMERA_SWITCH,1);
+        Bitmap rotationMap = null;
+        if(integer == 1){
+            rotationMap = ImageRotateUtil.of().rotateBitmapByDegree(bitmap,-90);
+        }else{
+            rotationMap = ImageRotateUtil.of().rotateBitmapByDegree(bitmap,-270);
+        }
+        long systemTime = System.currentTimeMillis();
+        String imageName = systemTime + "-face";
+        Log.i("ScanCamera","look at face name = " + imageName);
+        return saveToLocal(rotationMap,imageName);
+    }
+
+    private String saveToLocal(Bitmap bitmap, String bitName) {
+        String path = IMAGE_PATH + bitName + ".jpg";
+        File file = new File(IMAGE_PATH + bitName + ".jpg");
+        if (file.exists()) {
+            file.delete();
+        }
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(file);
+            if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)) {
+                out.flush();
+                out.close();
+                return path;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return path;
+    }
+
 }

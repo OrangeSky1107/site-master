@@ -570,15 +570,36 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
                     Log.i("PersonInfoActivity","look at uploadBankImage loader success = " + successMessage);
                     HashMap hashMap = JSON.parseObject(successMessage,HashMap.class);
                     String cloudBankPath = hashMap.get("result").toString();
-                    submit(cloudIdCardPath,cloudHeadPath,cloudIdCardBackPath,cloudBankPath);
+                    uploadFaceImage(cloudIdCardPath,cloudHeadPath,cloudIdCardBackPath,cloudBankPath);
                 }
             });
         }else{
-            submit(cloudIdCardPath,cloudHeadPath,cloudIdCardBackPath,"");
+            uploadFaceImage(cloudIdCardPath,cloudHeadPath,cloudIdCardBackPath,"");
         }
     }
 
-    private void submit(String cloudIdCardPath,String cloudheadPath,String cloudIdCardBackPath,String cloudBankPath){
+    private void uploadFaceImage(String cloudIdCardPath,String cloudHeadPath,String cloudIdCardBackPath,String cloudBankPath){
+        String faceUrlPath = dataMap.get("faceImg").toString();
+        String token = (String)SPUtils.getShare(PersonInfoActivity.this,Constant.USER_TOKEN,"");
+        OkHttpUtil.getInstance().uploadTopPost(Constant.USER_UPLOAD_URL,token, faceUrlPath, new OkhttpClientRequest() {
+            @Override
+            public void responseFailure(String errorMessage) {
+                Log.i("PersonInfoActivity","look at image loader error = " + errorMessage);
+                ToastUtils.showShort("人脸实时图片上传失败!");
+                mHUD.dismiss();
+            }
+
+            @Override
+            public void responseSuccess(String successMessage) {
+                Log.i("PersonInfoActivity","look at face url loader success = " + successMessage);
+                HashMap hashMap = JSON.parseObject(successMessage,HashMap.class);
+                String faceUrl = hashMap.get("result").toString();
+                submit(cloudIdCardPath,cloudHeadPath,cloudIdCardBackPath,cloudBankPath,faceUrl);
+            }
+        });
+    }
+
+    private void submit(String cloudIdCardPath,String cloudHeadPath,String cloudIdCardBackPath,String cloudBankPath,String faceUrl){
         ProjectWorkers projectWorkers = new ProjectWorkers();
         String projectName = projectTextView.getText().toString();
 
@@ -627,7 +648,8 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
         }
 
         projectWorkers.setStartTime(entranceDate);
-        projectWorkers.setFaceUrl(cloudheadPath);
+        projectWorkers.setEmpNaticeplace(cloudHeadPath);
+        projectWorkers.setFaceUrl(faceUrl);
         projectWorkers.setIdphotoScan(cloudIdCardPath);
         projectWorkers.setIdphotoScan2(cloudIdCardBackPath);
 

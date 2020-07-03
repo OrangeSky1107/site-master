@@ -219,7 +219,7 @@ public class LoginActivity extends BaseActivity {
                 SPUtils.putShare(this,Constant.USER_TYPE,loginModel.getResult().getUserType());
                 SPUtils.putShare(this,Constant.FACE_URL,loginModel.getResult().getFaceUrl());
                 SPUtils.putShare(this,Constant.USER_ID,loginModel.getResult().getId());
-                if(null == loginModel.getResult().getDisplayName()){
+                if(null == loginModel.getResult().getNickName()){
                     SPUtils.putShare(this,Constant.NIKE_NAME,"");
                 }else{
                     SPUtils.putShare(this,Constant.NIKE_NAME,loginModel.getResult().getNickName());

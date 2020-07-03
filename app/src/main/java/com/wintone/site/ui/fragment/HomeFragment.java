@@ -11,6 +11,7 @@ import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.msd.ocr.idcard.LibraryInitOCR;
+import com.scwang.smart.refresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -56,6 +57,7 @@ public class HomeFragment extends BaseFragment implements EasyPermission.Permiss
     @BindView(R.id.managerPresent)          TextView managerPresent;
     @BindView(R.id.todayAttenceManagerNum)  TextView todayAttenceManagerNum;
     @BindView(R.id.refreshLayout)           SmartRefreshLayout mSmartRefreshLayout;
+    @BindView(R.id.materialHeader)          MaterialHeader mMaterialHeader;
 
     private KProgressHUD mHUD;
 
@@ -85,11 +87,14 @@ public class HomeFragment extends BaseFragment implements EasyPermission.Permiss
     }
 
     private void initListener(){
+        mSmartRefreshLayout.setPrimaryColorsId(R.color.home_num_color,R.color.white);
+        mMaterialHeader.setProgressBackgroundColorSchemeResource(R.color.home_num_color);
+        mMaterialHeader.setColorSchemeResources(R.color.white);
         mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                loadData();
                 refreshLayout.finishRefresh(1500);
+                loadData();
             }
         });
     }
@@ -119,10 +124,16 @@ public class HomeFragment extends BaseFragment implements EasyPermission.Permiss
 
     private void attendanceWorkers(){
         Integer userType = (Integer) SPUtils.getShare(getActivity(),Constant.USER_TYPE,5);
-        if(userType == 0 || userType == 1 || userType == 3){
+        if(userType == 0 || userType == 1){
             ToastUtils.showShort("该账号权限过高,不支持实名登记!");
             return;
         }
+
+        if(userType == 3){
+            ToastUtils.showShort("该账号权限过低,不支持实名登记!");
+            return;
+        }
+
         registerPersonInfo();
     }
 
@@ -184,7 +195,6 @@ public class HomeFragment extends BaseFragment implements EasyPermission.Permiss
         mHUD.show();
         Map<String,String> stringMap = new HashMap<>();
         stringMap.put("loginName", (String) SPUtils.getShare(getActivity(),Constant.USER_NAME,""));
-        stringMap.put("projectsId",(String)SPUtils.getShare(getActivity(),Constant.PROJECT_ID,""));
         String token = (String)SPUtils.getShare(getActivity(),Constant.USER_TOKEN,"");
         NetWorkUtils.getInstance().createService(NetService.class)
                 .postHomePager(token,Constant.HOME_PAGER_URL,stringMap)
@@ -217,11 +227,14 @@ public class HomeFragment extends BaseFragment implements EasyPermission.Permiss
     }
 
     private void fillView(HomePagerModel homePagerModel){
-        if(homePagerModel.getResult().getLaborSituation() <= 0){
-            workerAttencePercentage.setText("0%");
+        if(homePagerModel.getResult().getLaborSituation() < 0.6){
+            Double attence = homePagerModel.getResult().getLaborSituation() * 100;
+            workerAttencePercentage.setText(attence.longValue() + "%");
+            workerAttencePercentage.setTextColor(getActivity().getResources().getColor(R.color.text_red));
         }else{
-            double attence = homePagerModel.getResult().getLaborSituation() * 100;
-            workerAttencePercentage.setText(attence + "%");
+            Double attence = homePagerModel.getResult().getLaborSituation() * 100;
+            workerAttencePercentage.setText(attence.longValue() + "%");
+            workerAttencePercentage.setTextColor(getActivity().getResources().getColor(R.color.text_green));
         }
 
         workerTotalNum.setText(homePagerModel.getResult().getLaborCount()+"");
@@ -230,11 +243,14 @@ public class HomeFragment extends BaseFragment implements EasyPermission.Permiss
 
         todayAttenceWorkerNum.setText(homePagerModel.getResult().getAttendanceLaborCount()+"");
 
-        if(homePagerModel.getResult().getAdminSituation() <= 0){
-            managerPercentage.setText("0%");
+        if(homePagerModel.getResult().getAdminSituation() < 0.6){
+            Double attence = homePagerModel.getResult().getAdminSituation() * 100;
+            managerPercentage.setText(attence.longValue() + "%");
+            managerPercentage.setTextColor(getActivity().getResources().getColor(R.color.text_red));
         }else{
-            double attence = homePagerModel.getResult().getAdminSituation() * 100;
-            managerPercentage.setText(attence + "%");
+            Double attence = homePagerModel.getResult().getAdminSituation() * 100;
+            managerPercentage.setText(attence.longValue() + "%");
+            managerPercentage.setTextColor(getActivity().getResources().getColor(R.color.text_green));
         }
 
         totalManager.setText(homePagerModel.getResult().getAdminIstrationCount()+"");

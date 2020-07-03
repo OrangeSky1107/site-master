@@ -9,6 +9,10 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.ActivityUtils;
 import com.kaopiz.kprogresshud.KProgressHUD;
+import com.scwang.smart.refresh.header.MaterialHeader;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.wintone.site.R;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
@@ -22,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Observer;
@@ -31,9 +36,11 @@ import io.reactivex.schedulers.Schedulers;
 
 public class PersonDetailsActivity extends BaseActivity {
 
-    @BindView(R.id.gridView)      GridView mGridView;
-    @BindView(R.id.tips)          TextView tips;
-    @BindView(R.id.toolbar_title) TextView toolbarTitle;
+    @BindView(R.id.gridView)       GridView mGridView;
+    @BindView(R.id.tips)           TextView tips;
+    @BindView(R.id.toolbar_title)  TextView toolbarTitle;
+    @BindView(R.id.refreshLayout)  SmartRefreshLayout mRefreshLayout;
+    @BindView(R.id.materialHeader) MaterialHeader mMaterialHeader;
 
     private PersonDetailsAdapter adapter;
 
@@ -49,6 +56,21 @@ public class PersonDetailsActivity extends BaseActivity {
         toolbarTitle.setText("人员信息");
 
         initProgress();
+
+        initListener();
+    }
+
+    private void initListener() {
+        mRefreshLayout.setPrimaryColorsId(R.color.home_num_color,R.color.white);
+        mMaterialHeader.setProgressBackgroundColorSchemeResource(R.color.home_num_color);
+        mMaterialHeader.setColorSchemeResources(R.color.white);
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                refreshLayout.finishRefresh(1500);
+                initData();
+            }
+        });
     }
 
     private void initProgress() {

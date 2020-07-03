@@ -13,7 +13,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="91dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/logo" />
+                android:src="@mipmap/splash_logo" />
 
             <TextView
                 android:id="@+id/tv_title"
@@ -23,7 +23,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_below="@+id/iv_icon"
                 android:text="@string/kind_intelligence"
-                android:textColor="@color/text_red"
+                android:textColor="@color/home_num_color"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="monospace" />
@@ -185,7 +185,7 @@
           android:layout_height="wrap_content"
           android:text="@string/company_cn"
           android:gravity="center_horizontal"
-          android:textColor="@color/text_red"
+          android:textColor="@color/home_num_color"
           android:textSize="15sp"
           />
 
@@ -196,7 +196,7 @@
           android:layout_marginTop="5dp"
           android:layout_below="@+id/chinese_name"
           android:text="@string/company_en"
-          android:textColor="@color/text_red"
+          android:textColor="@color/home_num_color"
           android:gravity="center_horizontal"
           android:textSize="10sp"
           />

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.blankj.utilcode.util.ActivityUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.msd.ocr.idcard.LibraryInitOCR;
 import com.wintone.site.R;
@@ -135,6 +136,13 @@ public class IdCardBackInfoActivity extends BaseActivity {
         if(requestCode == 1 && resultCode == RESULT_OK){
             String result = data.getStringExtra("OCRResult");
             HashMap hashMap = JSON.parseObject(result,HashMap.class);
+
+            String valid = hashMap.get("valid").toString();
+            if(valid.length() < 10){
+                ToastUtils.showShort("图片有误,请从新拍摄!");
+                return;
+            }
+
             officeTextView.setText(hashMap.get("issue").toString());
             nameTextView.setText(hashMap.get("valid").toString());
             Glide.with(this).load(hashMap.get("imgPath").toString()).into(idFrontImageView);

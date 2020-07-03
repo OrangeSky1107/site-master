@@ -35,7 +35,7 @@ import com.bumptech.glide.Glide;
 import com.wintone.site.R;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
-import com.wintone.site.networkmodel.AttendanceModel;
+import com.wintone.site.networkmodel.ResponseModel;
 import com.wintone.site.networkmodel.AttendanceRecord;
 import com.wintone.site.ui.base.activity.BaseActivity;
 import com.wintone.site.utils.AppUtils;
@@ -406,11 +406,11 @@ public class FaceAttendanceActivity extends BaseActivity implements ViewTreeObse
                 .postAttendanceRecord(token,Constant.ATTENDANCE_RECORD_URL,attendanceRecord)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<AttendanceModel>() {
+                .subscribe(new Observer<ResponseModel>() {
                     @Override public void onSubscribe(Disposable d) { }
 
                     @Override
-                    public void onNext(AttendanceModel value) {
+                    public void onNext(ResponseModel value) {
                         Log.i("FaceAttendanceActivity","look at response body = " + JSON.toJSONString(value));
                         if(value.getCode() == 1000){
                             ToastUtils.showLong("考勤成功!");

@@ -7,9 +7,12 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -32,6 +35,7 @@ import com.wintone.site.ui.base.activity.BaseActivity;
 import com.wintone.site.utils.Constant;
 import com.wintone.site.utils.SPUtils;
 import com.wintone.site.utils.UiUtils;
+import com.wintone.site.widget.PopDictionariesLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +51,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class PersonInfoActivity extends BaseActivity {
+public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDismissListener,PopDictionariesLayout.DictionariesListener {
 
     private HashMap dataMap = null;
 
@@ -75,6 +79,8 @@ public class PersonInfoActivity extends BaseActivity {
     private int leaderFlag;
 
     private String dateTime;
+
+    private PopDictionariesLayout mDictionariesLayout;
 
     @Override
     protected int getContentView() {
@@ -173,7 +179,7 @@ public class PersonInfoActivity extends BaseActivity {
                 break;
             case R.id.workTypeTextView:
                 mHUD.show();
-                pullHotDicList();
+                pullHotDicList("");
                 break;
             case R.id.entranceDateTextView:
                 openDatePicker();
@@ -224,6 +230,10 @@ public class PersonInfoActivity extends BaseActivity {
     private boolean projectFlag = true;
 
     private void fillProject(List<ProjectModel.ResultBean.RecordsBean> recordsBeans){
+        if(recordsBeans.size() == 0){
+            ToastUtils.showShort("项目个数为0!");
+            return;
+        }
         List<String> projectName = new ArrayList<>();
 
         for (int i = 0; i < recordsBeans.size();i++){
@@ -254,10 +264,10 @@ public class PersonInfoActivity extends BaseActivity {
             return;
         }
         String token = (String)SPUtils.getShare(PersonInfoActivity.this,Constant.USER_TOKEN,"");
-        String projecstId =  mProjectModel.getResult().getRecords().get(projectIndex).getId();
+        String projectId =  mProjectModel.getResult().getRecords().get(projectIndex).getId();
 
         Map map = new HashMap();
-        map.put("projectsId",projecstId);
+        map.put("projectsId",projectId);
         map.put("page",1);
         map.put("rows",100000);
 
@@ -286,6 +296,10 @@ public class PersonInfoActivity extends BaseActivity {
     }
 
     private void fillCompanyStore(List<ConstructionModel.ResultBean.RecordsBean> recordsBeans){
+        if(recordsBeans.size() == 0){
+            ToastUtils.showShort("分包商个数为0!");
+            return;
+        }
         List<String> companyName = new ArrayList<>();
 
         for (int i = 0; i < recordsBeans.size();i++){
@@ -341,6 +355,10 @@ public class PersonInfoActivity extends BaseActivity {
     }
 
     private void fillTeamList(List<TeamModel.ResultBean.RecordsBean> recordsBeans){
+        if(recordsBeans.size() == 0){
+            ToastUtils.showShort("班组个数为0!");
+            return;
+        }
         List<String> teamName = new ArrayList<>();
 
         for (int i = 0; i < recordsBeans.size();i++){
@@ -357,12 +375,13 @@ public class PersonInfoActivity extends BaseActivity {
         });
     }
 
-    private void pullHotDicList(){
+    private void pullHotDicList(String dicName){
         String token = (String)SPUtils.getShare(PersonInfoActivity.this,Constant.USER_TOKEN,"");
 
         Map map = new HashMap();
         map.put("page",1);
         map.put("rows",100000);
+        map.put("dicName",dicName);
 
         NetWorkUtils.getInstance().createService(NetService.class)
                 .postHotDicList(token,Constant.DICTIONARIES_HOTDIC_URL,map)
@@ -373,7 +392,7 @@ public class PersonInfoActivity extends BaseActivity {
 
                     @Override
                     public void onNext(DictionariesModel value) {
-                        KLog.i("dic list = " + JSON.toJSONString(value));
+                        KLog.i("dic list = " + value);
                         mDictionariesModel = value;
                         fillHotDicList(value.getResult().getRecords());
                         mHUD.dismiss();
@@ -390,20 +409,34 @@ public class PersonInfoActivity extends BaseActivity {
     }
 
     private void fillHotDicList(List<DictionariesModel.ResultBean.RecordsBean> recordsBeans){
-        List<String> teamName = new ArrayList<>();
-
-        for (int i = 0; i < recordsBeans.size();i++){
-            String title = recordsBeans.get(i).getTitle();
-            teamName.add(title);
+        if(recordsBeans.size() == 0){
+            ToastUtils.showShort("工种个数为0!");
+            return;
         }
+        popLayout(recordsBeans);
+    }
 
-        UiUtils.showOptionInfoPicker(this, teamName, 0, new OptionPicker.OnOptionPickListener() {
-            @Override
-            public void onOptionPicked(int index, String item) {
-                hotDicIndex = index;
-                workTypeTextView.setText(item);
-            }
-        });
+    private void popLayout(List<DictionariesModel.ResultBean.RecordsBean> recordsBeans){
+        if(mDictionariesLayout == null){
+            mDictionariesLayout = new PopDictionariesLayout(this);
+            mDictionariesLayout.setDictionariesListener(this);
+            mDictionariesLayout.setOnDismissListener(this);
+            setWindowAttributes(0.5f);
+            mDictionariesLayout.showAtLocation(nextButton,
+                    Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+            mDictionariesLayout.setAdapterData(recordsBeans);
+        }else{
+            setWindowAttributes(0.5f);
+            mDictionariesLayout.showAtLocation(nextButton,
+                    Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+            mDictionariesLayout.setAdapterData(recordsBeans);
+        }
+    }
+
+    private void setWindowAttributes(float color){
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = color;
+        getWindow().setAttributes(lp);
     }
 
     private void openDatePicker(){
@@ -614,7 +647,6 @@ public class PersonInfoActivity extends BaseActivity {
                     @Override
                     public void onNext(RegisterInfoModel value) {
                         disposeRegister(value);
-                        SPUtils.putShare(PersonInfoActivity.this,Constant.FACE_URL,projectWorkers.getFaceUrl());
                         mHUD.dismiss();
                     }
 
@@ -632,8 +664,28 @@ public class PersonInfoActivity extends BaseActivity {
         if(value.getCode() == 1000){
             ToastUtils.showShort("注册成功!");
             finish();
-        }else{
-            ToastUtils.showShort("注册失败,请联系管理员!");
+        }else if(value.getCode() == 1002){
+            ToastUtils.showShort("该人员已经注册过了!");
+            finish();
+        }else {
+            ToastUtils.showShort("系统错误!");
+            finish();
         }
+    }
+
+    @Override
+    public void onDismiss() {
+        setWindowAttributes(1f);
+    }
+
+    @Override
+    public void searchDictionaries(String title) {
+        pullHotDicList(title);
+    }
+
+    @Override
+    public void selectDictionaries(int position, DictionariesModel.ResultBean.RecordsBean recordsBean) {
+        hotDicIndex = position;
+        workTypeTextView.setText(recordsBean.getTitle());
     }
 }

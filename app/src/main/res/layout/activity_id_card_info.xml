@@ -254,7 +254,8 @@
         android:textSize="18sp"
         android:textColor="@color/white"
         android:layout_gravity="center"
-        android:background="@color/home_num_color"
+        android:enabled="false"
+        android:background="@drawable/typing_selector"
         android:layout_width="match_parent"
         android:layout_height="55dp" />
 

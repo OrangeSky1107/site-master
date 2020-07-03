@@ -2,7 +2,9 @@ package com.wintone.site.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,6 +38,7 @@ public class IdCardInfoActivity extends BaseActivity{
     @BindView(R.id.idHeaderImageView) ImageView mCircleImageView;
     @BindView(R.id.toolbar_title)     TextView toolbarTitle;
     @BindView(R.id.toolbar_right)     ImageView toolbarRight;
+    @BindView(R.id.next)              Button nextButton;
 
     private String imgPath;
 
@@ -72,6 +75,10 @@ public class IdCardInfoActivity extends BaseActivity{
 
     private void operationView(HashMap hashMap){
         if(hashMap != null){
+            if(hashMap.size() != 11){
+                ToastUtils.showShort("图片有误,请从新拍摄!");
+                return;
+            }
             nameTextView.setText(hashMap.get("name").toString());
             sexExplain.setText(hashMap.get("sex").toString());
             nationExplain.setText(hashMap.get("folk").toString());
@@ -81,6 +88,8 @@ public class IdCardInfoActivity extends BaseActivity{
             Glide.with(this).load(hashMap.get("imgPath")).into(idFrontImageView);
             imgPath = hashMap.get("headPath").toString();
             Glide.with(this).load(hashMap.get("headPath")).into(mCircleImageView);
+
+            nextButton.setEnabled(true);
         }
     }
 
@@ -97,7 +106,40 @@ public class IdCardInfoActivity extends BaseActivity{
         hashMap.put("birt",birthday);
         String address = addressExplain.getText().toString();
         hashMap.put("addr",address);
+        regexInput(name,sex,nation,idNo,birthday,address);
         return hashMap;
+    }
+
+    public void regexInput(String name,String sex,String folk,String num,String birt,String addr){
+        if(TextUtils.isEmpty(name)){
+            ToastUtils.showShort("名字不能为空!");
+            return;
+        }
+
+        if(TextUtils.isEmpty(sex)){
+            ToastUtils.showShort("性别不能为空!");
+            return;
+        }
+
+        if(TextUtils.isEmpty(folk)){
+            ToastUtils.showShort("民族不能为空!");
+            return;
+        }
+
+        if(TextUtils.isEmpty(num)){
+            ToastUtils.showShort("身份证号不能为空!");
+            return;
+        }
+
+        if(TextUtils.isEmpty(birt)){
+            ToastUtils.showShort("生日不能为空!");
+            return;
+        }
+
+        if(TextUtils.isEmpty(addr)){
+            ToastUtils.showShort("地址不能为空!");
+            return;
+        }
     }
 
     @Override
@@ -170,6 +212,11 @@ public class IdCardInfoActivity extends BaseActivity{
             String result = data.getStringExtra("OCRResult");
             HashMap hashMap = JSON.parseObject(result,HashMap.class);
             if(hashMap != null){
+                KLog.i("look at json data = " + JSON.toJSONString(hashMap));
+                if(hashMap.size() != 11){
+                    ToastUtils.showShort("图片有误,请从新拍摄!");
+                    return;
+                }
                 nameTextView.setText(hashMap.get("name").toString());
                 sexExplain.setText(hashMap.get("sex").toString());
                 nationExplain.setText(hashMap.get("folk").toString());
@@ -179,6 +226,10 @@ public class IdCardInfoActivity extends BaseActivity{
                 Glide.with(this).load(hashMap.get("imgPath")).into(idFrontImageView);
                 imgPath = hashMap.get("headPath").toString();
                 Glide.with(this).load(hashMap.get("headPath")).into(mCircleImageView);
+
+                this.hashMap.putAll(hashMap);
+
+                nextButton.setEnabled(true);
             }
         }
     }

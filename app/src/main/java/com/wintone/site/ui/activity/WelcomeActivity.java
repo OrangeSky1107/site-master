@@ -1,15 +1,12 @@
 package com.wintone.site.ui.activity;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.widget.ImageView;
 
 import com.blankj.utilcode.util.ActivityUtils;
 import com.wintone.site.R;
 import com.wintone.site.utils.Constant;
 import com.wintone.site.utils.SPUtils;
-import com.wintone.site.utils.UiUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,10 +21,6 @@ public class WelcomeActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcom);
-        ImageView ic = findViewById(R.id.ic_logo);
-        Drawable drawable = getResources().getDrawable(R.drawable.logo);
-        UiUtils.circularBitmap(ic, drawable);
-        UiUtils.hideNavKey(this);
     }
 
     @Override

@@ -12,11 +12,11 @@ import com.socks.library.KLog;
 import com.wintone.site.R;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
+import com.wintone.site.networkmodel.ResponseModel;
 import com.wintone.site.ui.base.activity.BaseActivity;
 import com.wintone.site.utils.Constant;
 import com.wintone.site.utils.SPUtils;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +26,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 
 public class ModifyPasswordActivity extends BaseActivity {
 
@@ -99,33 +98,24 @@ public class ModifyPasswordActivity extends BaseActivity {
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new Observer<ResponseModel>() {
+                    @Override public void onSubscribe(Disposable d) { }
                     @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(ResponseBody value) {
-                        try {
-                            KLog.i("look at response message = " + value.string());
-                            mHUD.dismiss();
+                    public void onNext(ResponseModel value) {
+                        if(value.getCode() == 1000){
+                            ToastUtils.showShort(value.getMessage());
                             finish();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        }else{
+                            ToastUtils.showShort(value.getMessage());
                         }
+                        mHUD.dismiss();
                     }
-
                     @Override
                     public void onError(Throwable e) {
                         KLog.i("look at error message = " + e.getMessage().toString());
                         mHUD.dismiss();
                     }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
+                    @Override public void onComplete() {}
                 });
     }
 

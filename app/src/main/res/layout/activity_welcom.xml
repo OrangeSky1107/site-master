@@ -11,7 +11,7 @@
         android:id="@+id/ic_logo"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:srcCompat="@drawable/logo"
+        app:srcCompat="@mipmap/splash_logo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="80dp"/>
 
@@ -23,7 +23,7 @@
         android:layout_marginTop="10dp"
         android:layout_below="@+id/ic_logo"
         android:text="@string/kind_intelligence"
-        android:textColor="@color/text_red"
+        android:textColor="@color/home_num_color"
         android:textSize="24sp"
         android:textStyle="bold"
         android:typeface="monospace" />

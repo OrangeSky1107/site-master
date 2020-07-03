@@ -1,7 +1,7 @@
 package com.wintone.site.network;
 
 import com.wintone.site.networkmodel.AppVersionModel;
-import com.wintone.site.networkmodel.AttendanceModel;
+import com.wintone.site.networkmodel.ResponseModel;
 import com.wintone.site.networkmodel.AttendanceRecord;
 import com.wintone.site.networkmodel.ConstructionModel;
 import com.wintone.site.networkmodel.DictionariesModel;
@@ -33,7 +33,7 @@ import retrofit2.http.Url;
 public interface NetService {
 
     @POST
-    Observable<ResponseBody> postUpdatePassword(
+    Observable<ResponseModel> postUpdatePassword(
             @Header("token") String token,
             @Url String url,
             @Body Map<String,String> map
@@ -93,7 +93,7 @@ public interface NetService {
     );
 
     @POST
-    Observable<AttendanceModel> postAttendanceRecord(
+    Observable<ResponseModel> postAttendanceRecord(
             @Header("token") String token,
             @Url String url,
             @Body AttendanceRecord data

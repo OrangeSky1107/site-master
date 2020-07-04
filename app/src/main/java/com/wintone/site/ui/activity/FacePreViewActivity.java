@@ -403,7 +403,7 @@ public class FacePreViewActivity extends BaseActivity implements ViewTreeObserve
     }
 
     private String saveCurrentPreView(byte[] data, Camera camera){
-        Camera.Size previewSize = camera.getParameters().getPreviewSize();//获取尺寸,格式转换的时候要用到
+        Camera.Size previewSize = cameraHelper.previewSize;//获取尺寸,格式转换的时候要用到
         BitmapFactory.Options newOpts = new BitmapFactory.Options();
         newOpts.inJustDecodeBounds = true;
         YuvImage yuvimage = new YuvImage(

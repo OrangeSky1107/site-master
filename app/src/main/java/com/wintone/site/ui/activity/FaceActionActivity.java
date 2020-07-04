@@ -73,7 +73,7 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
 
     private String direction = "";
 
-    private static final String IMAGE_PATH = "/storage/emulated/0/Android/data/com.tomcat.ocr.idcard/cache/";
+    private String IMAGE_PATH = "/storage/emulated/0/Android/data/com.tomcat.ocr.idcard/cache/";
 
     @BindView(R.id.face_rect_view)  FaceRectView faceRectView;
     @BindView(R.id.texture_preview) View previewView;
@@ -194,7 +194,7 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
                                     public void onNext(Long value) {
                                         flag = false;
                                         mHUD.show();
-                                        String imgPath = saveCurrentPreView(nv21,camera);
+                                        String imgPath = saveCurrentPreView(nv21);
                                         faceAttendanceAction(imgPath);
                                     }
 
@@ -262,8 +262,8 @@ public class FaceActionActivity extends BaseActivity implements ViewTreeObserver
         }
     }
 
-    private String saveCurrentPreView(byte[] data, Camera camera){
-        Camera.Size previewSize = camera.getParameters().getPreviewSize();//获取尺寸,格式转换的时候要用到
+    private String saveCurrentPreView(byte[] data){
+        Camera.Size previewSize = cameraHelper.previewSize;
         BitmapFactory.Options newOpts = new BitmapFactory.Options();
         newOpts.inJustDecodeBounds = true;
         YuvImage yuvimage = new YuvImage(

@@ -29,7 +29,7 @@ public class CameraHelper implements Camera.PreviewCallback {
     private int mCameraId;
     private Point previewViewSize;
     private View previewDisplayView;
-    private Camera.Size previewSize;
+    public Camera.Size previewSize;
     private Point specificPreviewSize;
     private int displayOrientation = 0;
     private int rotation;

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.blankj.utilcode.util.ToastUtils;
 import com.socks.library.KLog;
 import com.wintone.site.R;
+import com.wintone.site.SiteApplication;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
 import com.wintone.site.networkmodel.ProjectModel;
@@ -62,8 +63,7 @@ public class KeywordListView {
         mSearchKeywordAdapter.setOnItemClickListener(new ProjectListAdapter.OnItemClickListener() {
             @Override
             public void onClickItem(int position, ProjectModel.ResultBean.RecordsBean recordsBean) {
-//                switchProjectData(recordsBean.getProjectName());
-                ToastUtils.showShort("切换成功!");
+                switchProjectData(recordsBean.getProjectName());
             }
         });
         rvSearchKeyword.setAdapter(mSearchKeywordAdapter);
@@ -97,11 +97,48 @@ public class KeywordListView {
                             monShowKeyWordListener.isShowView(false);
                         }
                         mSearchKeywordAdapter.submitList(value.getResult().getRecords());
+                        monShowKeyWordListener.hideProgress();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        monShowKeyWordListener.hideProgress();
+                        ToastUtils.showShort("出现错误:"+e.getMessage());
                         KLog.i("look at response error message = " + e.getMessage());
+                    }
+                    @Override public void onComplete() { }
+                });
+    }
+
+    private void switchProjectData(String projectName){
+        String token = (String) SPUtils.getShare(SiteApplication.getInstance(), Constant.USER_TOKEN,"");
+        String loginName = (String)SPUtils.getShare(SiteApplication.getInstance(),Constant.USER_NAME,"");
+
+        Map map = new HashMap();
+        map.put("loginName",loginName);
+        map.put("projectName",projectName);
+        map.put("page",1);
+        map.put("rows",10000);
+
+        NetWorkUtils.getInstance().createService(NetService.class)
+                .postSwitchProject(Constant.SWITCH_PROJECT_URL,token,map)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ProjectModel>() {
+                    @Override public void onSubscribe(Disposable d) { }
+
+                    @Override
+                    public void onNext(ProjectModel value) {
+                        if(value != null){
+                            monShowKeyWordListener.selectProjectFinish();
+                            ToastUtils.showShort("切换成功!");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ToastUtils.showShort("出现错误:"+e.getMessage());
                     }
                     @Override public void onComplete() { }
                 });
@@ -119,6 +156,10 @@ public class KeywordListView {
         void isShowView(boolean isShow);
 
         void onSelectKeyWord(String content);
+
+        void hideProgress();
+
+        void selectProjectFinish();
     }
 
 

@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.blankj.utilcode.util.ToastUtils;
-import com.socks.library.KLog;
 import com.wintone.site.R;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
@@ -75,8 +74,6 @@ public class UserInfoActivity extends BaseActivity {
         String id = (String)SPUtils.getShare(this,Constant.USER_ID,"");
         updateUserModel.setId(id);
         updateUserModel.setNickName(nikeName);
-
-        KLog.i("look at model response body = " + JSON.toJSONString(updateUserModel));
 
         String token = (String)SPUtils.getShare(this,Constant.USER_TOKEN,"");
         NetWorkUtils.getInstance().createService(NetService.class)

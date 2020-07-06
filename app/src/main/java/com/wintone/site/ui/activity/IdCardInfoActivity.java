@@ -76,7 +76,7 @@ public class IdCardInfoActivity extends BaseActivity{
     private void operationView(HashMap hashMap){
         if(hashMap != null){
             if(hashMap.size() != 11){
-                ToastUtils.showShort("图片有误,请从新拍摄!");
+                ToastUtils.showShort("图片有误,请重新拍摄!");
                 return;
             }
             nameTextView.setText(hashMap.get("name").toString());
@@ -212,9 +212,8 @@ public class IdCardInfoActivity extends BaseActivity{
             String result = data.getStringExtra("OCRResult");
             HashMap hashMap = JSON.parseObject(result,HashMap.class);
             if(hashMap != null){
-                KLog.i("look at json data = " + JSON.toJSONString(hashMap));
                 if(hashMap.size() != 11){
-                    ToastUtils.showShort("图片有误,请从新拍摄!");
+                    ToastUtils.showShort("图片有误,请重新拍摄!");
                     return;
                 }
                 nameTextView.setText(hashMap.get("name").toString());

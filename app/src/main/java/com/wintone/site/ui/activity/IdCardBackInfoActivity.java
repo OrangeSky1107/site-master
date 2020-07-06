@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -47,7 +46,6 @@ public class IdCardBackInfoActivity extends BaseActivity {
         Bundle bundle = intent.getBundleExtra("bundle");
         if(bundle != null){
             dataMap = (HashMap) bundle.getSerializable("data");
-            Log.i("IdCardBackInfoActivity","look at map data = " + JSON.toJSONString(dataMap));
         }
 
         toolbarTitle.setText("身份证背面");
@@ -138,7 +136,7 @@ public class IdCardBackInfoActivity extends BaseActivity {
 
             String valid = hashMap.get("valid").toString();
             if(valid.length() < 10){
-                ToastUtils.showShort("图片有误,请从新拍摄!");
+                ToastUtils.showShort("图片有误,请重新拍摄!");
                 return;
             }
 

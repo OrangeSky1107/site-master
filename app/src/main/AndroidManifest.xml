@@ -34,8 +34,10 @@
         android:roundIcon="@mipmap/splash_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".ui.activity.FaceActionActivity"
+            android:name=".ui.activity.FaceCheckActivity"
+            android:launchMode="singleTop"
             android:theme="@style/BaseAppTheme"/>
         <activity
             android:name=".ui.activity.ProjectSwitchActivity"
@@ -82,6 +84,7 @@
             android:theme="@style/BaseAppTheme" />
         <activity
             android:name=".ui.activity.HomeActivity"
+            android:clearTaskOnLaunch="true"
             android:launchMode="singleTask"
             android:theme="@style/LoginAppTheme"/>
         <activity

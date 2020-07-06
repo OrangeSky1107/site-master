@@ -6,7 +6,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ActivityUtils;
-import com.kaopiz.kprogresshud.KProgressHUD;
 import com.socks.library.KLog;
 import com.wintone.site.R;
 import com.wintone.site.SiteApplication;
@@ -31,8 +30,6 @@ public class SystemSettingActivity extends BaseActivity {
     @BindView(R.id.logout)        Button logout;
     @BindView(R.id.toolbar_title) TextView toolbar_title;
 
-    private KProgressHUD mHUD;
-
     @Override
     protected int getContentView() {
         return R.layout.activity_system_setting;
@@ -40,8 +37,6 @@ public class SystemSettingActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        initProgress();
-
         toolbar_title.setText("系统设置");
     }
 
@@ -100,14 +95,5 @@ public class SystemSettingActivity extends BaseActivity {
         SPUtils.clearShare(SystemSettingActivity.this);
         SiteApplication.getInstance().removeAllActivity();
         ActivityUtils.startActivity(new Intent(SystemSettingActivity.this,LoginActivity.class));
-    }
-
-    private void initProgress() {
-        mHUD = KProgressHUD.create(SystemSettingActivity.this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setDetailsLabel("退出中...")
-                .setCancellable(true)
-                .setAnimationSpeed(2)
-                .setDimAmount(0.5f);
     }
 }

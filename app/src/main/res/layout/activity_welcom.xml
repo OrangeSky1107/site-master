@@ -11,7 +11,7 @@
         android:id="@+id/ic_logo"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:srcCompat="@mipmap/splash_logo"
+        android:src="@mipmap/splash_logo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="80dp"/>
 

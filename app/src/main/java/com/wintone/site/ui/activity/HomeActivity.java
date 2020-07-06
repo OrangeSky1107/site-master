@@ -7,7 +7,6 @@ import com.alibaba.fastjson.JSON;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.AppUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.socks.library.KLog;
 import com.wintone.site.R;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
@@ -77,13 +76,11 @@ public class HomeActivity extends BaseActivity {
 
                     @Override
                     public void onNext(AppVersionModel value) {
-                        KLog.i("look at response body = " + JSON.toJSONString(value));
 
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        KLog.i("look at response error message  = " + e.getMessage());
                     }
 
                     @Override public void onComplete() { }

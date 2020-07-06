@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.bumptech.glide.Glide;
 import com.socks.library.KLog;
@@ -61,8 +60,6 @@ public class BankInfoActivity extends BaseActivity {
         Bundle bundle = intent.getBundleExtra("bundle");
         if(bundle != null){
             dataMap = (HashMap) bundle.getSerializable("data");
-
-            Log.i("IdCardBackInfoActivity","look at map data = " + JSON.toJSONString(dataMap));
         }
 
         toolbarTitle.setText("银行卡信息");

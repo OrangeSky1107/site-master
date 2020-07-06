@@ -47,6 +47,8 @@ public class Constant {
 
     public static final String CAMERA_SWITCH = "camera_switch";
 
+    public static final String FACE_ENGINE = "face_engine";
+
     //首页人员情况接口
     public static final String HOME_PAGER_URL = "/appUser/personnel";
 

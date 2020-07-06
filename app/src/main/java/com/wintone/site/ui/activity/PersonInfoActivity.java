@@ -93,8 +93,6 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
         Bundle bundle = intent.getBundleExtra("bundle");
         if(bundle != null){
             dataMap = (HashMap) bundle.getSerializable("data");
-
-            Log.i("IdCardBackInfoActivity","look at map data = " + JSON.toJSONString(dataMap));
         }
 
         initProgress();

@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 
-import com.alibaba.fastjson.JSON;
 import com.arcsoft.face.AgeInfo;
 import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.Face3DAngle;
@@ -35,8 +34,8 @@ import com.bumptech.glide.Glide;
 import com.wintone.site.R;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
-import com.wintone.site.networkmodel.ResponseModel;
 import com.wintone.site.networkmodel.AttendanceRecord;
+import com.wintone.site.networkmodel.ResponseModel;
 import com.wintone.site.ui.base.activity.BaseActivity;
 import com.wintone.site.utils.AppUtils;
 import com.wintone.site.utils.Constant;
@@ -308,11 +307,9 @@ public class FaceAttendanceActivity extends BaseActivity implements ViewTreeObse
                                 FaceEngine.CP_PAF_NV21, faceInfoList.get(i), faceFeature);
 
                         if(fcCode != ErrorInfo.MOK){
-                            Log.i("FaceAttendanceActivity", "failed = " + fcCode);
                         }else{
                             FaceSimilar faceSimilar = new FaceSimilar();
                             faceVideoEngine.compareFaceFeature(imageFace,faceFeature, CompareModel.LIFE_PHOTO,faceSimilar);
-                            Log.i("FaceAttendanceActivity", "success = " + faceSimilar.getScore() );
                             if(faceSimilar.getScore() >= 0.8){
                                 if(flag){
                                     flag = false;
@@ -333,12 +330,10 @@ public class FaceAttendanceActivity extends BaseActivity implements ViewTreeObse
 
             @Override
             public void onCameraClosed() {
-                Log.i("FaceAttendanceActivity", "onCameraClosed: ");
             }
 
             @Override
             public void onCameraError(Exception e) {
-                Log.i("FaceAttendanceActivity", "onCameraError: " + e.getMessage());
             }
 
             @Override
@@ -346,7 +341,6 @@ public class FaceAttendanceActivity extends BaseActivity implements ViewTreeObse
                 if (drawHelper != null) {
                     drawHelper.setCameraDisplayOrientation(displayOrientation);
                 }
-                Log.i("FaceAttendanceActivity", "onCameraConfigurationChanged: " + cameraID + "  " + displayOrientation);
             }
         };
         cameraHelper = new CameraHelper.Builder()
@@ -400,8 +394,6 @@ public class FaceAttendanceActivity extends BaseActivity implements ViewTreeObse
         attendanceRecord.setDeviceType("2");
         attendanceRecord.setDeviceSn(AppUtils.getPhoneSign());
 
-        Log.i("FaceAttendanceActivity","look at response body = " + JSON.toJSONString(attendanceRecord));
-
         NetWorkUtils.getInstance().createService(NetService.class)
                 .postAttendanceRecord(token,Constant.ATTENDANCE_RECORD_URL,attendanceRecord)
                 .subscribeOn(Schedulers.io())
@@ -411,7 +403,6 @@ public class FaceAttendanceActivity extends BaseActivity implements ViewTreeObse
 
                     @Override
                     public void onNext(ResponseModel value) {
-                        Log.i("FaceAttendanceActivity","look at response body = " + JSON.toJSONString(value));
                         if(value.getCode() == 1000){
                             ToastUtils.showLong("考勤成功!");
                             finish();
@@ -423,7 +414,6 @@ public class FaceAttendanceActivity extends BaseActivity implements ViewTreeObse
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i("FaceAttendanceActivity","look at error message = " + e.getMessage());
                         finish();
                     }
 
@@ -439,7 +429,6 @@ public class FaceAttendanceActivity extends BaseActivity implements ViewTreeObse
         }
         destroyImageEngine();
         unDestroyEngine();
-        Log.i("FaceAttendanceActivity", "onDestroy");
         super.onDestroy();
     }
     

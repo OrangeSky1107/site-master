@@ -9,6 +9,7 @@ import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
 import com.arcsoft.face.enums.RuntimeABI;
 import com.wintone.site.utils.Constant;
+import com.wintone.site.utils.SPUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,56 @@ public class SiteApplication extends Application {
         activeEngine();
     }
 
+    public void activeEngine() {
+        Integer exitsEngine = (Integer) SPUtils.getShare(instance.getApplicationContext(),Constant.FACE_ENGINE,0);
+        if(exitsEngine == 0){
+            Observable.create(new ObservableOnSubscribe<Integer>() {
+                @Override
+                public void subscribe(ObservableEmitter<Integer> emitter) {
+                    RuntimeABI runtimeABI = FaceEngine.getRuntimeABI();
+                    Log.i( "SiteApplication","SiteApplication subscribe: getRuntimeABI() " + runtimeABI);
+
+                    int activeCode = FaceEngine.activeOnline(instance, Constant.APP_ID, Constant.SDK_KEY);
+                    emitter.onNext(activeCode);
+                }
+            })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Integer>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {}
+
+                        @Override
+                        public void onNext(Integer activeCode) {
+                            if (activeCode == ErrorInfo.MOK) {
+                                Log.i("SiteApplication","SiteApplication active is success ");
+                                SPUtils.putShare(instance.getApplicationContext(),Constant.FACE_ENGINE,1);
+                            } else if (activeCode == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
+                                Log.i("SiteApplication","SiteApplication active is ALREADY ");
+                            } else {
+                                Log.i("SiteApplication","SiteApplication active is failed code = " + activeCode);
+                            }
+//                        ActiveFileInfo activeFileInfo = new ActiveFileInfo();
+//                        int res = FaceEngine.getActiveFileInfo(instance, activeFileInfo);
+//                        if (res == ErrorInfo.MOK) {
+//                            Log.i("SiteApplication",activeFileInfo.toString());
+//                        }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.i("SiteApplication","look at error message = " + e.getMessage().toString());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                        }
+                    });
+        }else{
+            Log.i("SiteApplication","face engine is ALREADY");
+        }
+    }
+
     public void addActivity(Activity activity){
         if(!mActivities.contains(activity)){
             mActivities.add(activity);
@@ -66,53 +117,8 @@ public class SiteApplication extends Application {
     public void removeAllActivity(){
         for(Activity activity : mActivities){
             if(activity != null){
-                Log.i("SiteApplication","the activity name = " + activity.getClass().getSimpleName());
                 activity.finish();
             }
         }
-    }
-
-    public void activeEngine() {
-        Observable.create(new ObservableOnSubscribe<Integer>() {
-            @Override
-            public void subscribe(ObservableEmitter<Integer> emitter) {
-                RuntimeABI runtimeABI = FaceEngine.getRuntimeABI();
-                Log.i( "SiteApplication","SiteApplication subscribe: getRuntimeABI() " + runtimeABI);
-
-                int activeCode = FaceEngine.activeOnline(instance, Constant.APP_ID, Constant.SDK_KEY);
-                emitter.onNext(activeCode);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Integer>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {}
-
-                    @Override
-                    public void onNext(Integer activeCode) {
-                        if (activeCode == ErrorInfo.MOK) {
-                            Log.i("SiteApplication","SiteApplication active is success ");
-                        } else if (activeCode == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
-                            Log.i("SiteApplication","SiteApplication active is ALREADY ");
-                        } else {
-                            Log.i("SiteApplication","SiteApplication active is failed code = " + activeCode);
-                        }
-//                        ActiveFileInfo activeFileInfo = new ActiveFileInfo();
-//                        int res = FaceEngine.getActiveFileInfo(instance, activeFileInfo);
-//                        if (res == ErrorInfo.MOK) {
-//                            Log.i("SiteApplication",activeFileInfo.toString());
-//                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.i("SiteApplication","look at error message = " + e.getMessage().toString());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
     }
 }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.kaopiz.kprogresshud.KProgressHUD;
@@ -15,14 +14,13 @@ import com.scwang.smart.refresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
-import com.socks.library.KLog;
 import com.wintone.site.R;
 import com.wintone.site.SiteApplication;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
 import com.wintone.site.networkmodel.HomePagerModel;
 import com.wintone.site.permissions.EasyPermission;
-import com.wintone.site.ui.activity.FaceActionActivity;
+import com.wintone.site.ui.activity.FaceCheckActivity;
 import com.wintone.site.ui.activity.PersonDetailsActivity;
 import com.wintone.site.ui.base.fragment.BaseFragment;
 import com.wintone.site.utils.CalendarUtil;
@@ -147,7 +145,7 @@ public class HomeFragment extends BaseFragment implements EasyPermission.Permiss
         UiUtils.showOptionPicker(getActivity(), getResources().getStringArray(R.array.attend_options), 0, new OptionPicker.OnOptionPickListener() {
             @Override
             public void onOptionPicked(int index, String item) {
-                Intent intent = new Intent(getActivity(), FaceActionActivity.class);
+                Intent intent = new Intent(getActivity(), FaceCheckActivity.class);
                 if (index == 0) {
                     intent.putExtra("commute", "in");
                 } else {
@@ -208,7 +206,6 @@ public class HomeFragment extends BaseFragment implements EasyPermission.Permiss
 
                     @Override
                     public void onNext(HomePagerModel value) {
-                        KLog.i("look at response body message = " + JSON.toJSONString(value));
                         fillView(value);
                         mHUD.dismiss();
                     }
@@ -216,7 +213,6 @@ public class HomeFragment extends BaseFragment implements EasyPermission.Permiss
                     @Override
                     public void onError(Throwable e) {
                         mHUD.dismiss();
-                        KLog.i("look at error message = " + e.getMessage().toString());
                     }
 
                     @Override

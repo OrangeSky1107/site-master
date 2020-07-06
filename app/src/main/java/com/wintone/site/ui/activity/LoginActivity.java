@@ -12,11 +12,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.alibaba.fastjson.JSON;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.kaopiz.kprogresshud.KProgressHUD;
-import com.socks.library.KLog;
 import com.wintone.site.R;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
@@ -185,7 +183,6 @@ public class LoginActivity extends BaseActivity {
 
                     @Override
                     public void onNext(LoginModel value) {
-                        KLog.i("look at response message = " + JSON.toJSONString(value));
                         saveUserInfo(value);
                         mHUD.dismiss();
                     }
@@ -193,7 +190,6 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void onError(Throwable e) {
                         mHUD.dismiss();
-                        KLog.i("look at login response error message  = " + e.getMessage().toString());
                     }
 
                     @Override
@@ -206,7 +202,6 @@ public class LoginActivity extends BaseActivity {
     private void saveUserInfo(LoginModel loginModel){
         try{
             if(loginModel.getCode() == 1000){
-                KLog.i("data = " + JSON.toJSONString(loginModel));
                 SPUtils.putShare(this,Constant.USER_TOKEN,loginModel.getResult().getToken());
                 SPUtils.putShare(this,Constant.USER_NAME,loginModel.getResult().getLoginName());
                 SPUtils.putShare(this,Constant.CONSTRUCTION_ID,loginModel.getResult().getConstructionId());

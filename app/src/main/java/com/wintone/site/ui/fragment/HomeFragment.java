@@ -191,8 +191,13 @@ public class HomeFragment extends BaseFragment implements EasyPermission.Permiss
     @Override
     public void loadData() {
         mHUD.show();
+        String projectId = (String) SPUtils.getShare(getActivity(),Constant.SHOW_SWITCH_PROJECT,"");
+        if(projectId.length() == 0){
+            projectId = null;
+        }
         Map<String,String> stringMap = new HashMap<>();
         stringMap.put("loginName", (String) SPUtils.getShare(getActivity(),Constant.USER_NAME,""));
+        stringMap.put("projectsId",projectId);
         String token = (String)SPUtils.getShare(getActivity(),Constant.USER_TOKEN,"");
         NetWorkUtils.getInstance().createService(NetService.class)
                 .postHomePager(token,Constant.HOME_PAGER_URL,stringMap)

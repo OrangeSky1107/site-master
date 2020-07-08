@@ -85,9 +85,15 @@ public class BankInfoActivity extends BaseActivity {
     public void onClick(View view){
         switch (view.getId()){
             case R.id.openCamera:
+                if(preventDoubleClick()){
+                    return;
+                }
                 openBankCamera();
                 break;
             case R.id.nextOperation:
+                if(preventDoubleClick()){
+                    return;
+                }
                 Intent intent = new Intent(BankInfoActivity.this,PersonInfoActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("data",dataMap);
@@ -99,6 +105,9 @@ public class BankInfoActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.toolbar_right:
+                if(preventDoubleClick()){
+                    return;
+                }
                 openBankCamera();
                 break;
         }

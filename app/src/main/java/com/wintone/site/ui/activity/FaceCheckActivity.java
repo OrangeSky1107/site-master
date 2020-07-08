@@ -27,6 +27,7 @@ import com.arcsoft.face.FaceInfo;
 import com.arcsoft.face.GenderInfo;
 import com.arcsoft.face.LivenessInfo;
 import com.arcsoft.face.enums.DetectMode;
+import com.blankj.utilcode.util.ThreadUtils;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.wintone.site.R;
 import com.wintone.site.SiteApplication;
@@ -40,9 +41,6 @@ import com.wintone.site.utils.camera.CameraHelper;
 import com.wintone.site.utils.camera.CameraListener;
 import com.wintone.site.utils.faceutils.ConfigUtil;
 import com.wintone.site.utils.faceutils.DrawHelper;
-import com.wintone.site.utils.faceutils.RecognizeColor;
-import com.wintone.site.widget.face.DrawInfo;
-import com.wintone.site.widget.face.FaceRectView;
 
 import org.devio.takephoto.uitl.ImageRotateUtil;
 
@@ -53,6 +51,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -73,7 +72,6 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
      * 相机预览显示的控件，可为SurfaceView或TextureView
      */
     private View previewView;
-    private FaceRectView faceRectView;
 
     protected KProgressHUD mHUD;
 
@@ -92,7 +90,6 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
         previewView = findViewById(R.id.texture_preview);
-        faceRectView = findViewById(R.id.face_rect_view);
         //在布局结束后才做初始化操作
         previewView.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
@@ -154,9 +151,6 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
 
             @Override
             public void onPreview(byte[] nv21, Camera camera) {
-                if (faceRectView != null) {
-                    faceRectView.clearFaceInfo();
-                }
                 List<FaceInfo> faceInfoList = new ArrayList<>();
 
                 int code = faceEngine.detectFaces(nv21, previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, faceInfoList);
@@ -182,21 +176,24 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
                 if ((ageCode | genderCode | face3DAngleCode | livenessCode) != ErrorInfo.MOK) {
                     return;
                 }
-                if (faceRectView != null && drawHelper != null) {
-                    List<DrawInfo> drawInfoList = new ArrayList<>();
-                    for (int i = 0; i < faceInfoList.size(); i++) {
-                        drawInfoList.add(new DrawInfo(drawHelper.adjustRect(faceInfoList.get(i).getRect()), genderInfoList.get(i).getGender(), ageInfoList.get(i).getAge(), faceLivenessInfoList.get(i).getLiveness(), RecognizeColor.COLOR_UNKNOWN, null));
-                    }
-                    drawHelper.draw(faceRectView, drawInfoList);
-                }
 
                 if(faceInfoList.size() > 0){
                     if(checkCurrent){
                         checkCurrent = false;
                         mHUD.show();
-                        String imgPath = saveCurrentPreView(nv21);
-                        Log.i(TAG,"look at img path = " + imgPath);
-                        faceAttendanceAction(imgPath);
+                        ExecutorService service = ThreadUtils.getCachedPool();
+                        service.submit(new Runnable() {
+                            @Override
+                            public void run() {
+                                String imgPath = saveCurrentPreView(nv21);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        faceAttendanceAction(imgPath);
+                                    }
+                                });
+                            }
+                        });
                     }
                 }
             }
@@ -333,11 +330,9 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
                         Integer code = (Integer) map.get("code");
                         String message = (String) map.get("message");
                         if(code == 1000){
-                            showPhoneDialog(message);
-                            Log.i(TAG,"response success = " + message);
+                            showPhoneDialog("打卡成功!");
                         }else{
                             showPhoneDialog(message);
-                            Log.i(TAG,"response success 1 = " + message);
                         }
                         mHUD.dismiss();
                     }

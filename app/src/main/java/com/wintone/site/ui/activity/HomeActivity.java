@@ -125,4 +125,10 @@ public class HomeActivity extends BaseActivity {
 //            }
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SPUtils.removeShare(this,Constant.SHOW_SWITCH_PROJECT);
+    }
 }

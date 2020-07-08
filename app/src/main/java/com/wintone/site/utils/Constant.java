@@ -29,6 +29,8 @@ public class Constant {
 
     public static final String PROJECT_ID = "project_id";
 
+    public static final String SHOW_SWITCH_PROJECT = "show_switch_project";
+
     public static final String SEX = "sex";
 
     public static final String STATUS = "status";

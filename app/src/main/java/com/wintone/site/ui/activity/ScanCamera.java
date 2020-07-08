@@ -20,7 +20,6 @@ import android.hardware.Camera.Size;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -53,7 +52,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class ScanCamera extends Activity implements Callback, PreviewCallback {
-    private static final String PATH = new StringBuilder(String.valueOf(Environment.getExternalStorageDirectory().toString())).append("/DCIM/Camera/").toString();
+
     private static final String IMAGE_PATH = "/storage/emulated/0/Android/data/com.tomcat.ocr.idcard/cache/";
     private static double NORMAL_CARD_SCALE = 1.58577d;
     private BankCardAPI api;

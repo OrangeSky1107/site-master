@@ -1,6 +1,7 @@
 package com.wintone.site.ui.base.activity;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.wintone.site.SiteApplication;
@@ -15,6 +16,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private   Unbinder m;
     protected KProgressHUD mHUD;
 
+    private long lastClickTime = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,6 +58,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         mHUD = null;
         SiteApplication.getInstance().removeActivity(this);
     }
+
+    protected boolean preventDoubleClick() {
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000) {
+            return true;
+        }
+        lastClickTime = SystemClock.elapsedRealtime();
+        return false;
+    }
+
 
     protected abstract int getContentView();
 

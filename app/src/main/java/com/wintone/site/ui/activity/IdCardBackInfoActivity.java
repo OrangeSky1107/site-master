@@ -63,11 +63,17 @@ public class IdCardBackInfoActivity extends BaseActivity {
     public void onClick(View view){
         switch (view.getId()){
             case R.id.openCamera:
+                if(preventDoubleClick()){
+                    return;
+                }
                 openCamera();
                 break;
 
             case R.id.nextOperation:
                 //是否需要采集银行信息
+                if(preventDoubleClick()){
+                    return;
+                }
                 Intent intent = new Intent(IdCardBackInfoActivity.this,BankInfoActivity.class);
                 Bundle bankBundle = new Bundle();
                 bankBundle.putSerializable("data",dataMap);
@@ -79,6 +85,9 @@ public class IdCardBackInfoActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.toolbar_right:
+                if(preventDoubleClick()){
+                    return;
+                }
                 openCamera();
                 break;
         }

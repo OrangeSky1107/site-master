@@ -48,7 +48,6 @@ public class KeywordListView {
         mActivity = activity;
         this.monShowKeyWordListener = monShowKeyWordListener;
         init(activity);
-
     }
 
     private void init(Context mContext) {
@@ -63,7 +62,7 @@ public class KeywordListView {
         mSearchKeywordAdapter.setOnItemClickListener(new ProjectListAdapter.OnItemClickListener() {
             @Override
             public void onClickItem(int position, ProjectModel.ResultBean.RecordsBean recordsBean) {
-                switchProjectData(recordsBean.getProjectName());
+                switchProjectData(recordsBean.getProjectName(),recordsBean.getId());
             }
         });
         rvSearchKeyword.setAdapter(mSearchKeywordAdapter);
@@ -110,7 +109,7 @@ public class KeywordListView {
                 });
     }
 
-    private void switchProjectData(String projectName){
+    private void switchProjectData(String projectName,String projectId){
         String token = (String) SPUtils.getShare(SiteApplication.getInstance(), Constant.USER_TOKEN,"");
         String loginName = (String)SPUtils.getShare(SiteApplication.getInstance(),Constant.USER_NAME,"");
 
@@ -132,6 +131,7 @@ public class KeywordListView {
                     public void onNext(ProjectModel value) {
                         if(value != null){
                             monShowKeyWordListener.selectProjectFinish();
+                            SPUtils.putShare(mActivity,Constant.SHOW_SWITCH_PROJECT,projectId);
                             ToastUtils.showShort("切换成功!");
                         }
                     }

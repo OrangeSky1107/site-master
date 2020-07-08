@@ -152,6 +152,9 @@ public class IdCardInfoActivity extends BaseActivity{
     public void onClick(View view){
         switch(view.getId()){
             case R.id.next:{
+                if(preventDoubleClick()){
+                    return;
+                }
                 if(checkSoFile(LIBRARIES)){
                     Intent intent = new Intent(IdCardInfoActivity.this,FacePreViewActivity.class);
                     intent.putExtra("headPath",imgPath);

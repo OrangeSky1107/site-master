@@ -11,9 +11,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.wintone.site.widget.face.FaceRectView
-        android:id="@+id/face_rect_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
 </FrameLayout>

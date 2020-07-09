@@ -147,8 +147,7 @@ public class IdCardInfoActivity extends BaseActivity{
 
     }
 
-    @OnClick({R.id.next,R.id.toolbar_right})
-
+    @OnClick({R.id.next,R.id.toolbar_right,R.id.iv_back})
     public void onClick(View view){
         switch(view.getId()){
             case R.id.next:{
@@ -181,6 +180,9 @@ public class IdCardInfoActivity extends BaseActivity{
                 bundle.putInt("type", 0);              // 0身份证, 1驾驶证
 
                 LibraryInitOCR.startScan(this, bundle);
+                break;
+            case R.id.iv_back:
+                finish();
                 break;
         }
     }

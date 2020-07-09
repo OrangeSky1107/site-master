@@ -14,8 +14,6 @@ public class NetWorkUtils {
 
     private static volatile NetWorkUtils sNetWorkUtils;
 
-    private NetService mNetService;
-
     private static volatile OkHttpClient sOkHttpClient;
 
     private Retrofit mRetrofit;

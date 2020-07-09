@@ -89,7 +89,7 @@ public class CameraHelper implements Camera.PreviewCallback {
 
             if (mCamera == null) {
                 Integer integer = (Integer) SPUtils.getShare(SiteApplication.getInstance(), Constant.CAMERA_SWITCH,1);
-                mCamera = Camera.open(integer);
+                mCamera = Camera.open(mCameraId);
             }
 
             displayOrientation = getCameraOri(rotation);
@@ -340,7 +340,6 @@ public class CameraHelper implements Camera.PreviewCallback {
         if (Camera.getNumberOfCameras() < 2) {
             return false;
         }
-        // cameraId ,0为后置，1为前置
         specificCameraId = 1 - mCameraId;
         stop();
         start();

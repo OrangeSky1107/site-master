@@ -17,17 +17,17 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
-import com.arcsoft.face.AgeInfo;
 import com.arcsoft.face.ErrorInfo;
-import com.arcsoft.face.Face3DAngle;
 import com.arcsoft.face.FaceEngine;
 import com.arcsoft.face.FaceInfo;
-import com.arcsoft.face.GenderInfo;
-import com.arcsoft.face.LivenessInfo;
 import com.arcsoft.face.enums.DetectMode;
-import com.blankj.utilcode.util.ThreadUtils;
+import com.blankj.utilcode.util.ToastUtils;
+import com.bumptech.glide.Glide;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.wintone.site.R;
 import com.wintone.site.SiteApplication;
@@ -51,14 +51,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 import androidx.appcompat.app.AppCompatActivity;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
+import static com.arcsoft.face.enums.DetectFaceOrientPriority.ASF_OP_ALL_OUT;
 
 /**
  * create by ths on 2020/7/6
  */
-public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObserver.OnGlobalLayoutListener{
+public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObserver.OnGlobalLayoutListener,View.OnClickListener{
 
     private static final String TAG = "FaceCheckActivity";
     private CameraHelper cameraHelper;
@@ -68,10 +76,20 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
     private FaceEngine faceEngine;
     private int afCode = -1;
     private int processMask = FaceEngine.ASF_AGE | FaceEngine.ASF_FACE3DANGLE | FaceEngine.ASF_GENDER | FaceEngine.ASF_LIVENESS;
+
+    private static final int REGISTER_STATUS_READY = 0;
+    private static final int REGISTER_STATUS_PROCESSING = 1;
+    private static final int REGISTER_STATUS_DONE = 2;
+    private boolean FACE_NOT_EXITS       = true;
+    private int registerStatus = REGISTER_STATUS_DONE;
     /**
      * 相机预览显示的控件，可为SurfaceView或TextureView
      */
-    private View previewView;
+    private View        previewView;
+    private ImageView   backCamera;
+    private FrameLayout frameLayout;
+    private TextView    imageButton;
+    private ImageView   faceHeader;
 
     protected KProgressHUD mHUD;
 
@@ -90,8 +108,17 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
         previewView = findViewById(R.id.texture_preview);
+        backCamera  = findViewById(R.id.back_camera);
+        frameLayout = findViewById(R.id.frameLayout);
+        imageButton = findViewById(R.id.imageButton);
+        faceHeader  = findViewById(R.id.faceHeader);
+
         //在布局结束后才做初始化操作
         previewView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+
+        backCamera.setOnClickListener(this);
+        frameLayout.setOnClickListener(this);
+        imageButton.setOnClickListener(this);
 
         initProgress();
     }
@@ -106,6 +133,7 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
     }
 
     private void initEngine() {
+        ConfigUtil.setFtOrient(this, ASF_OP_ALL_OUT);
         faceEngine = new FaceEngine();
         afCode = faceEngine.init(this, DetectMode.ASF_DETECT_MODE_VIDEO, ConfigUtil.getFtOrient(this),
                 16, 20, FaceEngine.ASF_FACE_DETECT | FaceEngine.ASF_AGE | FaceEngine.ASF_FACE3DANGLE | FaceEngine.ASF_GENDER | FaceEngine.ASF_LIVENESS);
@@ -133,8 +161,6 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
         super.onDestroy();
     }
 
-    private boolean checkCurrent = true;
-
     private void initCamera() {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -148,7 +174,6 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
                         , cameraId, isMirror, false, false);
             }
 
-
             @Override
             public void onPreview(byte[] nv21, Camera camera) {
                 List<FaceInfo> faceInfoList = new ArrayList<>();
@@ -159,43 +184,16 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
                     if (code != ErrorInfo.MOK) {
                         return;
                     }
+                    FACE_NOT_EXITS = true;
                 } else {
-                    return;
-                }
-
-                List<AgeInfo> ageInfoList = new ArrayList<>();
-                List<GenderInfo> genderInfoList = new ArrayList<>();
-                List<Face3DAngle> face3DAngleList = new ArrayList<>();
-                List<LivenessInfo> faceLivenessInfoList = new ArrayList<>();
-                int ageCode = faceEngine.getAge(ageInfoList);
-                int genderCode = faceEngine.getGender(genderInfoList);
-                int face3DAngleCode = faceEngine.getFace3DAngle(face3DAngleList);
-                int livenessCode = faceEngine.getLiveness(faceLivenessInfoList);
-
-                // 有其中一个的错误码不为ErrorInfo.MOK，return
-                if ((ageCode | genderCode | face3DAngleCode | livenessCode) != ErrorInfo.MOK) {
-                    return;
-                }
-
-                if(faceInfoList.size() > 0){
-                    if(checkCurrent){
-                        checkCurrent = false;
-                        mHUD.show();
-                        ExecutorService service = ThreadUtils.getCachedPool();
-                        service.submit(new Runnable() {
-                            @Override
-                            public void run() {
-                                String imgPath = saveCurrentPreView(nv21);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        faceAttendanceAction(imgPath);
-                                    }
-                                });
-                            }
-                        });
+                    if(registerStatus == REGISTER_STATUS_READY && FACE_NOT_EXITS){
+                        FACE_NOT_EXITS = false;
+                        ToastUtils.showShort("未检测到人脸!");
                     }
+                    return;
                 }
+
+                registerFace(nv21.clone(),faceInfoList);
             }
 
             @Override
@@ -290,6 +288,7 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
     }
 
     private void faceAttendanceAction(String pathName){
+        mHUD.show();
         String projectId = (String) SPUtils.getShare(this,Constant.PROJECT_ID,"");
         String constructionId = (String) SPUtils.getShare(this,Constant.CONSTRUCTION_ID,"");
         String way = "1";
@@ -351,7 +350,7 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        finish();
+//                        finish();
                     }
                 });
 
@@ -360,13 +359,15 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        finish();
+//                        finish();
                     }
                 });
 
         builder.setCancelable(false);
 
-        builder.show();
+        if(!isFinishing()){
+            builder.show();
+        }
     }
 
     /**
@@ -377,5 +378,59 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
         previewView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         initEngine();
         initCamera();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.back_camera:
+                finish();
+                break;
+            case R.id.frameLayout:
+                cameraHelper.switchCamera();
+                break;
+            case R.id.imageButton:
+                register();
+                break;
+        }
+    }
+
+    public void register() {
+        if (registerStatus == REGISTER_STATUS_DONE) {
+            registerStatus = REGISTER_STATUS_READY;
+        }
+    }
+
+    private void registerFace(final byte[] nv21, final List<FaceInfo> faceInfoList) {
+        if (registerStatus == REGISTER_STATUS_READY && faceInfoList != null && faceInfoList.size() > 0) {
+            registerStatus = REGISTER_STATUS_PROCESSING;
+            Observable.create(new ObservableOnSubscribe<String>() {
+                @Override
+                public void subscribe(ObservableEmitter<String> emitter) {
+                    String imagePath = saveCurrentPreView(nv21);
+                    emitter.onNext(imagePath);
+                }
+            })
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<String>() {
+                        @Override public void onSubscribe(Disposable d) {}
+                        @Override
+                        public void onNext(String imagePath) {
+                            registerStatus = REGISTER_STATUS_DONE;
+                            Glide.with(FaceCheckActivity.this).load(imagePath).into(faceHeader);
+                            faceAttendanceAction(imagePath);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            registerStatus = REGISTER_STATUS_DONE;
+                        }
+
+                        @Override
+                        public void onComplete() {}
+                    });
+        }
     }
 }

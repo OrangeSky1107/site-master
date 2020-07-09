@@ -68,4 +68,6 @@
     <!-- project style -->
     <color name="project_white_color">#ecf0f1</color>
 
+    <color name="switch_color_bg">#4C5368</color>
+
 </resources>

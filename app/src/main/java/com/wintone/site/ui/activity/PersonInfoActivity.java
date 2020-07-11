@@ -6,7 +6,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,7 +18,6 @@ import com.alibaba.fastjson.JSON;
 import com.blankj.utilcode.util.ToastUtils;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.kyleduo.switchbutton.SwitchButton;
-import com.socks.library.KLog;
 import com.wintone.site.R;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
@@ -185,10 +183,8 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
             case R.id.leaderSwitch:
                 if(leaderSwitch.isChecked()){
                     leaderFlag = 1;
-                    Log.i("PersonInfoActivity","look at leader flag =  " + leaderFlag);
                 }else{
                     leaderFlag = 0;
-                    Log.i("PersonInfoActivity","look at leader flag =  " + leaderFlag);
                 }
                 break;
         }
@@ -218,7 +214,6 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i("PersonInfoActivity","look at error message = " + e.getMessage().toString());
                         mHUD.dismiss();
                     }
                     @Override public void onComplete() {}
@@ -285,7 +280,6 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i("PersonInfoActivity","look at message error = " + e.getMessage().toString());
                         mHUD.dismiss();
                     }
 
@@ -344,7 +338,6 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i("PersonInfoActivity","look at message team error = " + e.getMessage().toString());
                         mHUD.dismiss();
                     }
 
@@ -390,7 +383,6 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
 
                     @Override
                     public void onNext(DictionariesModel value) {
-                        KLog.i("dic list = " + value);
                         mDictionariesModel = value;
                         fillHotDicList(value.getResult().getRecords());
                         mHUD.dismiss();
@@ -398,7 +390,6 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i("PersonInfoActivity","look at hot dic message error = " + e.getMessage().toString());
                         mHUD.dismiss();
                     }
 
@@ -494,14 +485,12 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
         OkHttpUtil.getInstance().uploadTopPost(Constant.USER_UPLOAD_URL,token, imgPath, new OkhttpClientRequest() {
             @Override
             public void responseFailure(String errorMessage) {
-                Log.i("PersonInfoActivity","look at image loader error = " + errorMessage);
                 ToastUtils.showShort("身份证上传失败!");
                 mHUD.dismiss();
             }
 
             @Override
             public void responseSuccess(String successMessage) {
-                Log.i("PersonInfoActivity","look at uploadIdCardImage loader success = " + successMessage);
                 HashMap hashMap = JSON.parseObject(successMessage,HashMap.class);
                 String cloudIdCardPath = hashMap.get("result").toString();
                 uploadHeadPath(cloudIdCardPath);
@@ -515,14 +504,12 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
         OkHttpUtil.getInstance().uploadTopPost(Constant.USER_UPLOAD_URL,token, headPath, new OkhttpClientRequest() {
             @Override
             public void responseFailure(String errorMessage) {
-                Log.i("PersonInfoActivity","look at image loader error = " + errorMessage);
                 ToastUtils.showShort("注册人脸图上传失败!");
                 mHUD.dismiss();
             }
 
             @Override
             public void responseSuccess(String successMessage) {
-                Log.i("PersonInfoActivity","look at uploadHeadPath loader success = " + successMessage);
                 HashMap hashMap = JSON.parseObject(successMessage,HashMap.class);
                 String cloudHeadPath = hashMap.get("result").toString();
                 uploadIdCardBackImage(cloudIdCardPath,cloudHeadPath);
@@ -536,14 +523,12 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
         OkHttpUtil.getInstance().uploadTopPost(Constant.USER_UPLOAD_URL,token, backIdCard, new OkhttpClientRequest() {
             @Override
             public void responseFailure(String errorMessage) {
-                Log.i("PersonInfoActivity","look at image loader error = " + errorMessage);
                 ToastUtils.showShort("身份证背面图上传失败!");
                 mHUD.dismiss();
             }
 
             @Override
             public void responseSuccess(String successMessage) {
-                Log.i("PersonInfoActivity","look at uploadIdCardBackImage loader success = " + successMessage);
                 HashMap hashMap = JSON.parseObject(successMessage,HashMap.class);
                 String cloudIdCardBackPath = hashMap.get("result").toString();
                 uploadBankImage(cloudIdcardPath,cloudheadPath,cloudIdCardBackPath);
@@ -558,14 +543,12 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
             OkHttpUtil.getInstance().uploadTopPost(Constant.USER_UPLOAD_URL,token, bankImagePath, new OkhttpClientRequest() {
                 @Override
                 public void responseFailure(String errorMessage) {
-                    Log.i("PersonInfoActivity","look at image loader error = " + errorMessage);
                     ToastUtils.showShort("身份证背面图上传失败!");
                     mHUD.dismiss();
                 }
 
                 @Override
                 public void responseSuccess(String successMessage) {
-                    Log.i("PersonInfoActivity","look at uploadBankImage loader success = " + successMessage);
                     HashMap hashMap = JSON.parseObject(successMessage,HashMap.class);
                     String cloudBankPath = hashMap.get("result").toString();
                     uploadFaceImage(cloudIdCardPath,cloudHeadPath,cloudIdCardBackPath,cloudBankPath);
@@ -582,14 +565,12 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
         OkHttpUtil.getInstance().uploadTopPost(Constant.USER_UPLOAD_URL,token, faceUrlPath, new OkhttpClientRequest() {
             @Override
             public void responseFailure(String errorMessage) {
-                Log.i("PersonInfoActivity","look at image loader error = " + errorMessage);
                 ToastUtils.showShort("人脸实时图片上传失败!");
                 mHUD.dismiss();
             }
 
             @Override
             public void responseSuccess(String successMessage) {
-                Log.i("PersonInfoActivity","look at face url loader success = " + successMessage);
                 HashMap hashMap = JSON.parseObject(successMessage,HashMap.class);
                 String faceUrl = hashMap.get("result").toString();
                 submit(cloudIdCardPath,cloudHeadPath,cloudIdCardBackPath,cloudBankPath,faceUrl);
@@ -655,8 +636,6 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
 
         String data = JSON.toJSONString(projectWorkers);
 
-        Log.i("PersonInfoActivity","look at message data = " + data);
-
         NetWorkUtils.getInstance().createService(NetService.class)
                 .postWorkersSaveOrUpdate(token,Constant.WORKERS_SAVEORUPDATE_URL,projectWorkers)
                 .subscribeOn(Schedulers.io())
@@ -672,7 +651,6 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i("PersonInfoActivity","look at response error data = " + e.getMessage().toString());
                         mHUD.dismiss();
                     }
 

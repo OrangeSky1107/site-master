@@ -2,7 +2,6 @@ package com.wintone.site.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -10,7 +9,6 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.ActivityUtils;
 import com.bumptech.glide.Glide;
-import com.socks.library.KLog;
 import com.wintone.site.R;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
@@ -117,8 +115,6 @@ public class BankInfoActivity extends BaseActivity {
         if(checkSoFile(LIBRARIES)){
             Intent intent = new Intent(BankInfoActivity.this,ScanCamera.class);
             startActivityForResult(intent,1);
-        }else{
-            KLog.i("can't find bankcard so file");
         }
     }
 
@@ -126,7 +122,7 @@ public class BankInfoActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1 && resultCode == RESULT_OK){
-            int[] picR = data.getIntArrayExtra("PicR");
+//            int[] picR = data.getIntArrayExtra("PicR");
             char[] StringR = data.getCharArrayExtra("StringR");
             String bankImg = data.getStringExtra("imagePath");
 
@@ -151,13 +147,10 @@ public class BankInfoActivity extends BaseActivity {
                 int currentNumber = Integer.valueOf(String.valueOf(chars[i]));
                 if(currentNumber < 10){
                     buffer.append(currentNumber);
-                    Log.i("BankInfoActivity","current chars true = " +chars[i] );
                 }else{
-                    Log.i("BankInfoActivity","current chars false = " +chars[i] );
                 }
             }
         }catch (Exception e){
-            Log.i("BankInfoActivity","error message = " +e.getMessage().toString() );
             e.printStackTrace();
         }
         return buffer.toString();
@@ -190,7 +183,6 @@ public class BankInfoActivity extends BaseActivity {
         String url = "https://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo=";
         url+=bankCard;
         url+="&cardBinCheck=true";
-        Log.i("BankInfoActivity","look at url = " + url);
         NetWorkUtils.getInstance().createService(NetService.class)
                 .getBankInfoOfAilPay(url)
                 .subscribeOn(Schedulers.io())
@@ -208,7 +200,6 @@ public class BankInfoActivity extends BaseActivity {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i("BankInfoActivity","look at error message = " + e.getMessage().toString());
                     }
 
                     @Override

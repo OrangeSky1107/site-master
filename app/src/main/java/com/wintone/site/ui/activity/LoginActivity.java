@@ -232,10 +232,10 @@ public class LoginActivity extends BaseActivity {
                 ActivityUtils.startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                 finish();
             }else{
-                ToastUtils.showShort(loginModel.getCode() + "--- 错误信息:"+loginModel.getMessage());
+                ToastUtils.showShort(loginModel.getMessage());
             }
         }catch (Exception e){
-            ToastUtils.showShort("登录出现异常:"+e.getMessage().toString());
+            ToastUtils.showShort(e.getMessage());
             SPUtils.clearShare(this);
             e.printStackTrace();
         }

@@ -3,7 +3,7 @@ package com.wintone.site.networkmodel;
 /**
  * create by ths on 2020/6/17
  */
-public class LoginModel {
+public class LoginModel{
 
     /**
      * code : 1000

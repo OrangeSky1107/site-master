@@ -459,6 +459,7 @@ public class ScanCamera extends Activity implements Callback, PreviewCallback {
         }finally {
             try {
                 out.close();
+                bitmap.recycle();
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -26,7 +26,7 @@ import java.util.List;
 public class CameraHelper implements Camera.PreviewCallback {
     private static final String TAG = "CameraHelper";
     private Camera mCamera;
-    private int mCameraId;
+    public int mCameraId;
     private Point previewViewSize;
     private View previewDisplayView;
     public Camera.Size previewSize;

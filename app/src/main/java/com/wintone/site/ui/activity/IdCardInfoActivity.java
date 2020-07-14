@@ -165,7 +165,7 @@ public class IdCardInfoActivity extends BaseActivity{
                     bundle.putSerializable("data",extraInoutText());
                     intent.putExtra("bundle",bundle);
                     startActivity(intent);
-                    finish();
+//                    finish();
                 }else{
                     KLog.i("can't find face so file");
                 }

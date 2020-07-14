@@ -18,6 +18,7 @@ import com.wintone.site.R;
 import com.wintone.site.SiteApplication;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
+import com.wintone.site.network.OkHttpUtil;
 import com.wintone.site.networkmodel.HomePagerModel;
 import com.wintone.site.permissions.EasyPermission;
 import com.wintone.site.ui.activity.FaceCheckActivity;
@@ -107,6 +108,10 @@ public class HomeFragment extends BaseFragment implements EasyPermission.Permiss
     public void onClick(View view){
         switch (view.getId()){
             case R.id.real_name_registration:
+                if(!OkHttpUtil.isNetWorkAvailable()){
+                    ToastUtils.showShort("当前无可用网络!");
+                    return;
+                }
                 selectorType = 2;
                 checkRegisterPermissions();
                 break;
@@ -114,6 +119,10 @@ public class HomeFragment extends BaseFragment implements EasyPermission.Permiss
                 ActivityUtils.startActivity(new Intent(getActivity(), PersonDetailsActivity.class));
                 break;
             case R.id.face_attendance:
+                if(!OkHttpUtil.isNetWorkAvailable()){
+                    ToastUtils.showShort("当前无可用网络!");
+                    return;
+                }
                 selectorType = 1;
                 checkFacePermissions();
                 break;

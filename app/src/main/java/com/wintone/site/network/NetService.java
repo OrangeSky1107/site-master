@@ -15,7 +15,7 @@ import com.wintone.site.networkmodel.ProjectWorkers;
 import com.wintone.site.networkmodel.RegisterInfoModel;
 import com.wintone.site.networkmodel.TeamModel;
 import com.wintone.site.networkmodel.UpdateUserModel;
-import com.wintone.site.utils.bankinfo.BankModel;
+import com.wintone.site.networkmodel.BankModel;
 
 import java.util.Map;
 

@@ -3,8 +3,6 @@ package com.wintone.site.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.InputType;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
@@ -12,9 +10,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
+import com.blankj.utilcode.util.RegexUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -54,8 +52,8 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
     private HashMap dataMap = null;
 
     @BindView(R.id.projectTextView) EditText projectTextView;
-    @BindView(R.id.companyTextView) TextView companyTextView;
-    @BindView(R.id.teamTextView)    TextView teamTextView;
+    @BindView(R.id.companyTextView) EditText companyTextView;
+    @BindView(R.id.teamTextView)    EditText teamTextView;
     @BindView(R.id.workTypeTextView)EditText workTypeTextView;
     @BindView(R.id.entranceDateTextView) EditText entranceDateTextView;
     @BindView(R.id.phoneTextView)   EditText phoneTextView;
@@ -114,7 +112,6 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
             @Override
             public void afterTextChanged(Editable s) {}
         });
-        workTypeTextView.setInputType(InputType.TYPE_NULL);
         workTypeTextView.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
@@ -124,7 +121,6 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
             }
             @Override public void afterTextChanged(Editable s) {}
         });
-        entranceDateTextView.setInputType(InputType.TYPE_NULL);
         entranceDateTextView.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
@@ -134,7 +130,6 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
             }
             @Override public void afterTextChanged(Editable s) {}
         });
-        projectTextView.setInputType(InputType.TYPE_NULL);
         projectTextView.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
@@ -241,8 +236,10 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
                     //只记录第一次进来修改选择项目不控制,以后进来的都必须先清空一次
                     projectFlag = false;
                 }else{
-                    companyTextView.setText("");
-                    teamTextView.setText("");
+                    companyTextView.setText(null);
+                    teamTextView.setText(null);
+                    companyTextView.setHint("请选择所属分包商");
+                    teamTextView.setHint("请选择班组");
                 }
                 projectIndex = index;
                 projectTextView.setText(item);
@@ -287,6 +284,8 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
                 });
     }
 
+    private boolean companyFlag = true;
+
     private void fillCompanyStore(List<ConstructionModel.ResultBean.RecordsBean> recordsBeans){
         if(recordsBeans.size() == 0){
             ToastUtils.showShort("分包商个数为0!");
@@ -302,6 +301,12 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
         UiUtils.showOptionInfoPicker(this, companyName, 0, new OptionPicker.OnOptionPickListener() {
             @Override
             public void onOptionPicked(int index, String item) {
+                if(companyFlag){
+                    companyFlag = false;
+                }else{
+                    teamTextView.setText(null);
+                    teamTextView.setHint("请选择班组");
+                }
                 constructionIndex = index;
                 companyTextView.setText(item);
             }
@@ -470,7 +475,7 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
         }
 
         String phone = phoneTextView.getText().toString();
-        if(phone.length() < 11 && TextUtils.isEmpty(phone)){
+        if(!RegexUtils.isMobileExact(phone)){
             ToastUtils.showShort("手机格式不对!");
             mHUD.dismiss();
             return;
@@ -633,8 +638,6 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
         projectWorkers.setIdphotoScan2(cloudIdCardBackPath);
 
         String token = (String)SPUtils.getShare(PersonInfoActivity.this,Constant.USER_TOKEN,"");
-
-        String data = JSON.toJSONString(projectWorkers);
 
         NetWorkUtils.getInstance().createService(NetService.class)
                 .postWorkersSaveOrUpdate(token,Constant.WORKERS_SAVEORUPDATE_URL,projectWorkers)

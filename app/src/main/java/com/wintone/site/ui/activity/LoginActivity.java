@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -51,6 +52,9 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        ToastUtils.setGravity(Gravity.CENTER_VERTICAL,-1,-1);
+        ToastUtils.setBgColor(getResources().getColor(R.color.person_dark_gray_color));
+
         initProgress();
 
         etUserName.addTextChangedListener(new TextWatcher() {
@@ -139,7 +143,6 @@ public class LoginActivity extends BaseActivity {
             case R.id.iv_pwdClear:
                 etPassword.setText("");
                 break;
-
         }
     }
 

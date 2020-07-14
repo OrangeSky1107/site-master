@@ -41,54 +41,80 @@
             android:theme="@style/BaseAppTheme"/>
         <activity
             android:name=".ui.activity.ProjectSwitchActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseAppTheme"/>
         <activity
             android:name=".ui.activity.SystemSettingActivity"
-            android:theme="@style/BaseAppTheme" />
-        <activity
-            android:name=".ui.activity.FaceAttendanceActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseAppTheme" />
         <activity
             android:name=".ui.activity.UserInfoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseAppTheme" />
         <activity
             android:name=".ui.activity.FeedBackActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseAppTheme" />
         <activity
             android:name=".ui.activity.AboutCompanyActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseAppTheme" />
         <activity
             android:name=".ui.activity.PersonSingleActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseAppTheme" />
         <activity
             android:name=".ui.activity.PersonDetailsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseAppTheme" />
         <activity
             android:name=".ui.activity.PersonInfoActivity"
-            android:theme="@style/BaseAppTheme" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/BaseAppTheme"/>
         <activity android:name=".ui.activity.ScanCamera" />
+
         <activity
             android:name=".ui.activity.BankInfoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseAppTheme" />
         <activity
             android:name=".ui.activity.FacePreViewActivity"
             android:theme="@style/BaseAppTheme" />
         <activity
             android:name=".ui.activity.IdCardBackInfoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseAppTheme" />
         <activity
             android:name=".ui.activity.IdCardInfoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseAppTheme" />
         <activity
             android:name=".ui.activity.ModifyPasswordActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseAppTheme" />
         <activity
             android:name=".ui.activity.HomeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:clearTaskOnLaunch="true"
             android:launchMode="singleTask"
-            android:theme="@style/LoginAppTheme"/>
+            android:theme="@style/BaseAppTheme"/>
         <activity
             android:name=".ui.activity.WelcomeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseAppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -96,12 +122,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".receiver.NetListenerReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".ui.activity.LoginActivity"
-            android:theme="@style/LoginAppTheme" />
-        <activity
-            android:name=".ui.activity.TableFlagActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/BaseAppTheme" />
 
         <meta-data
             android:name="android.max_aspect"

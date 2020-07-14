@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.arcsoft.face.AgeInfo;
 import com.arcsoft.face.ErrorInfo;
@@ -36,7 +38,6 @@ import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.wintone.site.R;
 import com.wintone.site.SiteApplication;
-import com.wintone.site.ui.base.activity.BaseActivity;
 import com.wintone.site.utils.Constant;
 import com.wintone.site.utils.SPUtils;
 import com.wintone.site.utils.camera.CameraHelper;
@@ -57,7 +58,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import butterknife.BindView;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -66,7 +68,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class FacePreViewActivity extends BaseActivity implements ViewTreeObserver.OnGlobalLayoutListener{
+public class FacePreViewActivity extends AppCompatActivity implements ViewTreeObserver.OnGlobalLayoutListener,View.OnClickListener{
 
     private static final String IMAGE_PATH = "/storage/emulated/0/Android/data/com.tomcat.ocr.idcard/cache/";
 
@@ -94,25 +96,35 @@ public class FacePreViewActivity extends BaseActivity implements ViewTreeObserve
     /**
      * 相机预览显示的控件，可为SurfaceView或TextureView
      */
-    @BindView(R.id.face_rect_view) FaceRectView faceRectView;
-    @BindView(R.id.texture_preview)View previewView;
+    private FaceRectView faceRectView;
+    private View         previewView;
+    private ImageView    back_camera;
+    private FrameLayout  frameLayout;
 
     @Override
-    protected int getContentView() {
-        return R.layout.activity_face_preview;
-    }
-
-    @Override
-    protected void initView() {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WindowManager.LayoutParams attributes = getWindow().getAttributes();
             attributes.systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
             getWindow().setAttributes(attributes);
         }
-
+        setContentView(R.layout.activity_face_preview);
         // Activity启动后就锁定为启动时的方向
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+
+        initView();
+    }
+
+    private void initView(){
+        faceRectView = findViewById(R.id.face_rect_view);
+        previewView  = findViewById(R.id.texture_preview);
+        back_camera  = findViewById(R.id.back_camera);
+        frameLayout  = findViewById(R.id.frameLayout);
+
+        back_camera.setOnClickListener(this);
+        frameLayout.setOnClickListener(this);
 
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("bundle");
@@ -127,12 +139,20 @@ public class FacePreViewActivity extends BaseActivity implements ViewTreeObserve
     }
 
     @Override
-    protected void initData() {
-
+    public void onClick(View view){
+        switch (view.getId()){
+            case R.id.back_camera:
+                finish();
+                break;
+            case R.id.frameLayout:
+                cameraHelper.switchCamera();
+                break;
+        }
     }
 
     @Override
     public void onGlobalLayout() {
+        previewView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         initVideoEngine();
         initCamera();
     }
@@ -243,7 +263,6 @@ public class FacePreViewActivity extends BaseActivity implements ViewTreeObserve
                 if (extractFaceFeatureCodes[i] != ErrorInfo.MOK) {
                     Log.i("FacePreViewActivity"," extract failed, code is " + extractFaceFeatureCodes[i]);
                 } else {
-
                     imageFace = faceFeatures[i];
                     Log.i("FacePreViewActivity","processImage: fr costTime = " + (System.currentTimeMillis() - frStartTime));
                 }
@@ -322,7 +341,6 @@ public class FacePreViewActivity extends BaseActivity implements ViewTreeObserve
                             Log.i("FacePreViewActivity", "success = " + faceSimilar.getScore() );
                             if(faceSimilar.getScore() >= 0.8){
                                 if(flag){
-
                                     String faceImgPath = saveCurrentPreView(nv21,camera);
 
                                     hashMap.put("faceImg",faceImgPath);
@@ -336,12 +354,6 @@ public class FacePreViewActivity extends BaseActivity implements ViewTreeObserve
                                     bundle.putSerializable("data",hashMap);
                                     intent.putExtra("bundle",bundle);
                                     flag = false;
-                                    if (cameraHelper != null) {
-                                        cameraHelper.release();
-                                        cameraHelper = null;
-                                    }
-                                    unInitEngine();
-                                    unDestroyEngine();
                                     ActivityUtils.startActivity(intent);
                                     finish();
                                 }
@@ -390,20 +402,18 @@ public class FacePreViewActivity extends BaseActivity implements ViewTreeObserve
         }
         unInitEngine();
         unDestroyEngine();
-        Log.i("FacePreViewActivity", "onDestroy");
         super.onDestroy();
     }
 
     private void unInitEngine() {
         if (faceEngine != null) {
             faceEngineCode = faceEngine.unInit();
-            faceEngine = null;
             Log.i("FacePreViewActivity","unInitEngine: " + faceEngineCode);
         }
     }
 
     private String saveCurrentPreView(byte[] data, Camera camera){
-        Camera.Size previewSize = cameraHelper.previewSize;//获取尺寸,格式转换的时候要用到
+        Camera.Size previewSize = camera.getParameters().getPreviewSize();//获取尺寸,格式转换的时候要用到
         BitmapFactory.Options newOpts = new BitmapFactory.Options();
         newOpts.inJustDecodeBounds = true;
         YuvImage yuvimage = new YuvImage(

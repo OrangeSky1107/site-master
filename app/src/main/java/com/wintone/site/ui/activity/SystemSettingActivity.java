@@ -6,7 +6,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ActivityUtils;
-import com.socks.library.KLog;
 import com.wintone.site.R;
 import com.wintone.site.SiteApplication;
 import com.wintone.site.network.NetService;
@@ -14,8 +13,6 @@ import com.wintone.site.network.NetWorkUtils;
 import com.wintone.site.ui.base.activity.BaseActivity;
 import com.wintone.site.utils.Constant;
 import com.wintone.site.utils.SPUtils;
-
-import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -72,18 +69,12 @@ public class SystemSettingActivity extends BaseActivity {
 
                     @Override
                     public void onNext(ResponseBody value) {
-                        try {
-                            KLog.i("look at response body = " + value.string());
                             mHUD.dismiss();
                             loginOut();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        KLog.i("look at response body = " + e.getMessage().toString());
                         mHUD.dismiss();
                     }
 

@@ -8,7 +8,6 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ActivityUtils;
-import com.kaopiz.kprogresshud.KProgressHUD;
 import com.scwang.smart.refresh.header.MaterialHeader;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -44,8 +43,6 @@ public class PersonDetailsActivity extends BaseActivity {
 
     private PersonDetailsAdapter adapter;
 
-    private KProgressHUD mHUD;
-
     @Override
     protected int getContentView() {
         return R.layout.activity_person_details;
@@ -54,9 +51,6 @@ public class PersonDetailsActivity extends BaseActivity {
     @Override
     protected void initView() {
         toolbarTitle.setText("人员信息");
-
-        initProgress();
-
         initListener();
     }
 
@@ -71,15 +65,6 @@ public class PersonDetailsActivity extends BaseActivity {
                 initData();
             }
         });
-    }
-
-    private void initProgress() {
-        mHUD = KProgressHUD.create(PersonDetailsActivity.this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setDetailsLabel("加载中...")
-                .setCancellable(true)
-                .setAnimationSpeed(2)
-                .setDimAmount(0.5f);
     }
 
     @OnClick({R.id.iv_back})

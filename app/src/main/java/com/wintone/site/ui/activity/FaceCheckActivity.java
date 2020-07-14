@@ -11,7 +11,6 @@ import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.os.Build;
-import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -28,12 +27,11 @@ import com.arcsoft.face.FaceInfo;
 import com.arcsoft.face.enums.DetectMode;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
-import com.kaopiz.kprogresshud.KProgressHUD;
 import com.wintone.site.R;
-import com.wintone.site.SiteApplication;
 import com.wintone.site.network.OkHttpUtil;
 import com.wintone.site.network.OkhttpClientRequest;
 import com.wintone.site.networkmodel.AttendacedofUpload;
+import com.wintone.site.ui.base.activity.BaseActivity;
 import com.wintone.site.utils.AppUtils;
 import com.wintone.site.utils.Constant;
 import com.wintone.site.utils.SPUtils;
@@ -52,7 +50,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -66,7 +63,7 @@ import static com.arcsoft.face.enums.DetectFaceOrientPriority.ASF_OP_ALL_OUT;
 /**
  * create by ths on 2020/7/6
  */
-public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObserver.OnGlobalLayoutListener,View.OnClickListener{
+public class FaceCheckActivity extends BaseActivity implements ViewTreeObserver.OnGlobalLayoutListener,View.OnClickListener{
 
     private static final String TAG = "FaceCheckActivity";
     private CameraHelper cameraHelper;
@@ -90,47 +87,6 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
     private FrameLayout frameLayout;
     private TextView    imageButton;
     private ImageView   faceHeader;
-
-    protected KProgressHUD mHUD;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_face_action);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            WindowManager.LayoutParams attributes = getWindow().getAttributes();
-            attributes.systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-            getWindow().setAttributes(attributes);
-        }
-
-        // Activity启动后就锁定为启动时的方向
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-
-        previewView = findViewById(R.id.texture_preview);
-        backCamera  = findViewById(R.id.back_camera);
-        frameLayout = findViewById(R.id.frameLayout);
-        imageButton = findViewById(R.id.imageButton);
-        faceHeader  = findViewById(R.id.faceHeader);
-
-        //在布局结束后才做初始化操作
-        previewView.getViewTreeObserver().addOnGlobalLayoutListener(this);
-
-        backCamera.setOnClickListener(this);
-        frameLayout.setOnClickListener(this);
-        imageButton.setOnClickListener(this);
-
-        initProgress();
-    }
-
-    private void initProgress() {
-        mHUD = KProgressHUD.create(this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setDetailsLabel("加载中...")
-                .setCancellable(true)
-                .setAnimationSpeed(2)
-                .setDimAmount(0.5f);
-    }
 
     private void initEngine() {
         ConfigUtil.setFtOrient(this, ASF_OP_ALL_OUT);
@@ -157,8 +113,43 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
             cameraHelper = null;
         }
         unInitEngine();
-        mHUD = null;
         super.onDestroy();
+    }
+
+    @Override
+    protected int getContentView() {
+        return R.layout.activity_face_action;
+    }
+
+    @Override
+    protected void initView() {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WindowManager.LayoutParams attributes = getWindow().getAttributes();
+            attributes.systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+            getWindow().setAttributes(attributes);
+        }
+
+        // Activity启动后就锁定为启动时的方向
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+
+        previewView = findViewById(R.id.texture_preview);
+        backCamera  = findViewById(R.id.back_camera);
+        frameLayout = findViewById(R.id.frameLayout);
+        imageButton = findViewById(R.id.imageButton);
+        faceHeader  = findViewById(R.id.faceHeader);
+
+        //在布局结束后才做初始化操作
+        previewView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+
+        backCamera.setOnClickListener(this);
+        frameLayout.setOnClickListener(this);
+        imageButton.setOnClickListener(this);
+    }
+
+    @Override
+    protected void initData() {
+
     }
 
     private void initCamera() {
@@ -184,10 +175,13 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
                     if (code != ErrorInfo.MOK) {
                         return;
                     }
+                    //这是有人脸
                     FACE_NOT_EXITS = true;
                 } else {
+                    //这是无人脸
                     if(registerStatus == REGISTER_STATUS_READY && FACE_NOT_EXITS){
                         FACE_NOT_EXITS = false;
+                        registerStatus = REGISTER_STATUS_DONE;
                         ToastUtils.showShort("未检测到人脸!");
                     }
                     return;
@@ -245,8 +239,7 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
         options.inPreferredConfig = Bitmap.Config.RGB_565;
         Bitmap bitmap = BitmapFactory.decodeByteArray(rawImage, 0, rawImage.length, options);
         Bitmap rotationMap = null;
-        Integer integer = (Integer) SPUtils.getShare(SiteApplication.getInstance(), Constant.CAMERA_SWITCH,1);
-        if(integer == 1){
+        if(cameraHelper.mCameraId == 1){
             rotationMap = ImageRotateUtil.of().rotateBitmapByDegree(bitmap,-90);
         }else{
             rotationMap = ImageRotateUtil.of().rotateBitmapByDegree(bitmap,-270);
@@ -280,9 +273,7 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Log.i("FaceActionActivity","recycler bitmap 1");
             bitmap.recycle();
-            Log.i("FaceActionActivity","recycler bitmap 2");
         }
         return path;
     }
@@ -314,7 +305,6 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
                     @Override
                     public void run() {
                         showPhoneDialog("打卡出现错误:"+errorMessage);
-                        Log.i(TAG,"response failure = " + errorMessage);
                         mHUD.dismiss();
                     }
                 });
@@ -350,7 +340,6 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-//                        finish();
                     }
                 });
 
@@ -359,7 +348,6 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-//                        finish();
                     }
                 });
 
@@ -390,6 +378,10 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
                 cameraHelper.switchCamera();
                 break;
             case R.id.imageButton:
+                if(!OkHttpUtil.isNetWorkAvailable()){
+                    ToastUtils.showShort("当前无可用网络,无法打卡!");
+                    return;
+                }
                 register();
                 break;
         }
@@ -397,7 +389,11 @@ public class FaceCheckActivity extends AppCompatActivity implements ViewTreeObse
 
     public void register() {
         if (registerStatus == REGISTER_STATUS_DONE) {
-            registerStatus = REGISTER_STATUS_READY;
+            if(FACE_NOT_EXITS){
+                registerStatus = REGISTER_STATUS_READY;
+            }else{
+                ToastUtils.showShort("未检测到人脸!");
+            }
         }
     }
 

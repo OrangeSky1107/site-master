@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,9 +13,9 @@ import com.bumptech.glide.Glide;
 import com.wintone.site.R;
 import com.wintone.site.network.NetService;
 import com.wintone.site.network.NetWorkUtils;
+import com.wintone.site.networkmodel.BankModel;
 import com.wintone.site.ui.base.activity.BaseActivity;
 import com.wintone.site.utils.bankinfo.BankInfo;
-import com.wintone.site.utils.bankinfo.BankModel;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,6 +25,9 @@ import java.util.List;
 import androidx.annotation.Nullable;
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -31,8 +35,8 @@ import io.reactivex.schedulers.Schedulers;
 
 public class BankInfoActivity extends BaseActivity {
 
-    @BindView(R.id.officeTextView)     TextView officeTextView;
-    @BindView(R.id.nameTextView)       TextView nameTextView;
+    @BindView(R.id.officeTextView)     EditText officeTextView;
+    @BindView(R.id.nameTextView)       EditText nameTextView;
     @BindView(R.id.idFrontImageView)   ImageView idFrontImageView;
     @BindView(R.id.openCamera)         TextView openCamera;
     @BindView(R.id.toolbar_title)      TextView toolbarTitle;
@@ -68,21 +72,21 @@ public class BankInfoActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        if(bankInfoMap != null) return;
-        bankInfoMap = BankInfo.getInstance().transformMap();
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(bankInfoMap != null)
         bankInfoMap.clear();
         bankInfoMap = null;
     }
 
-    @OnClick({R.id.openCamera,R.id.nextOperation,R.id.iv_back,R.id.toolbar_right})
+    @OnClick({R.id.idFrontImageView,R.id.nextOperation,R.id.iv_back,R.id.toolbar_right})
     public void onClick(View view){
         switch (view.getId()){
-            case R.id.openCamera:
+            case R.id.idFrontImageView:
                 if(preventDoubleClick()){
                     return;
                 }
@@ -94,6 +98,8 @@ public class BankInfoActivity extends BaseActivity {
                 }
                 Intent intent = new Intent(BankInfoActivity.this,PersonInfoActivity.class);
                 Bundle bundle = new Bundle();
+                dataMap.put("bankCard",officeTextView.getText().toString());
+                dataMap.put("bankName",nameTextView.getText().toString());
                 bundle.putSerializable("data",dataMap);
                 intent.putExtra("bundle",bundle);
                 ActivityUtils.startActivity(intent);
@@ -134,7 +140,6 @@ public class BankInfoActivity extends BaseActivity {
             String disposeBank = disposeChars(bankCard);
             getBankNetworkInfo(disposeBank);
 
-            dataMap.put("bankCard",disposeBank);
             dataMap.put("bankImg",bankImg);
         }
     }
@@ -210,9 +215,28 @@ public class BankInfoActivity extends BaseActivity {
     }
 
     private void dispose(String bankIdentification){
-        String bankName = bankInfoMap.get(bankIdentification).toString();
-        nameTextView.setText(bankName);
-        dataMap.put("bankName",bankName);
-        nextOperation.setEnabled(true);
+        Observable.create(new ObservableOnSubscribe<String>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<String> e) throws Exception {
+                if(bankInfoMap != null) return;
+                bankInfoMap = BankInfo.getInstance().transformMap();
+                String bankName = bankInfoMap.get(bankIdentification).toString();
+                e.onNext(bankName);
+            }
+        }).subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override public void onSubscribe(Disposable d) { }
+                    @Override
+                    public void onNext(String value) {
+                        nameTextView.setText(value);
+                        dataMap.put("bankName",value);
+                        nextOperation.setEnabled(true);
+                    }
+                    @Override public void onError(Throwable e) {}
+                    @Override public void onComplete() {}
+                });
     }
 }

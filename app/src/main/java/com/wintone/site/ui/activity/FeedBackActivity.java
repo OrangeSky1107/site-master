@@ -131,6 +131,7 @@ public class FeedBackActivity extends TakePhotoActivity implements PopWindowLayo
 
         if(TextUtils.isEmpty(feedback)){
            ToastUtils.showShort("提交的问题还没有输入!");
+           mHUD.dismiss();
            return;
         }
 

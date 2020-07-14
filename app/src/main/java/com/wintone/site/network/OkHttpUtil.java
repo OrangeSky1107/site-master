@@ -47,6 +47,19 @@ public class OkHttpUtil {
 
     private static final String CACHE_CONTROL_AGE = "max-age="+CACHE_MAX_AGE;
 
+    /**
+     * 没有网络
+     */
+    private static final int NETWORK_NONE = -1;
+    /**
+     * 移动网络
+     */
+    private static final int NETWORK_MOBILE = 0;
+    /**
+     * 无线网络
+     */
+    private static final int NETWORK_WIFI = 1;
+
     private CustomX509TrustManager sCustomX509TrustManager;
 
     public static OkHttpUtil getInstance(){
@@ -117,6 +130,24 @@ public class OkHttpUtil {
             }
         }
         return false;
+    }
+
+    public static int getNetWorkState(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetworkInfo = connectivityManager
+                .getActiveNetworkInfo();
+        if (activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
+            if (activeNetworkInfo.getType() == (ConnectivityManager.TYPE_WIFI)) {
+                return NETWORK_WIFI;//wifi
+            } else if (activeNetworkInfo.getType() == (ConnectivityManager.TYPE_MOBILE)) {
+                return NETWORK_MOBILE;//mobile
+            }
+        } else {
+            return NETWORK_NONE;
+        }
+        return NETWORK_NONE;
     }
 
     private final Interceptor mLoginInterceptor = new Interceptor() {

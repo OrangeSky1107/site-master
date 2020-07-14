@@ -217,6 +217,16 @@ public class MineFragment extends BaseFragment {
         builder.setCancelable(false);
 
         builder.show();
+//        File file = FileUtils.getFileByPath("/storage/emulated/0/Android/data/com.tomcat.ocr.idcard/cache/");
+//
+//        File[] files = file.listFiles();
+//
+//        Log.i("MineFragment","look at file length = " + file.length());
+//
+//        for(File childFile : files){
+//            Log.i("MineFragment","look at files name = " + childFile.getName());
+//            Log.i("MineFragment","look at files size = " + childFile.length());
+//        }
     }
 
 }

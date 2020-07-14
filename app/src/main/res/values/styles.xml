@@ -28,9 +28,10 @@
         <item name="windowNoTitle">true</item>
 
         <!--屏幕方向（纵向）-->
-        <item name="android:screenOrientation">portrait</item>
+<!--        <item name="android:configChanges">orientation|keyboardHidden|screenSize</item>-->
+<!--        <item name="android:screenOrientation">portrait</item>-->
         <!--状态栏4.4-->
-        <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">false</item>
+<!--        <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">false</item>-->
     </style>
 
     <!-- Base application theme. -->

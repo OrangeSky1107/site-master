@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,8 +26,8 @@ import butterknife.OnClick;
 
 public class IdCardBackInfoActivity extends BaseActivity {
 
-    @BindView(R.id.officeTextView)   TextView officeTextView;
-    @BindView(R.id.nameTextView)     TextView nameTextView;
+    @BindView(R.id.officeTextView)   EditText officeTextView;
+    @BindView(R.id.nameTextView)     EditText nameTextView;
     @BindView(R.id.idFrontImageView) ImageView idFrontImageView;
     @BindView(R.id.openCamera)       TextView openCamera;
     @BindView(R.id.toolbar_title)    TextView toolbarTitle;
@@ -59,10 +60,10 @@ public class IdCardBackInfoActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.openCamera,R.id.nextOperation,R.id.iv_back,R.id.toolbar_right})
+    @OnClick({R.id.idFrontImageView,R.id.nextOperation,R.id.iv_back,R.id.toolbar_right})
     public void onClick(View view){
         switch (view.getId()){
-            case R.id.openCamera:
+            case R.id.idFrontImageView:
                 if(preventDoubleClick()){
                     return;
                 }
@@ -79,7 +80,6 @@ public class IdCardBackInfoActivity extends BaseActivity {
                 bankBundle.putSerializable("data",dataMap);
                 intent.putExtra("bundle",bankBundle);
                 ActivityUtils.startActivity(intent);
-                finish();
                 break;
             case R.id.iv_back:
                 finish();
@@ -153,8 +153,8 @@ public class IdCardBackInfoActivity extends BaseActivity {
             nameTextView.setText(hashMap.get("valid").toString());
             Glide.with(this).load(hashMap.get("imgPath").toString()).into(idFrontImageView);
             openCamera.setVisibility(View.GONE);
-            dataMap.put("issue",hashMap.get("issue").toString());
-            dataMap.put("valid",hashMap.get("valid").toString());
+            dataMap.put("issue",officeTextView.getText().toString());
+            dataMap.put("valid",nameTextView.getText().toString());
             dataMap.put("backImagePath",hashMap.get("imgPath").toString());
 
             nextOperation.setEnabled(true);

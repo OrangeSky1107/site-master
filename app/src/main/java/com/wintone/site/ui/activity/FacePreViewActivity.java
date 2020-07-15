@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
 import android.graphics.ImageFormat;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -52,8 +53,10 @@ import org.devio.takephoto.uitl.ImageRotateUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -130,7 +133,11 @@ public class FacePreViewActivity extends AppCompatActivity implements ViewTreeOb
         Bundle bundle = intent.getBundleExtra("bundle");
         if(bundle != null){
             hashMap = (HashMap) bundle.getSerializable("data");
-            headPath = hashMap.get("headPath").toString();
+            if(hashMap.get("headPath") == null){
+                headPath = hashMap.get("imgPath").toString();
+            }else{
+                headPath = hashMap.get("headPath").toString();
+            }
         }
 
         initImageEngine();
@@ -265,6 +272,21 @@ public class FacePreViewActivity extends AppCompatActivity implements ViewTreeOb
                 } else {
                     imageFace = faceFeatures[i];
                     Log.i("FacePreViewActivity","processImage: fr costTime = " + (System.currentTimeMillis() - frStartTime));
+                }
+            }
+
+            if(hashMap.get("headPath") == null){
+                try {
+                    InputStream inputStream = new FileInputStream(headPath);
+                    BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(inputStream,true);
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inPreferredConfig = Bitmap.Config.RGB_565;
+                    Bitmap bitmaps = decoder.decodeRegion(faceInfoList.get(0).getRect(),options);
+                    String headPath = saveToLocal(bitmaps,"head-path");
+                    hashMap.put("headPath",headPath);
+                    Log.i("FacePreViewActivity","look at look at img path = " + headPath);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }

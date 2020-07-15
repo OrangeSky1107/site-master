@@ -57,7 +57,6 @@ public class IdCardBackInfoActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-
     }
 
     @OnClick({R.id.idFrontImageView,R.id.nextOperation,R.id.iv_back,R.id.toolbar_right})
@@ -145,7 +144,7 @@ public class IdCardBackInfoActivity extends BaseActivity {
 
             String valid = hashMap.get("valid").toString();
             if(valid.length() < 10){
-                ToastUtils.showShort("图片有误,请重新拍摄!");
+                ToastUtils.showShort("图片未识别,请重新拍摄!");
                 return;
             }
 

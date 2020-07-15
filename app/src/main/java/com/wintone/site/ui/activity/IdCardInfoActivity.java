@@ -75,8 +75,8 @@ public class IdCardInfoActivity extends BaseActivity{
 
     private void operationView(HashMap hashMap){
         if(hashMap != null){
-            if(hashMap.size() != 11){
-                ToastUtils.showShort("图片有误,请重新拍摄!");
+            if(hashMap.size() < 10){
+                ToastUtils.showShort("图片未识别清楚,请重新尝试!");
                 return;
             }
             nameTextView.setText(hashMap.get("name").toString());
@@ -86,9 +86,11 @@ public class IdCardInfoActivity extends BaseActivity{
             birthdayExplain.setText(hashMap.get("birt").toString());
             addressExplain.setText(hashMap.get("addr").toString());
             Glide.with(this).load(hashMap.get("imgPath")).into(idFrontImageView);
-            imgPath = hashMap.get("headPath").toString();
-            Glide.with(this).load(hashMap.get("headPath")).into(mCircleImageView);
 
+            if(null != hashMap.get("headPath")){
+                imgPath = hashMap.get("headPath").toString();
+                Glide.with(this).load(imgPath).into(mCircleImageView);
+            }
             nextButton.setEnabled(true);
         }
     }
@@ -165,7 +167,6 @@ public class IdCardInfoActivity extends BaseActivity{
                     bundle.putSerializable("data",extraInoutText());
                     intent.putExtra("bundle",bundle);
                     startActivity(intent);
-//                    finish();
                 }else{
                     KLog.i("can't find face so file");
                 }
@@ -217,8 +218,8 @@ public class IdCardInfoActivity extends BaseActivity{
             String result = data.getStringExtra("OCRResult");
             HashMap hashMap = JSON.parseObject(result,HashMap.class);
             if(hashMap != null){
-                if(hashMap.size() != 11){
-                    ToastUtils.showShort("图片有误,请重新拍摄!");
+                if(hashMap.size() < 10){
+                    ToastUtils.showShort("图片未识别清楚,请重新尝试!");
                     return;
                 }
                 nameTextView.setText(hashMap.get("name").toString());
@@ -228,8 +229,11 @@ public class IdCardInfoActivity extends BaseActivity{
                 birthdayExplain.setText(hashMap.get("birt").toString());
                 addressExplain.setText(hashMap.get("addr").toString());
                 Glide.with(this).load(hashMap.get("imgPath")).into(idFrontImageView);
-                imgPath = hashMap.get("headPath").toString();
-                Glide.with(this).load(hashMap.get("headPath")).into(mCircleImageView);
+
+                if(hashMap.get("headPath") != null){
+                    Glide.with(this).load(hashMap.get("headPath")).into(mCircleImageView);
+                    imgPath = hashMap.get("headPath").toString();
+                }
 
                 this.hashMap.putAll(hashMap);
 

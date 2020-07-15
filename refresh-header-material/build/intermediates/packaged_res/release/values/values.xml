@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MaterialHeader">
+        <attr format="color" name="mhPrimaryColor"/>
+        <attr format="color" name="mhShadowColor"/>
+        <attr format="dimension" name="mhShadowRadius"/>
+        <attr format="boolean" name="mhShowBezierWave"/>
+        <attr format="boolean" name="mhScrollableWhenRefreshing"/>
+
+        <attr format="color" name="srlPrimaryColor"/>
+        <attr format="color" name="srlShadowColor"/>
+        <attr format="dimension" name="srlShadowRadius"/>
+        <attr format="boolean" name="srlShowBezierWave"/>
+        <attr format="boolean" name="srlScrollableWhenRefreshing"/>
+    </declare-styleable>
+</resources>

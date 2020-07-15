@@ -1,0 +1,12 @@
+com.scwang.smart.refresh.header.material
+attr mhPrimaryColor
+attr mhScrollableWhenRefreshing
+attr mhShadowColor
+attr mhShadowRadius
+attr mhShowBezierWave
+attr srlPrimaryColor
+attr srlScrollableWhenRefreshing
+attr srlShadowColor
+attr srlShadowRadius
+attr srlShowBezierWave
+styleable MaterialHeader mhPrimaryColor mhScrollableWhenRefreshing mhShadowColor mhShadowRadius mhShowBezierWave srlPrimaryColor srlScrollableWhenRefreshing srlShadowColor srlShadowRadius srlShowBezierWave

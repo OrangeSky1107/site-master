@@ -1,0 +1,13 @@
+R_DEF: Internal format may change without notice
+local
+attr? mhPrimaryColor
+attr? mhScrollableWhenRefreshing
+attr? mhShadowColor
+attr? mhShadowRadius
+attr? mhShowBezierWave
+attr? srlPrimaryColor
+attr? srlScrollableWhenRefreshing
+attr? srlShadowColor
+attr? srlShadowRadius
+attr? srlShowBezierWave
+styleable MaterialHeader mhPrimaryColor mhShadowColor mhShadowRadius mhShowBezierWave mhScrollableWhenRefreshing srlPrimaryColor srlShadowColor srlShadowRadius srlShowBezierWave srlScrollableWhenRefreshing

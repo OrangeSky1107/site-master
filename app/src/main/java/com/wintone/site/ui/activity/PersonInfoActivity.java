@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.PopupWindow;
 
 import com.alibaba.fastjson.JSON;
+import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.RegexUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.kaopiz.kprogresshud.KProgressHUD;
@@ -664,20 +665,19 @@ public class PersonInfoActivity extends BaseActivity implements PopupWindow.OnDi
     private void disposeRegister(RegisterInfoModel value){
         if(value.getCode() == 1000){
             ToastUtils.showShort("注册成功!");
-            finish();
         }else if(value.getCode() == 1002){
             ToastUtils.showShort("该人员已经注册过了!");
-            finish();
         }else {
             ToastUtils.showShort("系统错误!");
-            finish();
         }
+        ActivityUtils.startActivity(new Intent(PersonInfoActivity.this,HomeActivity.class));
     }
 
     @Override
     public void onDismiss() {
         setWindowAttributes(1f);
     }
+
 
     @Override
     public void searchDictionaries(String title) {

@@ -137,20 +137,22 @@ public class FeedBackActivity extends TakePhotoActivity implements PopWindowLayo
 
         String token = (String) SPUtils.getShare(this,Constant.USER_TOKEN,"");
 
-        OkHttpUtil.getInstance().uploadTopPost(Constant.USER_UPLOAD_URL, token, imgPath, new OkhttpClientRequest() {
-            @Override
-            public void responseFailure(String errorMessage) {
-                ToastUtils.showShort("问题图片上传失败:"+errorMessage);
-                mHUD.dismiss();
-            }
+        if(!TextUtils.isEmpty(imgPath)){
+            OkHttpUtil.getInstance().uploadTopPost(Constant.USER_UPLOAD_URL, token, imgPath, new OkhttpClientRequest() {
+                @Override
+                public void responseFailure(String errorMessage) {
+                    ToastUtils.showShort("问题图片上传失败:"+errorMessage);
+                    mHUD.dismiss();
+                }
 
-            @Override
-            public void responseSuccess(String successMessage) {
-                HashMap hashMap = JSON.parseObject(successMessage,HashMap.class);
-                String imagePath = hashMap.get("result").toString();
-                submitProblem(token,imagePath);
-            }
-        });
+                @Override
+                public void responseSuccess(String successMessage) {
+                    HashMap hashMap = JSON.parseObject(successMessage,HashMap.class);
+                    String imagePath = hashMap.get("result").toString();
+                    submitProblem(token,imagePath);
+                }
+            });
+        }
     }
 
     private void submitProblem(String token,String imgPath){
@@ -158,7 +160,9 @@ public class FeedBackActivity extends TakePhotoActivity implements PopWindowLayo
         feedModelRequetModel.setPhone(phone.getText().toString());
         feedModelRequetModel.setEmail(email.getText().toString());
         feedModelRequetModel.setUserId((String)SPUtils.getShare(this,Constant.USER_ID,""));
-        feedModelRequetModel.setFilePath(imgPath);
+        if(!TextUtils.isEmpty(imgPath)){
+            feedModelRequetModel.setFilePath(imgPath);
+        }
         feedModelRequetModel.setProblem(feedbackText.getText().toString());
 
         NetWorkUtils.getInstance().createService(NetService.class)

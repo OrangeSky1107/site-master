@@ -5,7 +5,7 @@ public class Constant {
     // 测试接口地址 http://192.168.1.76/gdb-api/
     // http://127.0.0.1:8005/version/updatePassword
     // 谭皓本地地址 http://192.168.1.30:8005/
-    public static final String BASE_URL = "http://192.168.1.80:19999";
+    public static final String BASE_URL = "http://192.168.1.176:19999";
 
     //修改密码
     public static final String UPDATE_PASSWORD_URL = "/appUser/updatePassword";

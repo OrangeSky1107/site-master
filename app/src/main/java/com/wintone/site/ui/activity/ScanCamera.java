@@ -240,6 +240,7 @@ public class ScanCamera extends Activity implements Callback, PreviewCallback {
                             try {
                                 ScanCamera.this.camera.autoFocus(new AutoFocusCallback() {
                                     public void onAutoFocus(boolean success, Camera camera) {
+                                        Log.i("ScanCamera","look at scan camera .... ");
                                     }
                                 });
                             } catch (Exception e) {
@@ -314,6 +315,7 @@ public class ScanCamera extends Activity implements Callback, PreviewCallback {
             b = (int) (((double) b) / proportion);
             this.api.WTSetROI(new int[]{l, t, r, b}, this.preWidth, this.preHeight);
             this.isROI = true;
+
             if (this.isFatty) {
                 this.myView = new ViewfinderView(this, this.width, this.height, this.isFatty);
             } else {
@@ -400,6 +402,8 @@ public class ScanCamera extends Activity implements Callback, PreviewCallback {
                 Intent intent = new Intent();
                 intent.putExtra("PicR", pLineWarp);
                 intent.putExtra("StringR", recogval);
+//                String bankInfo = api.GetBankInfo(String.valueOf(recogval));
+//                Log.i("BankInfoActivity","look at bank info = " + bankInfo);
                 intent.putExtra("imagePath",saveCurrentPreView(data,camera));
                 setResult(-1,intent);
                 finish();
@@ -557,6 +561,10 @@ public class ScanCamera extends Activity implements Callback, PreviewCallback {
                 this.surfaceHeight = (int) ((((float) this.preHeight) / ((float) this.preWidth)) * ((float) this.srcHeight));
             }
         }
+
+        Log.i("ScanCamera","look at camera preview width = " + preWidth);
+
+        Log.i("ScanCamera","look at camera preview height = " + preHeight);
     }
 
     @TargetApi(19)

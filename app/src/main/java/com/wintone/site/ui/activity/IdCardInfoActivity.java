@@ -79,6 +79,7 @@ public class IdCardInfoActivity extends BaseActivity{
                 ToastUtils.showShort("图片未识别清楚,请重新尝试!");
                 return;
             }
+
             nameTextView.setText(hashMap.get("name").toString());
             sexExplain.setText(hashMap.get("sex").toString());
             nationExplain.setText(hashMap.get("folk").toString());

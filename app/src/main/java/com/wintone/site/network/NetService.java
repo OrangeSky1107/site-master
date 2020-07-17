@@ -1,8 +1,8 @@
 package com.wintone.site.network;
 
 import com.wintone.site.networkmodel.AppVersionModel;
-import com.wintone.site.networkmodel.ResponseModel;
 import com.wintone.site.networkmodel.AttendanceRecord;
+import com.wintone.site.networkmodel.BankModel;
 import com.wintone.site.networkmodel.ConstructionModel;
 import com.wintone.site.networkmodel.DictionariesModel;
 import com.wintone.site.networkmodel.FeedModelRequetModel;
@@ -13,9 +13,9 @@ import com.wintone.site.networkmodel.PersonSignalModel;
 import com.wintone.site.networkmodel.ProjectModel;
 import com.wintone.site.networkmodel.ProjectWorkers;
 import com.wintone.site.networkmodel.RegisterInfoModel;
+import com.wintone.site.networkmodel.ResponseModel;
 import com.wintone.site.networkmodel.TeamModel;
 import com.wintone.site.networkmodel.UpdateUserModel;
-import com.wintone.site.networkmodel.BankModel;
 
 import java.util.Map;
 
@@ -89,7 +89,7 @@ public interface NetService {
     Observable<RegisterInfoModel> postWorkersSaveOrUpdate(
             @Header("token") String token,
             @Url String url,
-            @Body ProjectWorkers data
+            @Body ProjectWorkers projectWorkers
     );
 
     @POST
